@@ -11,11 +11,11 @@ class MlFileType : LanguageFileType(OcamlLanguage.INSTANCE) {
 
     companion object {
         val INSTANCE = MlFileType()
+
     }
     override fun getDescription(): String {
         return "Ocaml source file"
     }
-
 
     override fun getDefaultExtension(): String {
         return "ml"
