@@ -3,12 +3,11 @@ buildscript {
         mavenCentral()
     }
 
-    ext.kotlin_version = '1.0.1-2'
-
-
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
     }
+
+
 }
 
 plugins {
@@ -29,6 +28,13 @@ intellij {
     version ideaVersion
     plugins 'coverage'
     pluginName 'ocaml-idea'
+}
+
+dependencies {
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.7.3'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
+    testCompile 'junit:junit:4.12'
 }
 
 group 'kuruvila'
