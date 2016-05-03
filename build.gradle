@@ -30,16 +30,54 @@ intellij {
     pluginName 'ocaml-idea'
 }
 
+
+group 'kuruvila'
+version '0.0.1-SNAPSHOT'
+
+sourceSets {
+    main.java.srcDirs += "gen"
+}
+
+
+configurations {
+    gen
+}
+
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.7.3'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
     testCompile 'junit:junit:4.12'
+
+    gen 'de.jflex:jflex:1.6.0'
+    gen files('lib/gk/grammar-kit-patched.jar')
 }
 
-group 'kuruvila'
-version '0.0.1-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+//Copied from the rust plugin
+
+def jflexArgs(srcFlex, targetDir) {
+    return [    "--skel",   "src/main/kotlin/kuruvila/ocamlidea/lexer/OcamlLexer.skeleton",
+                "-d",       targetDir,
+                srcFlex
+    ]
+}
+
+task generateOcamlLexer(type: JavaExec) {
+    ext.src = "src/main/kotlin/kuruvila/ocamlidea/lexer/OcamlLexer.flex"
+    ext.dst = "src/main/java/kuruvila/ocamlidea/lexer/"
+
+    main = "jflex.Main"
+
+    args = jflexArgs(src, dst)
+
+    inputs  .file   file(src)
+    outputs .dir    file(dst + "_OcamlLexer.java")
+
+    classpath configurations.gen
 }

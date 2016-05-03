@@ -1,5 +1,6 @@
 package kuruvila.merlin
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.BufferedReader
@@ -19,17 +20,22 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 
     fun tellSource(source: CharSequence): TellResponse {
         val request = """["tell","source", ${objectMapper.writeValueAsString(source)}]"""
-        return makeRequest(request, TellResponse::class.java)
+        return makeRequest(request, object: TypeReference<TellResponse>() {})
     }
 
-    private fun <T> makeRequest(request: String, c: Class<T>): T {
+    fun dumpTokens(): List<Token> {
+        val request = """["dump", "tokens"]"""
+        return makeRequest(request, object: TypeReference<List<Token>>() {})
+    }
+
+    private fun <T> makeRequest(request: String, c: TypeReference<T>): T {
         writer.write(request)
         writer.write("\n")
         writer.flush()
 
         val s = reader.readLine()
         val response = extractResponse(objectMapper.readTree(s))
-        return objectMapper.treeToValue(response, c);
+        return objectMapper.convertValue(response, c);
     }
 
     private fun extractResponse(t: JsonNode): JsonNode {
@@ -49,4 +55,5 @@ data class Location(val line: Int, val col: Int)
 
 data class TellResponse(val cursor: Location, val marker: Boolean)
 
+data class Token(val start:Location, val end: Location, val token: String)
 
