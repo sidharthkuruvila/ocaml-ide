@@ -49,6 +49,42 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
                 OcamlTypes.INFIXOP4, OcamlTypes.BANG, OcamlTypes.INFIXOP1, OcamlTypes.INFIXOP0, OcamlTypes.INFIXOP3,
                 OcamlTypes.INFIXOP2, OcamlTypes.LESSMINUS, OcamlTypes.MINUSDOT, OcamlTypes.GREATER, OcamlTypes.SHARPOP,
                 OcamlTypes.PLUSEQ, OcamlTypes.AMPERSAND)
+
+
+
+
+        val BRACKET =
+                createTextAttributesKey("OCAML_BRACKET", DefaultLanguageHighlighterColors.BRACKETS)
+        val BRACE =
+                createTextAttributesKey("OCAML_BRACE", DefaultLanguageHighlighterColors.BRACES)
+        val PAREN =
+                createTextAttributesKey("OCAML_PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
+        val NUMBER =
+                createTextAttributesKey("OCAML_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
+        val UIDENTIFIER =
+                createTextAttributesKey("OCAML_LIDENT", DefaultLanguageHighlighterColors.CLASS_NAME)
+        val IDENTIFIER =
+                createTextAttributesKey("OCAML_IDENTIFIER", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+        val KEYWORD =
+                createTextAttributesKey("OCAML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+        val STRING =
+                createTextAttributesKey("OCAML_STRING", DefaultLanguageHighlighterColors.STRING);
+        val COMMENT =
+                createTextAttributesKey("OCAML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
+        val OPERATOR =
+                createTextAttributesKey("OCAML_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
+
+        val IDENTIFIER_KEYS = arrayOf(IDENTIFIER);
+        val KEYWORD_KEYS = arrayOf(KEYWORD);
+        val STRING_KEYS = arrayOf(STRING);
+        val COMMENT_KEYS = arrayOf(COMMENT);
+        val EMPTY_KEYS = emptyArray<TextAttributesKey>();
+        val BRACKET_KEYS = arrayOf(BRACKET)
+        val PAREN_KEYS = arrayOf(PAREN)
+        val BRACE_KEYS = arrayOf(BRACE)
+        val NUMBER_KEYS = arrayOf(NUMBER)
+        val UIDENTIFIER_KEYS = arrayOf(UIDENTIFIER)
+        val OPERATOR_KEYS = arrayOf(OPERATOR)
     }
 
     override fun getHighlightingLexer(): Lexer {
@@ -72,39 +108,5 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
             else -> return EMPTY_KEYS
         }
     }
-
-
-    val BRACKET =
-            createTextAttributesKey("OCAML_BRACKET", DefaultLanguageHighlighterColors.BRACKETS)
-    val BRACE =
-            createTextAttributesKey("OCAML_BRACE", DefaultLanguageHighlighterColors.BRACES)
-    val PAREN =
-            createTextAttributesKey("OCAML_PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
-    val NUMBER =
-            createTextAttributesKey("OCAML_NUMBER", DefaultLanguageHighlighterColors.NUMBER)
-    val UIDENTIFIER =
-            createTextAttributesKey("OCAML_LIDENT", DefaultLanguageHighlighterColors.CLASS_NAME)
-    val IDENTIFIER =
-            createTextAttributesKey("OCAML_IDENTIFIER", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
-    val KEYWORD =
-            createTextAttributesKey("OCAML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
-    val STRING =
-            createTextAttributesKey("OCAML_STRING", DefaultLanguageHighlighterColors.STRING);
-    val COMMENT =
-            createTextAttributesKey("OCAML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
-    val OPERATOR =
-            createTextAttributesKey("OCAML_OPERATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-
-    val IDENTIFIER_KEYS = arrayOf(IDENTIFIER);
-    val KEYWORD_KEYS = arrayOf(KEYWORD);
-    val STRING_KEYS = arrayOf(STRING);
-    val COMMENT_KEYS = arrayOf(COMMENT);
-    val EMPTY_KEYS = emptyArray<TextAttributesKey>();
-    val BRACKET_KEYS = arrayOf(BRACKET)
-    val PAREN_KEYS = arrayOf(PAREN)
-    val BRACE_KEYS = arrayOf(BRACE)
-    val NUMBER_KEYS = arrayOf(NUMBER)
-    val UIDENTIFIER_KEYS = arrayOf(UIDENTIFIER)
-    val OPERATOR_KEYS = arrayOf(OPERATOR)
 
 }

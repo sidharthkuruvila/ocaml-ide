@@ -28,7 +28,8 @@
     <!-- Add your extensions here -->
 
     <fileTypeFactory implementation="org.ocaml.lang.MlFileTypeFactory"/>
-    <lang.syntaxHighlighterFactory key="Ocaml" implementationClass="kuruvila.ocamlidea.OcamlSyntaxHighlighterFactory"/>
+    <lang.syntaxHighlighterFactory key="Ocaml" implementationClass="org.ocaml.ide.highlighter.OcamlSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="org.ocaml.ide.colorscheme.OcamlColorSettingsPage"/>
   </extensions>
 
   <actions>
