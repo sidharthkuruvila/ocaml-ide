@@ -16,20 +16,23 @@ class TestMerlin {
     @Test
     fun testTellSource() {
         val m = merlinInstance()
-        val resp = m.tellSource("let f x = x;;")
-        assertEquals(TellResponse(cursor = Location(line = 1, col = 13), marker = false), resp)
+        val resp1 = m.tellSource("let f x = x;;")
+        m.seekExact(Position(1, 0))
+        m.drop()
+        val resp2 = m.tellSource("let f x = x;;")
+        assertEquals(TellResponse(cursor = Position(line = 1, col = 13), marker = false), resp2)
     }
 
     @Test
     fun testDumpTokens() {
         val m = merlinInstance()
         m.tellSource("let f x = x;;")
-        val exp = listOf(Token(start = Location(line = 1, col = 0), end = Location(line = 1, col = 3), token = "LET"),
-                Token(start = Location(line = 1, col = 4), end = Location(line = 1, col = 5), token = "LIDENT"),
-                Token(start = Location(line = 1, col = 6), end = Location(line = 1, col = 7), token = "LIDENT"),
-                Token(start = Location(line = 1, col = 8), end = Location(line = 1, col = 9), token = "EQUAL"),
-                Token(start = Location(line = 1, col = 10), end = Location(line = 1, col = 11), token = "LIDENT"),
-                Token(start = Location(line = 1, col = 11), end = Location(line = 1, col = 13), token = "SEMISEMI"))
+        val exp = listOf(Token(start = Position(line = 1, col = 0), end = Position(line = 1, col = 3), token = "LET"),
+                Token(start = Position(line = 1, col = 4), end = Position(line = 1, col = 5), token = "LIDENT"),
+                Token(start = Position(line = 1, col = 6), end = Position(line = 1, col = 7), token = "LIDENT"),
+                Token(start = Position(line = 1, col = 8), end = Position(line = 1, col = 9), token = "EQUAL"),
+                Token(start = Position(line = 1, col = 10), end = Position(line = 1, col = 11), token = "LIDENT"),
+                Token(start = Position(line = 1, col = 11), end = Position(line = 1, col = 13), token = "SEMISEMI"))
         val resp = m.dumpTokens()
         assertEquals(exp, resp)
     }

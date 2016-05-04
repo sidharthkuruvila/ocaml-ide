@@ -14,11 +14,11 @@ import kuruvila.ocamlidea.OcamlLanguage
 
 object OcamlTypes {
     @JvmField
-    val KEY = IElementType("KEY", OcamlLanguage.INSTANCE)
+    val KEYWORD = IElementType("KEYWORD", OcamlLanguage.INSTANCE)
     @JvmField
-    val COMMENT = IElementType("KEY", OcamlLanguage.INSTANCE)
+    val COMMENT = IElementType("COMMENT", OcamlLanguage.INSTANCE)
     @JvmField
-    val SEPARATOR = IElementType("SEPARATOR", OcamlLanguage.INSTANCE)
+    val STRING = IElementType("IDENTIFIER", OcamlLanguage.INSTANCE)
     @JvmField
-    val VALUE = IElementType("VALUE", OcamlLanguage.INSTANCE)
+    val IDENTIFIER = IElementType("IDENTIFIER", OcamlLanguage.INSTANCE)
 }

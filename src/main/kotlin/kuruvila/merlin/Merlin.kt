@@ -3,6 +3,7 @@ package kuruvila.merlin
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -13,6 +14,24 @@ import java.io.OutputStreamWriter
 class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: Process) {
     companion object {
         private val LOG = com.intellij.openapi.diagnostic.Logger.getInstance(Merlin::class.java)
+
+
+        private fun merlinInstance(): Merlin {
+            val p = merlinProcess()
+            val om = ObjectMapper()
+            om.registerModule(KotlinModule())
+            val m = Merlin(om, p)
+            return m
+        }
+
+        private fun merlinProcess(): Process {
+            val pb = ProcessBuilder("/Users/sidharthkuruvila/Code/ocaml_idea_plugin/merlin/ocamlmerlin")
+            return pb.start()
+        }
+
+        fun newInstance(): Merlin {
+            return merlinInstance()
+        }
     }
 
     private val writer = OutputStreamWriter(merlinProcess.outputStream)
@@ -20,12 +39,22 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 
     fun tellSource(source: CharSequence): TellResponse {
         val request = """["tell","source", ${objectMapper.writeValueAsString(source)}]"""
-        return makeRequest(request, object: TypeReference<TellResponse>() {})
+        return makeRequest(request, object : TypeReference<TellResponse>() {})
     }
 
     fun dumpTokens(): List<Token> {
         val request = """["dump", "tokens"]"""
-        return makeRequest(request, object: TypeReference<List<Token>>() {})
+        return makeRequest(request, object : TypeReference<List<Token>>() {})
+    }
+
+    fun drop() {
+        val request = """["drop"]"""
+        makeRequest(request, object : TypeReference<TellResponse>() {})
+    }
+
+    fun seekExact(position: Position) {
+        val request = """["seek", "exact", ${objectMapper.writeValueAsString(position)}]"""
+        makeRequest(request, object : TypeReference<TellResponse>() {})
     }
 
     private fun <T> makeRequest(request: String, c: TypeReference<T>): T {
@@ -51,9 +80,9 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 }
 
 
-data class Location(val line: Int, val col: Int)
+data class Position(val line: Int, val col: Int)
 
-data class TellResponse(val cursor: Location, val marker: Boolean)
+data class TellResponse(val cursor: Position, val marker: Boolean)
 
-data class Token(val start:Location, val end: Location, val token: String)
+data class Token(val start: Position, val end: Position, val token: String)
 

@@ -9,7 +9,8 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import kuruvila.ocamlidea.lexer.OcamlLexer
+import kuruvila.merlin.Merlin
+import kuruvila.merlin.MerlinLexer
 import kuruvila.ocamlidea.lexer.OcamlTypes
 
 /**
@@ -18,35 +19,35 @@ import kuruvila.ocamlidea.lexer.OcamlTypes
 
 class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
     override fun getHighlightingLexer(): Lexer {
-        return OcamlLexer()
+        return MerlinLexer(Merlin.newInstance())
     }
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
         when (tokenType) {
-            OcamlTypes.SEPARATOR -> return SEPARATOR_KEYS
+            OcamlTypes.IDENTIFIER -> return IDENTIFIER_KEYS
             OcamlTypes.COMMENT -> return COMMENT_KEYS
-            OcamlTypes.VALUE -> return VALUE_KEYS
-            OcamlTypes.KEY -> return KEY_KEYS
+            OcamlTypes.STRING -> return STRING_KEYS
+            OcamlTypes.KEYWORD -> return KEYWORD_KEYS
             TokenType.BAD_CHARACTER -> return BAD_CHAR_KEYS
             else -> return EMPTY_KEYS
         }
     }
 
-    val SEPARATOR =
-            createTextAttributesKey("SIMPLE_SEPARATOR", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-    val KEY =
-            createTextAttributesKey("SIMPLE_KEY", DefaultLanguageHighlighterColors.KEYWORD);
-    val VALUE =
-            createTextAttributesKey("SIMPLE_VALUE", DefaultLanguageHighlighterColors.STRING);
+    val IDENTIFIER =
+            createTextAttributesKey("OCAML_IDENTIFIER", DefaultLanguageHighlighterColors.IDENTIFIER);
+    val KEYWORD =
+            createTextAttributesKey("OCAML_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    val STRING =
+            createTextAttributesKey("OCAML_STRING", DefaultLanguageHighlighterColors.STRING);
     val COMMENT =
-            createTextAttributesKey("SIMPLE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+            createTextAttributesKey("OCAML_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
     val BAD_CHARACTER =
             createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
     val BAD_CHAR_KEYS = arrayOf(BAD_CHARACTER);
-    val SEPARATOR_KEYS = arrayOf(SEPARATOR);
-    val KEY_KEYS = arrayOf(KEY);
-    val VALUE_KEYS = arrayOf(VALUE);
+    val IDENTIFIER_KEYS = arrayOf(IDENTIFIER);
+    val KEYWORD_KEYS = arrayOf(KEYWORD);
+    val STRING_KEYS = arrayOf(STRING);
     val COMMENT_KEYS = arrayOf(COMMENT);
     val EMPTY_KEYS = emptyArray<TextAttributesKey>();
 
