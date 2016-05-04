@@ -1,4 +1,4 @@
-package kuruvila.ocamlidea.lexer
+package org.ocaml.lang.lexer
 
 import com.intellij.lexer.FlexAdapter
 

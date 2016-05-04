@@ -1,9 +1,10 @@
-package kuruvila.merlin
+package org.ocaml.merlin
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.intellij.openapi.diagnostic.Logger
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -13,7 +14,7 @@ import java.io.OutputStreamWriter
  */
 class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: Process) {
     companion object {
-        private val LOG = com.intellij.openapi.diagnostic.Logger.getInstance(Merlin::class.java)
+        private val LOG = Logger.getInstance(Merlin::class.java)
 
 
         private fun merlinInstance(): Merlin {

@@ -1,4 +1,4 @@
-package kuruvila.merlin
+package org.ocaml.merlin
 
 import org.junit.Test
 import com.intellij.lang.java.lexer.JavaLexer

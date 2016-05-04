@@ -27,7 +27,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
 
-    <fileTypeFactory implementation="kuruvila.ocamlidea.MlFileTypeFactory"/>
+    <fileTypeFactory implementation="org.ocaml.lang.MlFileTypeFactory"/>
     <lang.syntaxHighlighterFactory key="Ocaml" implementationClass="kuruvila.ocamlidea.OcamlSyntaxHighlighterFactory"/>
   </extensions>
 

@@ -1,4 +1,4 @@
-package kuruvila.ocamlidea
+package org.ocaml.ide.highlighter
 
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
@@ -9,9 +9,9 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import kuruvila.merlin.Merlin
-import kuruvila.merlin.MerlinLexer
-import kuruvila.ocamlidea.lexer.OcamlTypes
+import org.ocaml.merlin.Merlin
+import org.ocaml.merlin.MerlinLexer
+import org.ocaml.lang.lexer.OcamlTypes
 
 /**
  * Created by sidharthkuruvila on 02/05/16.
@@ -52,7 +52,7 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
     }
 
     override fun getHighlightingLexer(): Lexer {
-        return MerlinLexer(Merlin.newInstance())
+        return MerlinLexer(Merlin.Companion.newInstance())
     }
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {

@@ -1,4 +1,4 @@
-package kuruvila.ocamlidea
+package org.ocaml.lang
 
 import com.intellij.lang.Language
 

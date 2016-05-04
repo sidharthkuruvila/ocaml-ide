@@ -1,10 +1,11 @@
-package kuruvila.merlin
+package org.ocaml.merlin
 
 import com.intellij.lexer.LexerBase
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import kuruvila.ocamlidea.OcamlLanguage
-import kuruvila.ocamlidea.lexer.OcamlTypes
+import org.ocaml.lang.OcamlLanguage
+import org.ocaml.lang.lexer.OcamlTypes
 
 /**
  * Facade over merlin's dump tokens operation that provides a way to
@@ -38,7 +39,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
     }
 
     companion object {
-        private val LOG = com.intellij.openapi.diagnostic.Logger.getInstance(MerlinLexer::class.java)
+        private val LOG = Logger.getInstance(MerlinLexer::class.java)
     }
 
     val keyWords = setOf("AND", "AS", "ASSERT", "BEGIN", "CLASS", "CONSTRAINT", "DO", "DONE", "DOWNTO", "ELSE", "END",

@@ -1,4 +1,4 @@
-package kuruvila.merlin
+package org.ocaml.merlin
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
