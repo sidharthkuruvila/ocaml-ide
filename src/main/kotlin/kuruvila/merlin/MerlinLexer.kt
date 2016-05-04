@@ -7,7 +7,7 @@ import kuruvila.ocamlidea.OcamlLanguage
 import kuruvila.ocamlidea.lexer.OcamlTypes
 
 /**
- * Facade over merlin's dump tokens operation, that provides a way to
+ * Facade over merlin's dump tokens operation that provides a way to
  * integrate with idea's lexing api.
  *
  * Note this currently only works with \n line separators
@@ -56,12 +56,128 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
             currentToken = tokens[currentTokenIndex]
 
 
-            when (currentToken.token.toString()) {
-                in keyWords -> currentTokenType = OcamlTypes.KEYWORD
-                "LIDENT" -> currentTokenType = OcamlTypes.IDENTIFIER
-                "STRING" -> currentTokenType = OcamlTypes.STRING
-                "COMMENT" -> currentTokenType = OcamlTypes.COMMENT
-                else -> currentTokenType = IElementType(currentToken.token, OcamlLanguage.INSTANCE)
+            currentTokenType = when (currentToken.token.toString()) {
+                "AMPERAMPER" -> OcamlTypes.AMPERAMPER
+                "AMPERSAND" -> OcamlTypes.AMPERSAND
+                "AND" -> OcamlTypes.AND
+                "AS" -> OcamlTypes.AS
+                "ASSERT" -> OcamlTypes.ASSERT
+                "BACKQUOTE" -> OcamlTypes.BACKQUOTE
+                "BANG" -> OcamlTypes.BANG
+                "BAR" -> OcamlTypes.BAR
+                "BARBAR" -> OcamlTypes.BARBAR
+                "BARRBRACKET" -> OcamlTypes.BARRBRACKET
+                "BEGIN" -> OcamlTypes.BEGIN
+                "CHAR" -> OcamlTypes.CHAR
+                "CLASS" -> OcamlTypes.CLASS
+                "COLON" -> OcamlTypes.COLON
+                "COLONCOLON" -> OcamlTypes.COLONCOLON
+                "COLONEQUAL" -> OcamlTypes.COLONEQUAL
+                "COLONGREATER" -> OcamlTypes.COLONGREATER
+                "COMMA" -> OcamlTypes.COMMA
+                "CONSTRAINT" -> OcamlTypes.CONSTRAINT
+                "DO" -> OcamlTypes.DO
+                "DONE" -> OcamlTypes.DONE
+                "DOT" -> OcamlTypes.DOT
+                "DOTDOT" -> OcamlTypes.DOTDOT
+                "DOWNTO" -> OcamlTypes.DOWNTO
+                "ELSE" -> OcamlTypes.ELSE
+                "END" -> OcamlTypes.END
+                "EOF" -> OcamlTypes.EOF
+                "EQUAL" -> OcamlTypes.EQUAL
+                "EXCEPTION" -> OcamlTypes.EXCEPTION
+                "EXTERNAL" -> OcamlTypes.EXTERNAL
+                "FALSE" -> OcamlTypes.FALSE
+                "FLOAT" -> OcamlTypes.FLOAT
+                "FOR" -> OcamlTypes.FOR
+                "FUN" -> OcamlTypes.FUN
+                "FUNCTION" -> OcamlTypes.FUNCTION
+                "FUNCTOR" -> OcamlTypes.FUNCTOR
+                "GREATER" -> OcamlTypes.GREATER
+                "GREATERRBRACE" -> OcamlTypes.GREATERRBRACE
+                "GREATERRBRACKET" -> OcamlTypes.GREATERRBRACKET
+                "IF" -> OcamlTypes.IF
+                "IN" -> OcamlTypes.IN
+                "INCLUDE" -> OcamlTypes.INCLUDE
+                "INFIXOP0" -> OcamlTypes.INFIXOP0
+                "INFIXOP1" -> OcamlTypes.INFIXOP1
+                "INFIXOP2" -> OcamlTypes.INFIXOP2
+                "INFIXOP3" -> OcamlTypes.INFIXOP3
+                "INFIXOP4" -> OcamlTypes.INFIXOP4
+                "INHERIT" -> OcamlTypes.INHERIT
+                "INITIALIZER" -> OcamlTypes.INITIALIZER
+                "INT" -> OcamlTypes.INT
+                "INT32" -> OcamlTypes.INT32
+                "INT64" -> OcamlTypes.INT64
+                "LABEL" -> OcamlTypes.LABEL
+                "LAZY" -> OcamlTypes.LAZY
+                "LBRACE" -> OcamlTypes.LBRACE
+                "LBRACELESS" -> OcamlTypes.LBRACELESS
+                "LBRACKET" -> OcamlTypes.LBRACKET
+                "LBRACKETBAR" -> OcamlTypes.LBRACKETBAR
+                "LBRACKETLESS" -> OcamlTypes.LBRACKETLESS
+                "LBRACKETGREATER" -> OcamlTypes.LBRACKETGREATER
+                "LBRACKETPERCENT" -> OcamlTypes.LBRACKETPERCENT
+                "LBRACKETPERCENTPERCENT" -> OcamlTypes.LBRACKETPERCENTPERCENT
+                "LESS" -> OcamlTypes.LESS
+                "LESSMINUS" -> OcamlTypes.LESSMINUS
+                "LET" -> OcamlTypes.LET
+                "LIDENT" -> OcamlTypes.LIDENT
+                "LPAREN" -> OcamlTypes.LPAREN
+                "LBRACKETAT" -> OcamlTypes.LBRACKETAT
+                "LBRACKETATAT" -> OcamlTypes.LBRACKETATAT
+                "LBRACKETATATAT" -> OcamlTypes.LBRACKETATATAT
+                "MATCH" -> OcamlTypes.MATCH
+                "METHOD" -> OcamlTypes.METHOD
+                "MINUS" -> OcamlTypes.MINUS
+                "MINUSDOT" -> OcamlTypes.MINUSDOT
+                "MINUSGREATER" -> OcamlTypes.MINUSGREATER
+                "MODULE" -> OcamlTypes.MODULE
+                "MUTABLE" -> OcamlTypes.MUTABLE
+                "NATIVEINT" -> OcamlTypes.NATIVEINT
+                "NEW" -> OcamlTypes.NEW
+                "NONREC" -> OcamlTypes.NONREC
+                "OBJECT" -> OcamlTypes.OBJECT
+                "OF" -> OcamlTypes.OF
+                "OPEN" -> OcamlTypes.OPEN
+                "OPTLABEL" -> OcamlTypes.OPTLABEL
+                "OR" -> OcamlTypes.OR
+                "PERCENT" -> OcamlTypes.PERCENT
+                "PLUS" -> OcamlTypes.PLUS
+                "PLUSDOT" -> OcamlTypes.PLUSDOT
+                "PLUSEQ" -> OcamlTypes.PLUSEQ
+                "PREFIXOP" -> OcamlTypes.PREFIXOP
+                "PRIVATE" -> OcamlTypes.PRIVATE
+                "QUESTION" -> OcamlTypes.QUESTION
+                "QUOTE" -> OcamlTypes.QUOTE
+                "RBRACE" -> OcamlTypes.RBRACE
+                "RBRACKET" -> OcamlTypes.RBRACKET
+                "REC" -> OcamlTypes.REC
+                "RPAREN" -> OcamlTypes.RPAREN
+                "SEMI" -> OcamlTypes.SEMI
+                "SEMISEMI" -> OcamlTypes.SEMISEMI
+                "SHARP" -> OcamlTypes.SHARP
+                "SHARPOP" -> OcamlTypes.SHARPOP
+                "SIG" -> OcamlTypes.SIG
+                "STAR" -> OcamlTypes.STAR
+                "STRING" -> OcamlTypes.STRING
+                "STRUCT" -> OcamlTypes.STRUCT
+                "THEN" -> OcamlTypes.THEN
+                "TILDE" -> OcamlTypes.TILDE
+                "TO" -> OcamlTypes.TO
+                "TRUE" -> OcamlTypes.TRUE
+                "TRY" -> OcamlTypes.TRY
+                "TYPE" -> OcamlTypes.TYPE
+                "UIDENT" -> OcamlTypes.UIDENT
+                "UNDERSCORE" -> OcamlTypes.UNDERSCORE
+                "VAL" -> OcamlTypes.VAL
+                "VIRTUAL" -> OcamlTypes.VIRTUAL
+                "WHEN" -> OcamlTypes.WHEN
+                "WHILE" -> OcamlTypes.WHILE
+                "WITH" -> OcamlTypes.WITH
+                "COMMENT" -> OcamlTypes.COMMENT
+                "DOCSTRING" -> OcamlTypes.DOCSTRING
+                else -> IElementType(currentToken.token, OcamlLanguage.INSTANCE)
             }
         }
         currentTokenIndex += 1
