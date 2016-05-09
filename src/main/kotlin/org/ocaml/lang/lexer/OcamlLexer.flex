@@ -1,9 +1,11 @@
-package kuruvila.ocamlidea.lexer;
+package org.ocaml.lang.lexer;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
 
+import static org.ocaml.lang.lexer.OcamlTypes.*;
+import static com.intellij.psi.CustomHighlighterTokenType.WHITESPACE;
 %%
 
 %class _OcamlLexer
@@ -14,8 +16,28 @@ import com.intellij.psi.TokenType;
 //%eof{  return;
 //%eof}
 
-CRLF= \n|\r|\r\n
-WHITE_SPACE=[\ \t\f]
+EOL= \n|\r|\r\n
+WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
+WHITE_SPACE={WHITE_SPACE_CHAR}+
+
+NEWLINE=("\013"* "\010")
+BLANK=[ \009\012]
+LOWERCASE=[a-z_]
+UPPERCASE=[A-Z]
+IDENTCHAR=[A-Za-z_0-9']
+LOWERCASE_LATIN1=[a-z\223-\246\248-\255_]
+UPPERCASE_LATIN1=[A-Z\192-\214\216-\222]
+IDENTCHAR_LATIN1=[A-Za-z_\192-\214\216-\246\248-\255\ 0-9']
+SYMBOLCHAR= [!$%&*+-./:<=>?@\^|~]
+DECIMAL_LITERAL=[0-9] [0-9_]*
+HEX_LITERAL="0" [xX] [0-9A-Fa-f][0-9A-Fa-f_]*
+OCT_LITERAL="0" [oO] [0-7] [0-7_]*
+BIN_LITERAL="0" [bB] [0-1] [0-1_]*
+INT_LITERAL= { DECIMAL_LITERAL } | { HEX_LITERAL } | { OCT_LITERAL } | { BIN_LITERAL }
+FLOAT_LITERAL=[0-9] [0-9_]* ("." [0-9_]* )? ([eE] [+-]? [0-9] [0-9_]* )?
+HEX_FLOAT_LITERAL="0" [xX] [0-9A-Fa-f] [0-9A-Fa-f_]* ("." [0-9A-Fa-f_]* )? ([pP] [+-]? [0-9] [0-9_]* )?
+LITERAL_MODIFIER=[G-Zg-z]
+
 FIRST_VALUE_CHARACTER=[^ \n\r\f\\] | "\\"{CRLF} | "\\".
 VALUE_CHARACTER=[^\n\r\f\\] | "\\"{CRLF} | "\\".
 END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
@@ -23,9 +45,10 @@ SEPARATOR=[:=]
 KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 
 %state WAITING_VALUE
+%state INITIAL
 
 %%
-
+/*
 <YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return OcamlTypes.COMMENT; }
 
 <YYINITIAL> {KEY_CHARACTER}+                                { yybegin(YYINITIAL); return OcamlTypes.KEY; }
@@ -43,3 +66,93 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 {WHITE_SPACE}+                                              { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 
 .                                                           { return TokenType.BAD_CHARACTER; }
+*/
+
+<YYINITIAL>  {
+      "#!" [\r\n]                     { yybegin(INITIAL); yypushback(1); return SHEBANG_LINE; }
+      "#!" [^\[\r\n] [^\r\n]*         { yybegin(INITIAL); return SHEBANG_LINE; }
+      [^]                             { yybegin(INITIAL); yypushback(1); }
+}
+
+<INITIAL> {
+        {WHITE_SPACE} { return WHITESPACE; }
+
+        "_" { return UNDERSCORE; }
+        "~" { return TILDE; }
+        "~" { LOWERCASE } { IDENTCHAR } * ":" { return LABEL; }
+        //"~" { LOWERCASE_LATIN1 } { IDENTCHAR_LATIN1 } * ":" { return LABEL; } Commenting this for now
+        "?" { return QUESTION; }
+        "?" {LOWERCASE} {IDENTCHAR} * ":" { return OPTLABEL; }
+        //"?" { LOWERCASE_LATIN1 } {IDENTCHAR_LATIN1} * ":" { return OPTLABEL; }
+
+        "and" { return AND;}
+        "as" { return AS;}
+        "assert" { return ASSERT;}
+        "begin" { return BEGIN;}
+        "class" { return CLASS;}
+        "constraint" { return CONSTRAINT;}
+        "do" { return DO;}
+        "done" { return DONE;}
+        "downto" { return DOWNTO;}
+        "else" { return ELSE;}
+        "end" { return END;}
+        "exception" { return EXCEPTION;}
+        "external" { return EXTERNAL;}
+        "false" { return FALSE;}
+        "for" { return FOR;}
+        "fun" { return FUN;}
+        "function" { return FUNCTION;}
+        "functor" { return FUNCTOR;}
+        "if" { return IF;}
+        "in" { return IN;}
+        "include" { return INCLUDE;}
+        "inherit" { return INHERIT;}
+        "initializer" { return INITIALIZER;}
+        "lazy" { return LAZY;}
+        "let" { return LET;}
+        "match" { return MATCH;}
+        "method" { return METHOD;}
+        "module" { return MODULE;}
+        "mutable" { return MUTABLE;}
+        "new" { return NEW;}
+        "nonrec" { return NONREC;}
+        "object" { return OBJECT;}
+        "of" { return OF;}
+        "open" { return OPEN;}
+        "or" { return OR;}
+    // "parser" { return PARSER;}
+        "private" { return PRIVATE;}
+        "rec" { return REC;}
+        "sig" { return SIG;}
+        "struct" { return STRUCT;}
+        "then" { return THEN;}
+        "to" { return TO;}
+        "true" { return TRUE;}
+        "try" { return TRY;}
+        "type" { return TYPE;}
+        "val" { return VAL;}
+        "virtual" { return VIRTUAL;}
+        "when" { return WHEN;}
+        "while" { return WHILE;}
+        "with" { return WITH;}
+
+        "lor" { return INFIXOP3; }// Should be INFIXOP2
+        "lxor" { return INFIXOP3; }// Should be INFIXOP2
+        "mod" { return INFIXOP3; }
+        "land" { return INFIXOP3; }
+        "lsl" { return INFIXOP4; }
+        "lsr" { return INFIXOP4; }
+        "asr" { return INFIXOP4; }
+
+        { LOWERCASE } { IDENTCHAR }  * { return LIDENT; }
+        //{ LOWERCASE_LATIN1 } { IDENTCHAR_LATIN1 }  * { return LIDENT; }
+        { UPPERCASE } { IDENTCHAR } * { return UIDENT; }
+        //{ UPPERCASE_LATIN1 } { IDENTCHAR_LATIN1 } * { return UIDENT; }
+
+        { INT_LITERAL } { LITERAL_MODIFIER } ? { return INT; }
+        ( { FLOAT_LITERAL} | { HEX_FLOAT_LITERAL }  ) {LITERAL_MODIFIER} ? { return FLOAT; }
+        ( { FLOAT_LITERAL} | { HEX_FLOAT_LITERAL }  | { INT_LITERAL } ) { IDENTCHAR } +  { return BAD_LITERAL; }
+
+}
+
+[^] { return BADCHAR; } //Copied this need to know how it works

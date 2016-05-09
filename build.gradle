@@ -62,15 +62,15 @@ dependencies {
 //Copied from the rust plugin
 
 def jflexArgs(srcFlex, targetDir) {
-    return [    "--skel",   "src/main/kotlin/kuruvila/ocamlidea/lexer/OcamlLexer.skeleton",
+    return [    "--skel",   "src/main/kotlin/org/ocaml/lang/lexer/OcamlLexer.skeleton",
                 "-d",       targetDir,
                 srcFlex
     ]
 }
 
 task generateOcamlLexer(type: JavaExec) {
-    ext.src = "src/main/kotlin/kuruvila/ocamlidea/lexer/OcamlLexer.flex"
-    ext.dst = "src/main/java/kuruvila/ocamlidea/lexer/"
+    ext.src = "src/main/kotlin/org/ocaml/lang/lexer/OcamlLexer.flex"
+    ext.dst = "src/main/java/kuruvila/org/ocaml/lang/lexer/"
 
     main = "jflex.Main"
 
