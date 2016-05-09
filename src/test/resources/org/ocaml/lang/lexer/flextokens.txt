@@ -11,3 +11,6 @@ Some more"
 is a
 quoted string|quoted}
 'a' '\t' '\ ' '\o123' '\xab' '\123' '\z'
+(* This is a comment
+(* This is a nested comment *)
+*)

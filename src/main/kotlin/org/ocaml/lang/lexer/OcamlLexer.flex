@@ -10,6 +10,7 @@ import static com.intellij.psi.CustomHighlighterTokenType.WHITESPACE;
 
 %{
   private CharSequence quotedStringId;
+  private int commentDepth;
 %}
 
 %public
@@ -53,6 +54,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 %state INITIAL
 %state IN_STRING
 %state IN_QUOTED_STRING
+%state IN_COMMENT
 
 %%
 
@@ -176,7 +178,10 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         "'\\" [0-9] [0-9] [0-9] "'" { return CHAR; }
         "'\\" "o" [0-3] [0-7] [0-7] "'" { return CHAR; }
         "'\\" "x" [0-9a-fA-F] [0-9a-fA-F] "'" { return CHAR; }
-        "'\\" . "'"{ return BAD_CHARACTER; }
+        "'\\" . "'" { return BAD_CHARACTER; }
+
+        "(*" { yybegin(IN_COMMENT); commentDepth = 1; }
+
 }
 
 <IN_STRING> {
@@ -207,4 +212,11 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 
 }
 
-[^] { return BAD_CHARACTER; } //Copied this need to know how it works
+<IN_COMMENT> {
+    "(*" { commentDepth += 1; }
+    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); return COMMENT; } }
+    . | { NEWLINE } { }
+    <<EOF>> { yybegin(INITIAL); return COMMENT; }
+}
+
+[^] { System.out.println("Bad char:" + yytext()); return BAD_CHARACTER; } //Copied this need to know how it works
