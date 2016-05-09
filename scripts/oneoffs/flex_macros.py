@@ -43,8 +43,11 @@ def convert_re(mly_re):
 
 
 
-r = re.compile("let (\w+) = (.*)")
-for e in l:
-    m = r.match(e)
-    print m.group(1).upper() + "=" + "".join(convert_re(m.group(2)))
+#r = re.compile("let (\w+) = (.*)")
+#for e in l:
+#    m = r.match(e)
+#    print m.group(1).upper() + "=" + "".join(convert_re(m.group(2)))
+
+import sys
+print "".join(convert_re(sys.argv[1]))
 

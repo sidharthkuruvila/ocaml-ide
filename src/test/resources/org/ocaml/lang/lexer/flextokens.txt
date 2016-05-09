@@ -4,3 +4,9 @@ virtual lor downto sig then mutable asr include type method match function do be
 true class mod exception land val constraint of lxor inherit try private fun lsr or
 simple_identifier
 123_456 0xab 0o23 0b010 123.34E12 0xAF.EEp34 34g 35hat
+"hello world\n\r\t\ \\\'\"
+More text\
+Some more"
+{quoted| this
+is a
+quoted string|quoted}

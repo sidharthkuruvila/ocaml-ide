@@ -70,7 +70,7 @@ def jflexArgs(srcFlex, targetDir) {
 
 task generateOcamlLexer(type: JavaExec) {
     ext.src = "src/main/kotlin/org/ocaml/lang/lexer/OcamlLexer.flex"
-    ext.dst = "src/main/java/kuruvila/org/ocaml/lang/lexer/"
+    ext.dst = "src/main/java/org/ocaml/lang/lexer/"
 
     main = "jflex.Main"
 

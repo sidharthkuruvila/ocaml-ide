@@ -8,6 +8,11 @@ import static org.ocaml.lang.lexer.OcamlTypes.*;
 import static com.intellij.psi.CustomHighlighterTokenType.WHITESPACE;
 %%
 
+%{
+  private CharSequence quotedStringId;
+%}
+
+%public
 %class _OcamlLexer
 %implements FlexLexer
 %unicode
@@ -20,7 +25,7 @@ EOL= \n|\r|\r\n
 WHITE_SPACE_CHAR=[\ \t\f]|{EOL}
 WHITE_SPACE={WHITE_SPACE_CHAR}+
 
-NEWLINE=("\013"* "\010")
+NEWLINE=("\r"* "\n")
 BLANK=[ \009\012]
 LOWERCASE=[a-z_]
 UPPERCASE=[A-Z]
@@ -46,8 +51,11 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 
 %state WAITING_VALUE
 %state INITIAL
+%state IN_STRING
+%state IN_QUOTED_STRING
 
 %%
+
 /*
 <YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return OcamlTypes.COMMENT; }
 
@@ -153,6 +161,41 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         ( { FLOAT_LITERAL} | { HEX_FLOAT_LITERAL }  ) {LITERAL_MODIFIER} ? { return FLOAT; }
         ( { FLOAT_LITERAL} | { HEX_FLOAT_LITERAL }  | { INT_LITERAL } ) { IDENTCHAR } +  { return BAD_LITERAL; }
 
+
+        "\"" { yybegin(IN_STRING); }
+        "{" { LOWERCASE } * "|" {
+            yybegin(IN_QUOTED_STRING);
+            CharSequence text = yytext();
+            quotedStringId = text.subSequence(1, text.length() - 1);
+        }
 }
 
-[^] { return BADCHAR; } //Copied this need to know how it works
+<IN_STRING> {
+       "\"" { yybegin(INITIAL); return STRING; }
+       "\\" { NEWLINE } ([ \t] *) { }
+       "\\" [\\\'\"ntbr ] { }
+       "\\" [0-9] [0-9] [0-9] { }
+       "\\" "o" [0-3] [0-7] [0-7] { }
+       "\\" "x" [0-9a-fA-F] [0-9a-fA-F] { }
+       "\\" . { }
+       { NEWLINE } { }
+       . { }
+       <<EOF>> { yybegin(INITIAL); return STRING; }
+
+}
+
+<IN_QUOTED_STRING> {
+    { NEWLINE }  { }
+    <<EOF>> { yybegin(INITIAL); return QUOTED_STRING; } //Should probable create a special token here
+    "|" { LOWERCASE  } * "}" {
+        yybegin(INITIAL);
+        CharSequence text = yytext();
+        if(text.subSequence(1, text.length() - 1).equals(quotedStringId)) {
+            return QUOTED_STRING;
+        }
+     }
+     . { }
+
+}
+
+[^] { return BAD_CHARACTER; } //Copied this need to know how it works
