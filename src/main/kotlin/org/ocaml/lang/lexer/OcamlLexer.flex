@@ -179,8 +179,70 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         "'\\" "o" [0-3] [0-7] [0-7] "'" { return CHAR; }
         "'\\" "x" [0-9a-fA-F] [0-9a-fA-F] "'" { return CHAR; }
         "'\\" . "'" { return BAD_CHARACTER; }
-
         "(*" { yybegin(IN_COMMENT); commentDepth = 1; }
+
+        "#" [ \t]* [0-9]+ [ \t]* ("\"" [^\r\n\"]* "\"")? [^\r\n] * { NEWLINE } { }
+
+        "#" { return SHARP; }
+        "&" { return AMPERSAND; }
+        "&&" { return AMPERAMPER; }
+        "`" { return BACKQUOTE; }
+        "'" { return QUOTE; }
+        "(" { return LPAREN; }
+        ")" { return RPAREN; }
+        "*" { return STAR; }
+        "," { return COMMA; }
+        "->" { return MINUSGREATER; }
+        "." { return DOT; }
+        ".." { return DOTDOT; }
+        ":" { return COLON; }
+        "::" { return COLONCOLON; }
+        ":=" { return COLONEQUAL; }
+        ":>" { return COLONGREATER; }
+        ";" { return SEMI; }
+        ";;" { return SEMISEMI; }
+        "<" { return LESS; }
+        "<-" { return LESSMINUS; }
+        "=" { return EQUAL; }
+        "[" { return LBRACKET; }
+        "[|" { return LBRACKETBAR; }
+        "[<" { return LBRACKETLESS; }
+        "[>" { return LBRACKETGREATER; }
+        "]" { return RBRACKET; }
+        "{" { return LBRACE; }
+        "{<" { return LBRACELESS; }
+        "|" { return BAR; }
+        "||" { return BARBAR; }
+        "|]" { return BARRBRACKET; }
+        ">" { return GREATER; }
+        ">]" { return GREATERRBRACKET; }
+        "}" { return RBRACE; }
+        ">}" { return GREATERRBRACE; }
+        "[@" { return LBRACKETAT; }
+        "[@@" { return LBRACKETATAT; }
+        "[@@@" { return LBRACKETATATAT; }
+        "[%" { return LBRACKETPERCENT; }
+        "[%%" { return LBRACKETPERCENTPERCENT; }
+        "!" { return BANG; }
+        "!=" { return INFIXOP0; }
+        "+" { return PLUS; }
+        "+." { return PLUSDOT; }
+        "+=" { return PLUSEQ; }
+        "-" { return MINUS; }
+        "-." { return MINUSDOT; }
+
+        "!" { SYMBOLCHAR } + { return PREFIXOP; }
+        [~?] { SYMBOLCHAR } + { return PREFIXOP; }
+        [=<>|&$] { SYMBOLCHAR } * { return INFIXOP0; }
+        [@\^] { SYMBOLCHAR } * { return INFIXOP1; }
+        [+-] { SYMBOLCHAR } * { return INFIXOP2; }
+        "**" { SYMBOLCHAR } * { return INFIXOP4; }
+        "%"  { return PERCENT; }
+        [*/%] { SYMBOLCHAR } * { return INFIXOP3; }
+        "#" ({ SYMBOLCHAR } | "#") + { return SHARPOP; }
+
+        //<<EOF>> { return EOF; }
+
 
 }
 
@@ -212,11 +274,15 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 
 }
 
+
+//TODO: This needs to be replaced with the definition in lexer.mll
 <IN_COMMENT> {
     "(*" { commentDepth += 1; }
     "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); return COMMENT; } }
     . | { NEWLINE } { }
     <<EOF>> { yybegin(INITIAL); return COMMENT; }
 }
+
+
 
 [^] { System.out.println("Bad char:" + yytext()); return BAD_CHARACTER; } //Copied this need to know how it works
