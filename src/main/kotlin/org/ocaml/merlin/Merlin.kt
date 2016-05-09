@@ -58,6 +58,16 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
         makeRequest(request, object : TypeReference<TellResponse>() {})
     }
 
+    fun dumpBrowse(): List<BrowseNode> {
+        val request = """["dump", "browse"]"""
+        return makeRequest(request, object : TypeReference<List<BrowseNode>>() {})
+    }
+
+    fun dumpBrowse2(): JsonNode {
+        val request = """["dump", "browse"]"""
+        return makeRequest(request, object : TypeReference<JsonNode>() {})
+    }
+
     private fun <T> makeRequest(request: String, c: TypeReference<T>): T {
         writer.write(request)
         writer.write("\n")
@@ -78,6 +88,7 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
             }
         }
     }
+
 }
 
 
@@ -87,3 +98,5 @@ data class TellResponse(val cursor: Position, val marker: Boolean)
 
 data class Token(val start: Position, val end: Position, val token: String)
 
+data class BrowseNode(val start: Position, val end: Position, val ghost: Boolean,
+                      val attrs: List<String>, val kind: String, val children: List<BrowseNode>)

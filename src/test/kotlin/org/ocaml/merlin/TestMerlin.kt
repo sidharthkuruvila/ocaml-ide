@@ -3,6 +3,7 @@ package org.ocaml.merlin
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -34,6 +35,80 @@ class TestMerlin {
                 Token(start = Position(line = 1, col = 10), end = Position(line = 1, col = 11), token = "LIDENT"),
                 Token(start = Position(line = 1, col = 11), end = Position(line = 1, col = 13), token = "SEMISEMI"))
         val resp = m.dumpTokens()
+        assertEquals(exp, resp)
+    }
+
+    @Test
+    fun testDumpBrowse1() {
+        val m = merlinInstance()
+        m.tellSource("""#!/var/bin
+            open Mood
+                let f x = x let x = 2""")
+        val resp = m.dumpBrowse2()
+        println(resp)
+    }
+
+    @Test
+    @Ignore
+    fun testDumpBrowse() {
+        val m = merlinInstance()
+        m.tellSource("let f x = x;;")
+        val resp = m.dumpBrowse()
+
+        val exp = listOf(
+                BrowseNode(
+                        start = Position(line = 1, col = 0),
+                        end = Position(line = 1, col = 11),
+                        ghost = false,
+                        attrs = emptyList(),
+                        kind = "structure",
+                        children = listOf(
+                                BrowseNode(
+                                        start = Position(line = 1, col = 0),
+                                        end = Position(line = 1, col = 11),
+                                        ghost = false,
+                                        attrs = emptyList(),
+                                        kind = "structure_item",
+                                        children = listOf(
+                                                BrowseNode(start = Position(line = 1, col = 4),
+                                                        end = Position(line = 1, col = 11),
+                                                        ghost = false, attrs = emptyList(),
+                                                        kind = "value_binding",
+                                                        children = listOf(
+                                                                BrowseNode(
+                                                                        start = Position(line = 1, col = 4),
+                                                                        end = Position(line = 1, col = 5),
+                                                                        ghost = false, attrs = emptyList(),
+                                                                        kind = "pattern (*buffer*[1,0+4]..*buffer*[1,0+5])\n  Ppat_var \"f/1011\"\n",
+                                                                        children = emptyList()),
+                                                                BrowseNode(
+                                                                        start = Position(line = 1, col = 6),
+                                                                        end = Position(line = 1, col = 11),
+                                                                        ghost = true, attrs = emptyList(),
+                                                                        kind = "expression",
+                                                                        children = listOf(
+                                                                                BrowseNode(
+                                                                                        start = Position(line = 1, col = 6),
+                                                                                        end = Position(line = 1, col = 11),
+                                                                                        ghost = false, attrs = emptyList(),
+                                                                                        kind = "case",
+                                                                                        children = listOf(
+                                                                                                BrowseNode(
+                                                                                                        start = Position(line = 1, col = 6),
+                                                                                                        end = Position(line = 1, col = 7),
+                                                                                                        ghost = false,
+                                                                                                        attrs = emptyList(),
+                                                                                                        kind = "pattern (*buffer*[1,0+6]..*buffer*[1,0+7])\n  Ppat_var \"x/1012\"\n",
+                                                                                                        children = emptyList()),
+                                                                                                BrowseNode(
+                                                                                                        start = Position(line = 1, col = 10),
+                                                                                                        end = Position(line = 1, col = 11),
+                                                                                                        ghost = false,
+                                                                                                        attrs = emptyList(),
+                                                                                                        kind = "expression",
+                                                                                                        children = emptyList()))))))))))))
+
+
         assertEquals(exp, resp)
     }
 

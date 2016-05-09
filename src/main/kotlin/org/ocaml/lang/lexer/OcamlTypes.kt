@@ -1,259 +1,257 @@
 package org.ocaml.lang.lexer
 
 import com.intellij.lang.Language
-import com.intellij.psi.tree.IElementType
 import org.ocaml.lang.OcamlLanguage
 
 /**
  * Created by sidharthkuruvila on 02/05/16.
  */
 
-//class SimpleTypes(name: String): IElementType(name, Language.ANY) {
-//
-//}
-
 object OcamlTypes {
 
     @JvmField
-    val AMPERAMPER = IElementType("AMPERAMPER", OcamlLanguage.Companion.INSTANCE)
+    val AMPERAMPER = OcamlTokenElementType("AMPERAMPER")
     @JvmField
-    val AMPERSAND = IElementType("AMPERSAND", OcamlLanguage.Companion.INSTANCE)
+    val AMPERSAND = OcamlTokenElementType("AMPERSAND")
     @JvmField
-    val AND = IElementType("AND", OcamlLanguage.Companion.INSTANCE)
+    val AND = OcamlTokenElementType("AND")
     @JvmField
-    val AS = IElementType("AS", OcamlLanguage.Companion.INSTANCE)
+    val AS = OcamlTokenElementType("AS")
     @JvmField
-    val ASSERT = IElementType("ASSERT", OcamlLanguage.Companion.INSTANCE)
+    val ASSERT = OcamlTokenElementType("ASSERT")
     @JvmField
-    val BACKQUOTE = IElementType("BACKQUOTE", OcamlLanguage.Companion.INSTANCE)
+    val BACKQUOTE = OcamlTokenElementType("BACKQUOTE")
     @JvmField
-    val BANG = IElementType("BANG", OcamlLanguage.Companion.INSTANCE)
+    val BANG = OcamlTokenElementType("BANG")
     @JvmField
-    val BAR = IElementType("BAR", OcamlLanguage.Companion.INSTANCE)
+    val BAR = OcamlTokenElementType("BAR")
     @JvmField
-    val BARBAR = IElementType("BARBAR", OcamlLanguage.Companion.INSTANCE)
+    val BARBAR = OcamlTokenElementType("BARBAR")
     @JvmField
-    val BARRBRACKET = IElementType("BARRBRACKET", OcamlLanguage.Companion.INSTANCE)
+    val BARRBRACKET = OcamlTokenElementType("BARRBRACKET")
     @JvmField
-    val BEGIN = IElementType("BEGIN", OcamlLanguage.Companion.INSTANCE)
+    val BEGIN = OcamlTokenElementType("BEGIN")
     @JvmField
-    val CHAR = IElementType("CHAR", OcamlLanguage.Companion.INSTANCE)
+    val CHAR = OcamlTokenElementType("CHAR")
     @JvmField
-    val CLASS = IElementType("CLASS", OcamlLanguage.Companion.INSTANCE)
+    val CLASS = OcamlTokenElementType("CLASS")
     @JvmField
-    val COLON = IElementType("COLON", OcamlLanguage.Companion.INSTANCE)
+    val COLON = OcamlTokenElementType("COLON")
     @JvmField
-    val COLONCOLON = IElementType("COLONCOLON", OcamlLanguage.Companion.INSTANCE)
+    val COLONCOLON = OcamlTokenElementType("COLONCOLON")
     @JvmField
-    val COLONEQUAL = IElementType("COLONEQUAL", OcamlLanguage.Companion.INSTANCE)
+    val COLONEQUAL = OcamlTokenElementType("COLONEQUAL")
     @JvmField
-    val COLONGREATER = IElementType("COLONGREATER", OcamlLanguage.Companion.INSTANCE)
+    val COLONGREATER = OcamlTokenElementType("COLONGREATER")
     @JvmField
-    val COMMA = IElementType("COMMA", OcamlLanguage.Companion.INSTANCE)
+    val COMMA = OcamlTokenElementType("COMMA")
     @JvmField
-    val CONSTRAINT = IElementType("CONSTRAINT", OcamlLanguage.Companion.INSTANCE)
+    val CONSTRAINT = OcamlTokenElementType("CONSTRAINT")
     @JvmField
-    val DO = IElementType("DO", OcamlLanguage.Companion.INSTANCE)
+    val DO = OcamlTokenElementType("DO")
     @JvmField
-    val DONE = IElementType("DONE", OcamlLanguage.Companion.INSTANCE)
+    val DONE = OcamlTokenElementType("DONE")
     @JvmField
-    val DOT = IElementType("DOT", OcamlLanguage.Companion.INSTANCE)
+    val DOT = OcamlTokenElementType("DOT")
     @JvmField
-    val DOTDOT = IElementType("DOTDOT", OcamlLanguage.Companion.INSTANCE)
+    val DOTDOT = OcamlTokenElementType("DOTDOT")
     @JvmField
-    val DOWNTO = IElementType("DOWNTO", OcamlLanguage.Companion.INSTANCE)
+    val DOWNTO = OcamlTokenElementType("DOWNTO")
     @JvmField
-    val ELSE = IElementType("ELSE", OcamlLanguage.Companion.INSTANCE)
+    val ELSE = OcamlTokenElementType("ELSE")
     @JvmField
-    val END = IElementType("END", OcamlLanguage.Companion.INSTANCE)
+    val END = OcamlTokenElementType("END")
     @JvmField
-    val EOF = IElementType("EOF", OcamlLanguage.Companion.INSTANCE)
+    val EOF = OcamlTokenElementType("EOF")
     @JvmField
-    val EQUAL = IElementType("EQUAL", OcamlLanguage.Companion.INSTANCE)
+    val EQUAL = OcamlTokenElementType("EQUAL")
     @JvmField
-    val EXCEPTION = IElementType("EXCEPTION", OcamlLanguage.Companion.INSTANCE)
+    val EXCEPTION = OcamlTokenElementType("EXCEPTION")
     @JvmField
-    val EXTERNAL = IElementType("EXTERNAL", OcamlLanguage.Companion.INSTANCE)
+    val EXTERNAL = OcamlTokenElementType("EXTERNAL")
     @JvmField
-    val FALSE = IElementType("FALSE", OcamlLanguage.Companion.INSTANCE)
+    val FALSE = OcamlTokenElementType("FALSE")
     @JvmField
-    val FLOAT = IElementType("FLOAT", OcamlLanguage.Companion.INSTANCE)
+    val FLOAT = OcamlTokenElementType("FLOAT")
     @JvmField
-    val FOR = IElementType("FOR", OcamlLanguage.Companion.INSTANCE)
+    val FOR = OcamlTokenElementType("FOR")
     @JvmField
-    val FUN = IElementType("FUN", OcamlLanguage.Companion.INSTANCE)
+    val FUN = OcamlTokenElementType("FUN")
     @JvmField
-    val FUNCTION = IElementType("FUNCTION", OcamlLanguage.Companion.INSTANCE)
+    val FUNCTION = OcamlTokenElementType("FUNCTION")
     @JvmField
-    val FUNCTOR = IElementType("FUNCTOR", OcamlLanguage.Companion.INSTANCE)
+    val FUNCTOR = OcamlTokenElementType("FUNCTOR")
     @JvmField
-    val GREATER = IElementType("GREATER", OcamlLanguage.Companion.INSTANCE)
+    val GREATER = OcamlTokenElementType("GREATER")
     @JvmField
-    val GREATERRBRACE = IElementType("GREATERRBRACE", OcamlLanguage.Companion.INSTANCE)
+    val GREATERRBRACE = OcamlTokenElementType("GREATERRBRACE")
     @JvmField
-    val GREATERRBRACKET = IElementType("GREATERRBRACKET", OcamlLanguage.Companion.INSTANCE)
+    val GREATERRBRACKET = OcamlTokenElementType("GREATERRBRACKET")
     @JvmField
-    val IF = IElementType("IF", OcamlLanguage.Companion.INSTANCE)
+    val IF = OcamlTokenElementType("IF")
     @JvmField
-    val IN = IElementType("IN", OcamlLanguage.Companion.INSTANCE)
+    val IN = OcamlTokenElementType("IN")
     @JvmField
-    val INCLUDE = IElementType("INCLUDE", OcamlLanguage.Companion.INSTANCE)
+    val INCLUDE = OcamlTokenElementType("INCLUDE")
     @JvmField
-    val INFIXOP0 = IElementType("INFIXOP0", OcamlLanguage.Companion.INSTANCE)
+    val INFIXOP0 = OcamlTokenElementType("INFIXOP0")
     @JvmField
-    val INFIXOP1 = IElementType("INFIXOP1", OcamlLanguage.Companion.INSTANCE)
+    val INFIXOP1 = OcamlTokenElementType("INFIXOP1")
     @JvmField
-    val INFIXOP2 = IElementType("INFIXOP2", OcamlLanguage.Companion.INSTANCE)
+    val INFIXOP2 = OcamlTokenElementType("INFIXOP2")
     @JvmField
-    val INFIXOP3 = IElementType("INFIXOP3", OcamlLanguage.Companion.INSTANCE)
+    val INFIXOP3 = OcamlTokenElementType("INFIXOP3")
     @JvmField
-    val INFIXOP4 = IElementType("INFIXOP4", OcamlLanguage.Companion.INSTANCE)
+    val INFIXOP4 = OcamlTokenElementType("INFIXOP4")
     @JvmField
-    val INHERIT = IElementType("INHERIT", OcamlLanguage.Companion.INSTANCE)
+    val INHERIT = OcamlTokenElementType("INHERIT")
     @JvmField
-    val INITIALIZER = IElementType("INITIALIZER", OcamlLanguage.Companion.INSTANCE)
+    val INITIALIZER = OcamlTokenElementType("INITIALIZER")
     @JvmField
-    val INT = IElementType("INT", OcamlLanguage.Companion.INSTANCE)
+    val INT = OcamlTokenElementType("INT")
     @JvmField
-    val INT32 = IElementType("INT32", OcamlLanguage.Companion.INSTANCE)
+    val INT32 = OcamlTokenElementType("INT32")
     @JvmField
-    val INT64 = IElementType("INT64", OcamlLanguage.Companion.INSTANCE)
+    val INT64 = OcamlTokenElementType("INT64")
     @JvmField
-    val LABEL = IElementType("LABEL", OcamlLanguage.Companion.INSTANCE)
+    val LABEL = OcamlTokenElementType("LABEL")
     @JvmField
-    val LAZY = IElementType("LAZY", OcamlLanguage.Companion.INSTANCE)
+    val LAZY = OcamlTokenElementType("LAZY")
     @JvmField
-    val LBRACE = IElementType("LBRACE", OcamlLanguage.Companion.INSTANCE)
+    val LBRACE = OcamlTokenElementType("LBRACE")
     @JvmField
-    val LBRACELESS = IElementType("LBRACELESS", OcamlLanguage.Companion.INSTANCE)
+    val LBRACELESS = OcamlTokenElementType("LBRACELESS")
     @JvmField
-    val LBRACKET = IElementType("LBRACKET", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKET = OcamlTokenElementType("LBRACKET")
     @JvmField
-    val LBRACKETBAR = IElementType("LBRACKETBAR", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETBAR = OcamlTokenElementType("LBRACKETBAR")
     @JvmField
-    val LBRACKETLESS = IElementType("LBRACKETLESS", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETLESS = OcamlTokenElementType("LBRACKETLESS")
     @JvmField
-    val LBRACKETGREATER = IElementType("LBRACKETGREATER", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETGREATER = OcamlTokenElementType("LBRACKETGREATER")
     @JvmField
-    val LBRACKETPERCENT = IElementType("LBRACKETPERCENT", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETPERCENT = OcamlTokenElementType("LBRACKETPERCENT")
     @JvmField
-    val LBRACKETPERCENTPERCENT = IElementType("LBRACKETPERCENTPERCENT", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETPERCENTPERCENT = OcamlTokenElementType("LBRACKETPERCENTPERCENT")
     @JvmField
-    val LESS = IElementType("LESS", OcamlLanguage.Companion.INSTANCE)
+    val LESS = OcamlTokenElementType("LESS")
     @JvmField
-    val LESSMINUS = IElementType("LESSMINUS", OcamlLanguage.Companion.INSTANCE)
+    val LESSMINUS = OcamlTokenElementType("LESSMINUS")
     @JvmField
-    val LET = IElementType("LET", OcamlLanguage.Companion.INSTANCE)
+    val LET = OcamlTokenElementType("LET")
     @JvmField
-    val LIDENT = IElementType("LIDENT", OcamlLanguage.Companion.INSTANCE)
+    val LIDENT = OcamlTokenElementType("LIDENT")
     @JvmField
-    val LPAREN = IElementType("LPAREN", OcamlLanguage.Companion.INSTANCE)
+    val LPAREN = OcamlTokenElementType("LPAREN")
     @JvmField
-    val LBRACKETAT = IElementType("LBRACKETAT", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETAT = OcamlTokenElementType("LBRACKETAT")
     @JvmField
-    val LBRACKETATAT = IElementType("LBRACKETATAT", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETATAT = OcamlTokenElementType("LBRACKETATAT")
     @JvmField
-    val LBRACKETATATAT = IElementType("LBRACKETATATAT", OcamlLanguage.Companion.INSTANCE)
+    val LBRACKETATATAT = OcamlTokenElementType("LBRACKETATATAT")
     @JvmField
-    val MATCH = IElementType("MATCH", OcamlLanguage.Companion.INSTANCE)
+    val MATCH = OcamlTokenElementType("MATCH")
     @JvmField
-    val METHOD = IElementType("METHOD", OcamlLanguage.Companion.INSTANCE)
+    val METHOD = OcamlTokenElementType("METHOD")
     @JvmField
-    val MINUS = IElementType("MINUS", OcamlLanguage.Companion.INSTANCE)
+    val MINUS = OcamlTokenElementType("MINUS")
     @JvmField
-    val MINUSDOT = IElementType("MINUSDOT", OcamlLanguage.Companion.INSTANCE)
+    val MINUSDOT = OcamlTokenElementType("MINUSDOT")
     @JvmField
-    val MINUSGREATER = IElementType("MINUSGREATER", OcamlLanguage.Companion.INSTANCE)
+    val MINUSGREATER = OcamlTokenElementType("MINUSGREATER")
     @JvmField
-    val MODULE = IElementType("MODULE", OcamlLanguage.Companion.INSTANCE)
+    val MODULE = OcamlTokenElementType("MODULE")
     @JvmField
-    val MUTABLE = IElementType("MUTABLE", OcamlLanguage.Companion.INSTANCE)
+    val MUTABLE = OcamlTokenElementType("MUTABLE")
     @JvmField
-    val NATIVEINT = IElementType("NATIVEINT", OcamlLanguage.Companion.INSTANCE)
+    val NATIVEINT = OcamlTokenElementType("NATIVEINT")
     @JvmField
-    val NEW = IElementType("NEW", OcamlLanguage.Companion.INSTANCE)
+    val NEW = OcamlTokenElementType("NEW")
     @JvmField
-    val NONREC = IElementType("NONREC", OcamlLanguage.Companion.INSTANCE)
+    val NONREC = OcamlTokenElementType("NONREC")
     @JvmField
-    val OBJECT = IElementType("OBJECT", OcamlLanguage.Companion.INSTANCE)
+    val OBJECT = OcamlTokenElementType("OBJECT")
     @JvmField
-    val OF = IElementType("OF", OcamlLanguage.Companion.INSTANCE)
+    val OF = OcamlTokenElementType("OF")
     @JvmField
-    val OPEN = IElementType("OPEN", OcamlLanguage.Companion.INSTANCE)
+    val OPEN = OcamlTokenElementType("OPEN")
     @JvmField
-    val OPTLABEL = IElementType("OPTLABEL", OcamlLanguage.Companion.INSTANCE)
+    val OPTLABEL = OcamlTokenElementType("OPTLABEL")
     @JvmField
-    val OR = IElementType("OR", OcamlLanguage.Companion.INSTANCE)
+    val OR = OcamlTokenElementType("OR")
     @JvmField
-    val PERCENT = IElementType("PERCENT", OcamlLanguage.Companion.INSTANCE)
+    val PERCENT = OcamlTokenElementType("PERCENT")
     @JvmField
-    val PLUS = IElementType("PLUS", OcamlLanguage.Companion.INSTANCE)
+    val PLUS = OcamlTokenElementType("PLUS")
     @JvmField
-    val PLUSDOT = IElementType("PLUSDOT", OcamlLanguage.Companion.INSTANCE)
+    val PLUSDOT = OcamlTokenElementType("PLUSDOT")
     @JvmField
-    val PLUSEQ = IElementType("PLUSEQ", OcamlLanguage.Companion.INSTANCE)
+    val PLUSEQ = OcamlTokenElementType("PLUSEQ")
     @JvmField
-    val PREFIXOP = IElementType("PREFIXOP", OcamlLanguage.Companion.INSTANCE)
+    val PREFIXOP = OcamlTokenElementType("PREFIXOP")
     @JvmField
-    val PRIVATE = IElementType("PRIVATE", OcamlLanguage.Companion.INSTANCE)
+    val PRIVATE = OcamlTokenElementType("PRIVATE")
     @JvmField
-    val QUESTION = IElementType("QUESTION", OcamlLanguage.Companion.INSTANCE)
+    val QUESTION = OcamlTokenElementType("QUESTION")
     @JvmField
-    val QUOTE = IElementType("QUOTE", OcamlLanguage.Companion.INSTANCE)
+    val QUOTE = OcamlTokenElementType("QUOTE")
     @JvmField
-    val RBRACE = IElementType("RBRACE", OcamlLanguage.Companion.INSTANCE)
+    val RBRACE = OcamlTokenElementType("RBRACE")
     @JvmField
-    val RBRACKET = IElementType("RBRACKET", OcamlLanguage.Companion.INSTANCE)
+    val RBRACKET = OcamlTokenElementType("RBRACKET")
     @JvmField
-    val REC = IElementType("REC", OcamlLanguage.Companion.INSTANCE)
+    val REC = OcamlTokenElementType("REC")
     @JvmField
-    val RPAREN = IElementType("RPAREN", OcamlLanguage.Companion.INSTANCE)
+    val RPAREN = OcamlTokenElementType("RPAREN")
     @JvmField
-    val SEMI = IElementType("SEMI", OcamlLanguage.Companion.INSTANCE)
+    val SEMI = OcamlTokenElementType("SEMI")
     @JvmField
-    val SEMISEMI = IElementType("SEMISEMI", OcamlLanguage.Companion.INSTANCE)
+    val SEMISEMI = OcamlTokenElementType("SEMISEMI")
     @JvmField
-    val SHARP = IElementType("SHARP", OcamlLanguage.Companion.INSTANCE)
+    val SHARP = OcamlTokenElementType("SHARP")
     @JvmField
-    val SHARPOP = IElementType("SHARPOP", OcamlLanguage.Companion.INSTANCE)
+    val SHARPOP = OcamlTokenElementType("SHARPOP")
     @JvmField
-    val SIG = IElementType("SIG", OcamlLanguage.Companion.INSTANCE)
+    val SIG = OcamlTokenElementType("SIG")
     @JvmField
-    val STAR = IElementType("STAR", OcamlLanguage.Companion.INSTANCE)
+    val STAR = OcamlTokenElementType("STAR")
     @JvmField
-    val STRING = IElementType("STRING", OcamlLanguage.Companion.INSTANCE)
+    val STRING = OcamlTokenElementType("STRING")
     @JvmField
-    val STRUCT = IElementType("STRUCT", OcamlLanguage.Companion.INSTANCE)
+    val STRUCT = OcamlTokenElementType("STRUCT")
     @JvmField
-    val THEN = IElementType("THEN", OcamlLanguage.Companion.INSTANCE)
+    val THEN = OcamlTokenElementType("THEN")
     @JvmField
-    val TILDE = IElementType("TILDE", OcamlLanguage.Companion.INSTANCE)
+    val TILDE = OcamlTokenElementType("TILDE")
     @JvmField
-    val TO = IElementType("TO", OcamlLanguage.Companion.INSTANCE)
+    val TO = OcamlTokenElementType("TO")
     @JvmField
-    val TRUE = IElementType("TRUE", OcamlLanguage.Companion.INSTANCE)
+    val TRUE = OcamlTokenElementType("TRUE")
     @JvmField
-    val TRY = IElementType("TRY", OcamlLanguage.Companion.INSTANCE)
+    val TRY = OcamlTokenElementType("TRY")
     @JvmField
-    val TYPE = IElementType("TYPE", OcamlLanguage.Companion.INSTANCE)
+    val TYPE = OcamlTokenElementType("TYPE")
     @JvmField
-    val UIDENT = IElementType("UIDENT", OcamlLanguage.Companion.INSTANCE)
+    val UIDENT = OcamlTokenElementType("UIDENT")
     @JvmField
-    val UNDERSCORE = IElementType("UNDERSCORE", OcamlLanguage.Companion.INSTANCE)
+    val UNDERSCORE = OcamlTokenElementType("UNDERSCORE")
     @JvmField
-    val VAL = IElementType("VAL", OcamlLanguage.Companion.INSTANCE)
+    val VAL = OcamlTokenElementType("VAL")
     @JvmField
-    val VIRTUAL = IElementType("VIRTUAL", OcamlLanguage.Companion.INSTANCE)
+    val VIRTUAL = OcamlTokenElementType("VIRTUAL")
     @JvmField
-    val WHEN = IElementType("WHEN", OcamlLanguage.Companion.INSTANCE)
+    val WHEN = OcamlTokenElementType("WHEN")
     @JvmField
-    val WHILE = IElementType("WHILE", OcamlLanguage.Companion.INSTANCE)
+    val WHILE = OcamlTokenElementType("WHILE")
     @JvmField
-    val WITH = IElementType("WITH", OcamlLanguage.Companion.INSTANCE)
+    val WITH = OcamlTokenElementType("WITH")
     @JvmField
-    val COMMENT = IElementType("COMMENT", OcamlLanguage.Companion.INSTANCE)
+    val COMMENT = OcamlTokenElementType("COMMENT")
     @JvmField
-    val DOCSTRING = IElementType("DOCSTRING", OcamlLanguage.Companion.INSTANCE)
+    val DOCSTRING = OcamlTokenElementType("DOCSTRING")
+
+    @JvmField
+    val SHEBANG_LINE = OcamlTokenElementType("SHEBANG_LINE")
 
 
 }
