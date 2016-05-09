@@ -168,6 +168,15 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
             CharSequence text = yytext();
             quotedStringId = text.subSequence(1, text.length() - 1);
         }
+
+
+        "'" newline "'" { return CHAR; }
+        "'" [^\\'\r\n] "'" { return CHAR; }
+        "'\\" [\\'\"ntbr ] "'" { return CHAR; }
+        "'\\" [0-9] [0-9] [0-9] "'" { return CHAR; }
+        "'\\" "o" [0-3] [0-7] [0-7] "'" { return CHAR; }
+        "'\\" "x" [0-9a-fA-F] [0-9a-fA-F] "'" { return CHAR; }
+        "'\\" . "'"{ return BAD_CHARACTER; }
 }
 
 <IN_STRING> {

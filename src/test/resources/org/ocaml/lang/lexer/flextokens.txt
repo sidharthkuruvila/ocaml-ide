@@ -10,3 +10,4 @@ Some more"
 {quoted| this
 is a
 quoted string|quoted}
+'a' '\t' '\ ' '\o123' '\xab' '\123' '\z'
