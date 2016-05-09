@@ -9,8 +9,19 @@ import static com.intellij.psi.CustomHighlighterTokenType.WHITESPACE;
 %%
 
 %{
+  private int tokenStartIndex;
   private CharSequence quotedStringId;
   private int commentDepth;
+
+  //Store the start index of a token
+  private void tokenStart() {
+    tokenStartIndex = zzStartRead;
+  }
+
+  //Set the start index of the token to the stored index
+  private void tokenEnd() {
+    zzStartRead = tokenStartIndex;
+  }
 %}
 
 %public
@@ -164,11 +175,12 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         ( { FLOAT_LITERAL} | { HEX_FLOAT_LITERAL }  | { INT_LITERAL } ) { IDENTCHAR } +  { return BAD_LITERAL; }
 
 
-        "\"" { yybegin(IN_STRING); }
+        "\"" { yybegin(IN_STRING); tokenStart(); }
         "{" { LOWERCASE } * "|" {
             yybegin(IN_QUOTED_STRING);
             CharSequence text = yytext();
             quotedStringId = text.subSequence(1, text.length() - 1);
+            tokenStart();
         }
 
 
@@ -179,7 +191,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         "'\\" "o" [0-3] [0-7] [0-7] "'" { return CHAR; }
         "'\\" "x" [0-9a-fA-F] [0-9a-fA-F] "'" { return CHAR; }
         "'\\" . "'" { return BAD_CHARACTER; }
-        "(*" { yybegin(IN_COMMENT); commentDepth = 1; }
+        "(*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
 
         "#" [ \t]* [0-9]+ [ \t]* ("\"" [^\r\n\"]* "\"")? [^\r\n] * { NEWLINE } { }
 
@@ -247,7 +259,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 }
 
 <IN_STRING> {
-       "\"" { yybegin(INITIAL); return STRING; }
+       "\"" { yybegin(INITIAL); tokenEnd(); return STRING; }
        "\\" { NEWLINE } ([ \t] *) { }
        "\\" [\\\'\"ntbr ] { }
        "\\" [0-9] [0-9] [0-9] { }
@@ -256,18 +268,18 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
        "\\" . { }
        { NEWLINE } { }
        . { }
-       <<EOF>> { yybegin(INITIAL); return STRING; }
+       <<EOF>> { yybegin(INITIAL); tokenEnd(); return STRING; }
 
 }
 
 <IN_QUOTED_STRING> {
     { NEWLINE }  { }
-    <<EOF>> { yybegin(INITIAL); return QUOTED_STRING; } //Should probable create a special token here
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return QUOTED_STRING; } //Should probable create a special token here
     "|" { LOWERCASE  } * "}" {
         yybegin(INITIAL);
         CharSequence text = yytext();
         if(text.subSequence(1, text.length() - 1).equals(quotedStringId)) {
-            return QUOTED_STRING;
+            tokenEnd(); return QUOTED_STRING;
         }
      }
      . { }
@@ -278,9 +290,9 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 //TODO: This needs to be replaced with the definition in lexer.mll
 <IN_COMMENT> {
     "(*" { commentDepth += 1; }
-    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); return COMMENT; } }
+    "*)" { commentDepth -= 1; if(commentDepth == 0) { yybegin(INITIAL); tokenEnd(); return COMMENT; } }
     . | { NEWLINE } { }
-    <<EOF>> { yybegin(INITIAL); return COMMENT; }
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return COMMENT; }
 }
 
 

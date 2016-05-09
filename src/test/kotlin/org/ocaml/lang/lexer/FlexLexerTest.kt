@@ -16,14 +16,22 @@ class FlexLexerTest {
         val lexer = _OcamlLexer(null)
         lexer.reset(src, 0, src.length, 0)
         val sb = StringBuffer()
+        var index = 0;
         while(true) {
             val t = lexer.advance()
             if(t == null){
                 break
             }
+            //Check if the start index of the curent token is the same as the end index of the previous token
+            if(lexer.tokenStart != index){
+                Assert.fail("Token ${t} was expected to start at index ${index} instead started at ${lexer.tokenStart}")
+            }
+            index = lexer.tokenEnd
+
             sb.append(t.toString())
             sb.append("\n")
         }
+        //Check if all tokens are generated with the correct type
         val exp = FileUtil.loadFile(File("src/test/resources/org/ocaml/lang/lexer/expected_token_types.txt"))
         Assert.assertEquals(exp, sb.toString())
     }
