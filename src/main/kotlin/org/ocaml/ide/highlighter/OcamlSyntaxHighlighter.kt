@@ -1,5 +1,6 @@
 package org.ocaml.ide.highlighter
 
+import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.HighlighterColors
@@ -12,6 +13,7 @@ import com.intellij.psi.tree.IElementType
 import org.ocaml.merlin.Merlin
 import org.ocaml.merlin.MerlinLexer
 import org.ocaml.lang.lexer.OcamlTypes
+import org.ocaml.lang.lexer._OcamlLexer
 
 /**
  * Created by sidharthkuruvila on 02/05/16.
@@ -31,7 +33,7 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
                 OcamlTypes.NEW, OcamlTypes.FUN, OcamlTypes.MUTABLE, OcamlTypes.OPEN, OcamlTypes.WITH, OcamlTypes.BEGIN,
                 OcamlTypes.VAL, OcamlTypes.CONSTRAINT, OcamlTypes.TRUE, OcamlTypes.WHEN, OcamlTypes.PRIVATE,
                 OcamlTypes.TO, OcamlTypes.VIRTUAL, OcamlTypes.CLASS, OcamlTypes.FUNCTION, OcamlTypes.LAZY,
-                OcamlTypes.END, OcamlTypes.FOR, OcamlTypes.METHOD, OcamlTypes.INHERIT, OcamlTypes.ELSE, OcamlTypes.TRY,
+                OcamlTypes.END, OcamlTypes.FOR, OcamlTypes.METHOD_KEYWORD, OcamlTypes.INHERIT, OcamlTypes.ELSE, OcamlTypes.TRY,
                 OcamlTypes.AS, OcamlTypes.EXTERNAL, OcamlTypes.IN, OcamlTypes.INCLUDE, OcamlTypes.MATCH, OcamlTypes.IF,
                 OcamlTypes.AND, OcamlTypes.FALSE, OcamlTypes.STRUCT, OcamlTypes.OF, OcamlTypes.FUNCTOR, OcamlTypes.INITIALIZER,
                 OcamlTypes.DOWNTO, OcamlTypes.LET, OcamlTypes.SIG, OcamlTypes.REC, OcamlTypes.OR)
@@ -88,7 +90,8 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
     }
 
     override fun getHighlightingLexer(): Lexer {
-        return MerlinLexer(Merlin.Companion.newInstance())
+        return FlexAdapter(_OcamlLexer(null))
+        //return MerlinLexer(Merlin.Companion.newInstance())
     }
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {

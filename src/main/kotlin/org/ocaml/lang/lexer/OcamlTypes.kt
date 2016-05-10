@@ -114,7 +114,7 @@ object OcamlTypes {
     @JvmField
     val INT64 = OcamlTokenElementType("INT64")
     @JvmField
-    val LABEL = OcamlTokenElementType("LABEL")
+    val LABEL_OP = OcamlTokenElementType("LABEL")
     @JvmField
     val LAZY = OcamlTokenElementType("LAZY")
     @JvmField
@@ -152,7 +152,7 @@ object OcamlTypes {
     @JvmField
     val MATCH = OcamlTokenElementType("MATCH")
     @JvmField
-    val METHOD = OcamlTokenElementType("METHOD")
+    val METHOD_KEYWORD = OcamlTokenElementType("METHOD")
     @JvmField
     val MINUS = OcamlTokenElementType("MINUS")
     @JvmField

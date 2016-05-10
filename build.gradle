@@ -81,3 +81,19 @@ task generateOcamlLexer(type: JavaExec) {
 
     classpath configurations.gen
 }
+
+
+
+task generateOcamlPsiAndParser(type: JavaExec) {
+    ext.src     = "src/main/kotlin/org/ocaml/lang/parser/ocaml.bnf"
+    ext.dstRoot = "gen"
+
+    main = "org.intellij.grammar.Main"
+
+    args = [ dstRoot, file(src) ]
+
+    inputs  .file   file(src)
+    outputs .dir    fileTree(dir: dstRoot + '/org/ocaml/lang/parser/', include: '**/*.java')
+
+    classpath configurations.gen
+}

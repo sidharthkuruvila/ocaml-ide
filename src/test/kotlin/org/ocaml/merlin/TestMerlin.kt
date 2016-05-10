@@ -48,9 +48,9 @@ class TestMerlin {
         println(resp)
     }
 
-    @Test
-    @Ignore
-    fun testDumpBrowse() {
+    //@Test
+    //@Ignore
+    fun xtestDumpBrowse() {
         val m = merlinInstance()
         m.tellSource("let f x = x;;")
         val resp = m.dumpBrowse()

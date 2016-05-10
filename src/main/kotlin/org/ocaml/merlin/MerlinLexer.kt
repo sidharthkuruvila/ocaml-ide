@@ -110,7 +110,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
                 "INT" -> OcamlTypes.INT
                 "INT32" -> OcamlTypes.INT32
                 "INT64" -> OcamlTypes.INT64
-                "LABEL" -> OcamlTypes.LABEL
+                "LABEL" -> OcamlTypes.LABEL_OP
                 "LAZY" -> OcamlTypes.LAZY
                 "LBRACE" -> OcamlTypes.LBRACE
                 "LBRACELESS" -> OcamlTypes.LBRACELESS
@@ -129,7 +129,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
                 "LBRACKETATAT" -> OcamlTypes.LBRACKETATAT
                 "LBRACKETATATAT" -> OcamlTypes.LBRACKETATATAT
                 "MATCH" -> OcamlTypes.MATCH
-                "METHOD" -> OcamlTypes.METHOD
+                "METHOD" -> OcamlTypes.METHOD_KEYWORD
                 "MINUS" -> OcamlTypes.MINUS
                 "MINUSDOT" -> OcamlTypes.MINUSDOT
                 "MINUSGREATER" -> OcamlTypes.MINUSGREATER

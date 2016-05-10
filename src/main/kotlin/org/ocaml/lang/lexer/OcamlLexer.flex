@@ -4,7 +4,13 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
 
-import static org.ocaml.lang.lexer.OcamlTypes.*;
+import static generated.GeneratedTypes.*;
+import static org.ocaml.lang.lexer.OcamlTypes.BAD_CHARACTER;
+import static org.ocaml.lang.lexer.OcamlTypes.BAD_LITERAL;
+import static org.ocaml.lang.lexer.OcamlTypes.GREATERRBRACKET;
+import static org.ocaml.lang.lexer.OcamlTypes.QUOTED_STRING;
+import static org.ocaml.lang.lexer.OcamlTypes.COMMENT;
+import static org.ocaml.lang.lexer.OcamlTypes.SHEBANG_LINE;
 import static com.intellij.psi.CustomHighlighterTokenType.WHITESPACE;
 %%
 
@@ -80,7 +86,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 
         "_" { return UNDERSCORE; }
         "~" { return TILDE; }
-        "~" { LOWERCASE } { IDENTCHAR } * ":" { return LABEL; }
+        "~" { LOWERCASE } { IDENTCHAR } * ":" { return LABEL_OP; }
         //"~" { LOWERCASE_LATIN1 } { IDENTCHAR_LATIN1 } * ":" { return LABEL; } Commenting this for now
         "?" { return QUESTION; }
         "?" {LOWERCASE} {IDENTCHAR} * ":" { return OPTLABEL; }
@@ -112,7 +118,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         "lazy" { return LAZY;}
         "let" { return LET;}
         "match" { return MATCH;}
-        "method" { return METHOD;}
+        "method" { return METHOD_KEYWORD;}
         "module" { return MODULE;}
         "mutable" { return MUTABLE;}
         "new" { return NEW;}

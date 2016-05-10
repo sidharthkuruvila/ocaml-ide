@@ -29,7 +29,7 @@ class OcamlParserDefinition : ParserDefinition {
     }
 
     override fun createParser(project: Project?): PsiParser? {
-        return MerlinParser(Merlin.newInstance())
+        return OcamlParser()
     }
 
     override fun createFile(viewProvider: FileViewProvider): PsiFile? {
