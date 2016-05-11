@@ -834,8 +834,7 @@ simple_expr ::=
   | name_tag //%prec prec_constant_constructor
   | LPAREN seq_expr RPAREN
 //  | LPAREN seq_expr error
-  | BEGIN ext_attributes ? seq_expr END
-//  | BEGIN ext_attributes ? END
+  | BEGIN ext_attributes ? seq_expr ? END
 //
 //  | BEGIN ext_attributes ? seq_expr error
 //
