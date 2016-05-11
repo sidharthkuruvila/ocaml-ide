@@ -4,14 +4,8 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
 
-import static generated.GeneratedTypes.*;
-import static org.ocaml.lang.lexer.OcamlTypes.BAD_CHARACTER;
-import static org.ocaml.lang.lexer.OcamlTypes.BAD_LITERAL;
-import static org.ocaml.lang.lexer.OcamlTypes.GREATERRBRACKET;
-import static org.ocaml.lang.lexer.OcamlTypes.QUOTED_STRING;
-import static org.ocaml.lang.lexer.OcamlTypes.COMMENT;
-import static org.ocaml.lang.lexer.OcamlTypes.SHEBANG_LINE;
-import static com.intellij.psi.CustomHighlighterTokenType.WHITESPACE;
+import static org.ocaml.lang.lexer.OcamlTypes.*;
+import static com.intellij.psi.TokenType.*;
 %%
 
 %{
@@ -82,7 +76,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 }
 
 <INITIAL> {
-        {WHITE_SPACE} { return WHITESPACE; }
+        {WHITE_SPACE} { return WHITE_SPACE; }
 
         "_" { return UNDERSCORE; }
         "~" { return TILDE; }

@@ -50,8 +50,6 @@ import re
 
 r = re.compile('"([^"]+)"\s+[{]\s+(\w+)')
 for sym, name in r.findall(s):
-    print '"%s" { return %s; }' % (sym, name)
+    print '%s = "%s"' % (name, sym)
 
 print
-
-print " ".join(sym for sym, n in r.findall(s))

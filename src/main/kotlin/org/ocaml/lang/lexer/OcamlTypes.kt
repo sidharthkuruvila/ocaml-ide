@@ -254,9 +254,6 @@ object OcamlTypes {
     val SHEBANG_LINE = OcamlTokenElementType("SHEBANG_LINE")
 
     @JvmField
-    val BAD_CHARACTER = OcamlTokenElementType("BAD_CHARACTER")
-
-    @JvmField
     val BAD_LITERAL = OcamlTokenElementType("BAD_LITERAL")
 
     @JvmField

@@ -3,15 +3,10 @@ package org.ocaml.ide.highlighter
 import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
-import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey
+import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
-
-import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
-import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import org.ocaml.merlin.Merlin
-import org.ocaml.merlin.MerlinLexer
 import org.ocaml.lang.lexer.OcamlTypes
 import org.ocaml.lang.lexer._OcamlLexer
 

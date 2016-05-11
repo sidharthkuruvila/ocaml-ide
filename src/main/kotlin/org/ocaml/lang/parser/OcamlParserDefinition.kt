@@ -2,6 +2,7 @@ package org.ocaml.lang.parser
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
+import com.intellij.lang.LanguageUtil
 import com.intellij.lang.ParserDefinition
 import com.intellij.lang.PsiParser
 import com.intellij.lexer.Lexer
@@ -13,7 +14,9 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
 import org.ocaml.lang.OcamlLanguage
+import org.ocaml.lang.lexer.OcamlLexer
 import org.ocaml.lang.lexer.OcamlTypes
+import org.ocaml.lang.parser.psi.OcamlCompositeElementTypes
 import org.ocaml.lang.parser.psi.OcamlNonTerminals
 import org.ocaml.merlin.Merlin
 import org.ocaml.merlin.MerlinLexer
@@ -37,7 +40,8 @@ class OcamlParserDefinition : ParserDefinition {
     }
 
     override fun spaceExistanceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements? {
-        return ParserDefinition.SpaceRequirements.MAY;
+        return LanguageUtil.canStickTokensTogetherByLexer(left, right, OcamlLexer())
+        //return ParserDefinition.SpaceRequirements.MAY;
     }
 
     override fun getStringLiteralElements(): TokenSet {
@@ -49,11 +53,11 @@ class OcamlParserDefinition : ParserDefinition {
     }
 
     override fun createLexer(project: Project?): Lexer {
-        return MerlinLexer(Merlin.newInstance())
+        return OcamlLexer()
     }
 
     override fun createElement(node: ASTNode): PsiElement {
-        return OcamlNonTerminals.createElement(node)
+        return OcamlCompositeElementTypes.Factory.createElement(node);
     }
 
     override fun getCommentTokens(): TokenSet {

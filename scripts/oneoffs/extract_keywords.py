@@ -60,6 +60,8 @@ s = """"and", AND;
 
 import re
 
-r = re.compile('"([^"]+)"')
+r = re.compile('"([^"]+)",\s+(\w+)')
 
-print " ".join(set(r.findall(s)))
+
+for n, t in r.findall(s):
+    print '%s = "%s"' % (t, n)
