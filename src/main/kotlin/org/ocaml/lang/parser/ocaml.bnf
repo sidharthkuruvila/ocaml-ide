@@ -678,21 +678,15 @@ labeled_simple_pattern ::=
     QUESTION LPAREN label_let_pattern opt_default ? RPAREN
   | QUESTION label_var
   | OPTLABEL LPAREN let_pattern opt_default ? RPAREN
-//
-//  | OPTLABEL pattern_var
-//
-//  | TILDE LPAREN label_let_pattern RPAREN
-//
-//  | TILDE label_var
-//
-//  | LABEL_OP simple_pattern
-//
-//  | simple_pattern
-//
-//
-//pattern_var ::=
-//    LIDENT
-//  | UNDERSCORE
+  | OPTLABEL pattern_var
+  | TILDE LPAREN label_let_pattern RPAREN
+  | TILDE label_var
+  | LABEL_OP simple_pattern
+  | simple_pattern
+
+pattern_var ::=
+    LIDENT
+  | UNDERSCORE
 
 opt_default ::=
     EQUAL seq_expr
