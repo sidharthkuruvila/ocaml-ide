@@ -123,6 +123,7 @@
     generateTokens=false
     //generateTokenAccessors=true
 
+    extends(".*pattern_expression")=pattern_expression
 }
 /* Entry points */
 
@@ -676,7 +677,7 @@ seq_expr ::= expr (SEMI expr)*  //%prec below_SEMI
 labeled_simple_pattern ::=
     QUESTION LPAREN label_let_pattern opt_default ? RPAREN
   | QUESTION label_var
-//  | OPTLABEL LPAREN let_pattern opt_default ? RPAREN
+  | OPTLABEL LPAREN let_pattern opt_default ? RPAREN
 //
 //  | OPTLABEL pattern_var
 //
@@ -702,8 +703,8 @@ label_let_pattern ::=
 label_var ::=
     LIDENT
 
-//let_pattern ::=
-//    pattern (COLON core_type) ?
+let_pattern ::=
+    pattern_expression (COLON core_type) ?
 
 
 expr ::=
@@ -1034,27 +1035,36 @@ type_constraint ::=
 //
 ///* Patterns */
 //
-//pattern ::=
-//  | pattern AS val_ident
-//
+pattern_expression ::=
+    val_ident_pattern_expression
 //  | pattern AS error
-//
-//  | pattern_comma_list  //%prec below_COMMA
-//
-//  | pattern COLONCOLON pattern
-//
+  | comma_list_pattern_expression  //%prec below_COMMA
+  | coloncolon_separated_pattern_expression
 //  | pattern COLONCOLON error
-//
-//  | pattern BAR pattern
-//
+  | bar_pattern_expression
 //  | pattern BAR error
-//
-//  | EXCEPTION ext_attributes ? pattern //%prec prec_constr_appl
-//
-//  | pattern attribute
-//
-//  | pattern_gen
-//
+  | exception_pattern_expression
+  | attribute_pattern_expression
+  | pattern_gen_pattern_expression
+
+val_ident_pattern_expression ::=
+    pattern_expression AS val_ident
+
+coloncolon_separated_pattern_expression ::=
+    pattern_expression COLONCOLON pattern_expression
+
+bar_pattern_expression ::=
+    pattern_expression BAR pattern_expression
+
+pattern_gen_pattern_expression ::=
+    pattern_gen
+
+attribute_pattern_expression ::=
+    pattern_expression attribute
+
+exception_pattern_expression ::=
+    EXCEPTION ext_attributes ? pattern_expression //%prec prec_constr_appl
+
 //pattern_no_exn ::=
 //  | pattern_no_exn AS val_ident
 //
@@ -1073,10 +1083,10 @@ type_constraint ::=
 //  | pattern_no_exn attribute
 //
 //  | pattern_gen
-//
-//pattern_gen ::=
-//    simple_pattern
-//
+
+pattern_gen ::=
+    simple_pattern
+
 //  | constr_longident pattern //%prec prec_constr_appl
 //
 //  | name_tag pattern //%prec prec_constr_appl
@@ -1088,8 +1098,8 @@ type_constraint ::=
 //  | LAZY ext_attributes ? simple_pattern
 //
 //
-//simple_pattern ::=
-//    val_ident //%prec below_EQUAL
+simple_pattern ::=
+    val_ident //%prec below_EQUAL
 //
 //  | simple_pattern_not_ident
 //
@@ -1137,12 +1147,9 @@ type_constraint ::=
 //  | LPAREN MODULE ext_attributes ? UIDENT COLON package_type error
 //
 //  | extension
-//
-//
-//
-//pattern_comma_list ::=
-//    pattern_comma_list COMMA pattern
-//  | pattern COMMA pattern
+
+comma_list_pattern_expression ::=
+    pattern_expression (COMMA pattern_expression) +
 //  | pattern COMMA error
 //
 //pattern_no_exn_comma_list ::=

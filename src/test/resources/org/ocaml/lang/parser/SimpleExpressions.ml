@@ -18,4 +18,5 @@ abc def ~ghi ?klm ?opq:rst ~uvw:xyz;
 (let module SimpleModule = Mod.Mod in "abc");
 (let exception SimpleException of 'identifier in "abc");
 (let open ! SimpleModule in "abc");
-(fun ?(identifier : 'identifier = 123) -> "abc")
+(fun ?(identifier : 'identifier = 123) -> "abc");
+(fun ?id:(exception abc | xyz [@ identifier 123] as a :: def, hji as d) -> 123)

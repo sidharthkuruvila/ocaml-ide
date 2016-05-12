@@ -7,13 +7,13 @@
   ]
 
   extends(".*simple")=simple
-  //extends(".*expr")=expr
+  extends(".*expr")=expr
 
 }
 
 expr ::=
-    simple_expr
-  | plus_operator_expr
+   /* simple_expr
+  | */ plus_operator_expr
 
 plus_operator_expr ::=
   expr '+' expr
