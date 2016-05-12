@@ -121,7 +121,7 @@ class TestMerlin {
     }
 
     private fun merlinProcess(): Process {
-        val pb = ProcessBuilder("/Users/sidharthkuruvila/Code/ocaml_idea_plugin/merlin/ocamlmerlin")
+        val pb = ProcessBuilder("ocamlmerlin")
         return pb.start()
     }
 }

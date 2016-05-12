@@ -1,0 +1,33 @@
+{
+  tokens = [
+    PLUS = "+"
+    MINUS = "-"
+    DOT = "."
+    NUMBER = "number"
+  ]
+
+  extends(".*simple")=simple
+  //extends(".*expr")=expr
+
+}
+
+expr ::=
+    simple_expr
+  | plus_operator_expr
+
+plus_operator_expr ::=
+  expr '+' expr
+
+simple_expr ::=
+  simple
+
+simple ::=
+  constant_simple
+  | dot_operator_simple
+
+constant_simple ::=
+    NUMBER
+
+dot_operator_simple ::=
+  simple '.' simple
+
