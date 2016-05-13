@@ -20,7 +20,7 @@ object OcamlC {
         val fo = createTempFile()
 
         try {
-            val pb = ProcessBuilder(ocamlc, src.absolutePath)
+            val pb = ProcessBuilder(ocamlc, "-dparsetree", src.absolutePath)
             pb.redirectError(fo)
             val p = pb.start()
             p.waitFor()

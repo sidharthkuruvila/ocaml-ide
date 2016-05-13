@@ -179,7 +179,7 @@ implementation ::=
 //    seq_expr EOF
 //
 //parse_pattern ::=
-//    pattern EOF
+//    pattern_expression EOF
 //
 //
 ///* Module expressions */
@@ -288,7 +288,7 @@ structure ::=
 //
 //
 //str_include_statement ::=
-//    INCLUDE ext_attributes module_expr post_item_attributes ?
+//    INCLUDE ext_attributes ? module_expr post_item_attributes ?
 //
 //
 module_binding_body ::=
@@ -300,7 +300,7 @@ module_binding_body ::=
 //
 //
 //module_binding ::=
-//    MODULE ext_attributes UIDENT module_binding_body post_item_attributes ?
+//    MODULE ext_attributes ? UIDENT module_binding_body post_item_attributes ?
 //
 //
 //rec_module_bindings ::=
@@ -309,7 +309,7 @@ module_binding_body ::=
 //
 //
 //rec_module_binding ::=
-//    MODULE ext_attributes REC UIDENT module_binding_body post_item_attributes ?
+//    MODULE ext_attributes ? REC UIDENT module_binding_body post_item_attributes ?
 //
 //
 //and_module_binding ::=
@@ -384,11 +384,11 @@ signature_item ::=
 //
 //
 //open_statement ::=
-//  | OPEN override_flag ? ext_attributes mod_longident post_item_attributes ?
+//  | OPEN override_flag ? ext_attributes ? mod_longident post_item_attributes ?
 //
 //
 //sig_include_statement ::=
-//    INCLUDE ext_attributes module_type post_item_attributes ? //%prec below_WITH
+//    INCLUDE ext_attributes ? module_type post_item_attributes ? //%prec below_WITH
 //
 //
 //module_declaration_body ::=
@@ -400,11 +400,11 @@ signature_item ::=
 //
 //
 //module_declaration ::=
-//    MODULE ext_attributes UIDENT module_declaration_body post_item_attributes ?
+//    MODULE ext_attributes ? UIDENT module_declaration_body post_item_attributes ?
 //
 //
 //module_alias ::=
-//    MODULE ext_attributes UIDENT EQUAL mod_longident post_item_attributes ?
+//    MODULE ext_attributes ? UIDENT EQUAL mod_longident post_item_attributes ?
 //
 //
 //rec_module_declarations ::=
@@ -414,7 +414,7 @@ signature_item ::=
 //
 //
 //rec_module_declaration ::=
-//    MODULE ext_attributes REC UIDENT COLON module_type post_item_attributes ?
+//    MODULE ext_attributes ? REC UIDENT COLON module_type post_item_attributes ?
 //
 //
 //and_module_declaration ::=
@@ -426,7 +426,7 @@ signature_item ::=
 //  | EQUAL module_type
 //
 //module_type_declaration ::=
-//    MODULE TYPE ext_attributes ident module_type_declaration_body
+//    MODULE TYPE ext_attributes ? ident module_type_declaration_body
 //    post_item_attributes ?
 //
 //
@@ -439,7 +439,7 @@ signature_item ::=
 //
 //
 //class_declaration ::=
-//    CLASS ext_attributes virtual_flag class_type_parameters LIDENT
+//    CLASS ext_attributes ? virtual_flag class_type_parameters LIDENT
 //    class_fun_binding post_item_attributes ?
 //
 //
@@ -503,9 +503,9 @@ signature_item ::=
 //
 //
 //class_self_pattern ::=
-//    LPAREN pattern RPAREN
+//    LPAREN pattern_expression RPAREN
 //
-//  | LPAREN pattern COLON core_type RPAREN
+//  | LPAREN pattern_expression COLON core_type RPAREN
 //
 //  | /* empty */
 //
@@ -644,7 +644,7 @@ signature_item ::=
 //
 //
 //class_description ::=
-//    CLASS ext_attributes virtual_flag class_type_parameters LIDENT COLON
+//    CLASS ext_attributes ? virtual_flag class_type_parameters LIDENT COLON
 //    class_type post_item_attributes ?
 //
 //
@@ -660,7 +660,7 @@ signature_item ::=
 //
 //
 //class_type_declaration ::=
-//    CLASS TYPE ext_attributes virtual_flag class_type_parameters LIDENT EQUAL
+//    CLASS TYPE ext_attributes ? virtual_flag class_type_parameters LIDENT EQUAL
 //    class_signature post_item_attributes ?
 //
 //
@@ -701,43 +701,84 @@ let_pattern ::=
     pattern_expression (COLON core_type) ?
 
 
+
+//  %nonassoc IN
+//  %nonassoc below_SEMI
+//  %nonassoc SEMI                          /* below EQUAL ({lbl=...; lbl=...}) */
+//  %nonassoc LET                           /* above SEMI ( ...; let ... in ...) */
+//  %nonassoc below_WITH
+//  %nonassoc FUNCTION WITH                 /* below BAR  (match ... with ...) */
+//  %nonassoc AND             /* above WITH (module rec A: SIG with ... and ...) */
+//  %nonassoc THEN                          /* below ELSE (if ... then ...) */
+//  %nonassoc ELSE                          /* (if ... then ... else ...) */
+//  %nonassoc LESSMINUS                     /* below COLONEQUAL (lbl <- x := e) */
+//  %right    COLONEQUAL                    /* expr (e := e := e) */
+//  %nonassoc AS
+//  %left     BAR                           /* pattern (p|p|p) */
+//  %nonassoc below_COMMA
+//  %left     COMMA                         /* expr/expr_comma_list (e,e,e) */
+//  %right    MINUSGREATER                  /* core_type2 (t -> t -> t) */
+//  %right    OR BARBAR                     /* expr (e || e || e) */
+//  %right    AMPERSAND AMPERAMPER          /* expr (e && e && e) */
+//  %nonassoc below_EQUAL
+//  %left     INFIXOP0 EQUAL LESS GREATER   /* expr (e OP e OP e) */
+//  %right    INFIXOP1                      /* expr (e OP e OP e) */
+//  %nonassoc below_LBRACKETAT
+//  %nonassoc LBRACKETAT
+//  %nonassoc LBRACKETATAT
+//  %right    COLONCOLON                    /* expr (e :: e :: e) */
+//  %left     INFIXOP2 PLUS PLUSDOT MINUS MINUSDOT PLUSEQ /* expr (e OP e OP e) */
+//  %left     PERCENT INFIXOP3 STAR                 /* expr (e OP e OP e) */
+//  %right    INFIXOP4                      /* expr (e OP e OP e) */
+//  %nonassoc prec_unary_minus prec_unary_plus /* unary - */
+//  %nonassoc prec_constant_constructor     /* cf. simple_expr (C versus C x) */
+//  %nonassoc prec_constr_appl              /* above AS BAR COLONCOLON COMMA */
+//  %nonassoc below_SHARP
+//  %nonassoc SHARP                         /* simple_expr/toplevel_directive */
+//  %left     SHARPOP
+//  %nonassoc below_DOT
+//  %nonassoc DOT
+//  /* Finally, the first tokens of simple_expr are above everything else. */
+//  %nonassoc BACKQUOTE BANG BEGIN CHAR FALSE FLOAT INT
+//            LBRACE LBRACELESS LBRACKET LBRACKETBAR LIDENT LPAREN
+//            NEW PREFIXOP STRING TRUE UIDENT
+//            LBRACKETPERCENT LBRACKETPERCENTPERCENT
 expr ::=
+
     simple_expr labeled_simple_expr *
   | simple_expr //%prec below_SHARP
   | let_bindings IN seq_expr
   | LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
   | LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
   | LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
-  //| FUNCTION ext_attributes opt_bar match_cases
+  | FUNCTION ext_attributes ? BAR ? match_cases
   | FUN ext_attributes ? labeled_simple_pattern fun_def
 
-//  | FUN ext_attributes LPAREN TYPE lident_list RPAREN fun_def
-//
-//  | MATCH ext_attributes seq_expr WITH opt_bar match_cases
-//
-//  | TRY ext_attributes seq_expr WITH opt_bar match_cases
-//
-//  | TRY ext_attributes seq_expr WITH error
-//
-//  | expr_comma_list //%prec below_COMMA
-//
-//  | constr_longident simple_expr //%prec below_SHARP
-//
-//  | name_tag simple_expr //%prec below_SHARP
-//
-//  | IF ext_attributes seq_expr THEN expr ELSE expr
-//
-//  | IF ext_attributes seq_expr THEN expr
-//
-//  | WHILE ext_attributes seq_expr DO seq_expr DONE
-//
-//  | FOR ext_attributes pattern EQUAL seq_expr direction_flag seq_expr DO
-//    seq_expr DONE
-//
+  | FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
+
+  | MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
+
+  | TRY ext_attributes ? seq_expr WITH BAR ? match_cases
+
+  //| TRY ext_attributes ? seq_expr WITH error
+
+  //| expr_comma_list //%prec below_COMMA
+
+  | constr_longident simple_expr //%prec below_SHARP
+
+  | name_tag simple_expr //%prec below_SHARP
+
+  | IF ext_attributes ? seq_expr THEN expr ELSE expr
+
+  | IF ext_attributes ? seq_expr THEN expr
+
+  | WHILE ext_attributes ? seq_expr DO seq_expr DONE
+
+  | FOR ext_attributes ? pattern_expression EQUAL seq_expr direction_flag seq_expr DO seq_expr DONE
+
 //  | expr COLONCOLON expr
-//
-//  | LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
-//
+  | LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
+
 //  | expr INFIXOP0 expr
 //
 //  | expr INFIXOP1 expr
@@ -792,19 +833,57 @@ expr ::=
 //
 //  | label LESSMINUS expr
 //
-//  | ASSERT ext_attributes simple_expr //%prec below_SHARP
+//  | ASSERT ext_attributes ? simple_expr //%prec below_SHARP
 //
-//  | LAZY ext_attributes simple_expr //%prec below_SHARP
+//  | LAZY ext_attributes ? simple_expr //%prec below_SHARP
 //
-//  | OBJECT ext_attributes class_structure END
+//  | OBJECT ext_attributes ? class_structure END
 //
-//  | OBJECT ext_attributes class_structure error
+//  | OBJECT ext_attributes ? class_structure error
 //
 //  | expr attribute
 //
 //  | UNDERSCORE
 //
 //
+
+simple_expr_expr ::=
+    simple_expr labeled_simple_expr *
+  | simple_expr //%prec below_SHARP
+
+let_binding_expr ::=
+    let_bindings IN seq_expr
+
+let_module_expr ::=
+    LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
+
+let_exception_expr ::=
+    LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
+
+let_open_expr ::=
+    LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
+
+function_expr ::=
+    FUNCTION ext_attributes ? BAR ? match_cases
+
+fun1_expr ::=
+    FUN ext_attributes ? labeled_simple_pattern fun_def
+
+fun2_expr ::=
+    FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
+
+match_expr ::=
+    MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
+
+try_expr ::=
+    TRY ext_attributes ? seq_expr WITH BAR ? match_cases
+
+constructor_expr ::=
+    constr_longident simple_expr //%prec below_SHARP
+
+tag_expr ::=
+
+
 simple_expr ::=
     val_longident
   | constant
@@ -922,9 +1001,8 @@ label_expr ::=
 label_ident ::=
     LIDENT
 
-//lident_list ::=
-//    LIDENT
-//  | LIDENT lident_list
+lident_list ::=
+    LIDENT +
 
 let_binding_body ::=
     val_ident fun_binding
@@ -957,18 +1035,16 @@ strict_binding ::=
 //  | labeled_simple_pattern fun_binding
 //
 //  | LPAREN TYPE lident_list RPAREN fun_binding
+
+match_cases ::=
+    match_case (BAR match_case) *
+
+match_case ::=
+    pattern_expression MINUSGREATER seq_expr
 //
+//  | pattern_expression WHEN seq_expr MINUSGREATER seq_expr
 //
-//match_cases ::=
-//    match_case
-//  | match_cases BAR match_case
-//
-//match_case ::=
-//    pattern MINUSGREATER seq_expr
-//
-//  | pattern WHEN seq_expr MINUSGREATER seq_expr
-//
-//  | pattern MINUSGREATER DOT
+//  | pattern_expression MINUSGREATER DOT
 
 
 fun_def ::=
@@ -1031,12 +1107,12 @@ type_constraint ::=
 //
 pattern_expression ::=
     val_ident_pattern_expression
-//  | pattern AS error
+//  | pattern_expression AS error
   | comma_list_pattern_expression  //%prec below_COMMA
   | coloncolon_separated_pattern_expression
-//  | pattern COLONCOLON error
+//  | pattern_expression COLONCOLON error
   | bar_pattern_expression
-//  | pattern BAR error
+//  | pattern_expression BAR error
   | exception_pattern_expression
   | attribute_pattern_expression
   | pattern_gen_pattern_expression
@@ -1066,11 +1142,11 @@ exception_pattern_expression ::=
 //
 //  | pattern_no_exn_comma_list  //%prec below_COMMA
 //
-//  | pattern_no_exn COLONCOLON pattern
+//  | pattern_no_exn COLONCOLON pattern_expression
 //
 //  | pattern_no_exn COLONCOLON error
 //
-//  | pattern_no_exn BAR pattern
+//  | pattern_no_exn BAR pattern_expression
 //
 //  | pattern_no_exn BAR error
 //
@@ -1081,13 +1157,13 @@ exception_pattern_expression ::=
 pattern_gen ::=
     simple_pattern
 
-//  | constr_longident pattern //%prec prec_constr_appl
+//  | constr_longident pattern_expression //%prec prec_constr_appl
 //
-//  | name_tag pattern //%prec prec_constr_appl
+//  | name_tag pattern_expression //%prec prec_constr_appl
 //
-//  | LPAREN COLONCOLON RPAREN LPAREN pattern COMMA pattern RPAREN
+//  | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression RPAREN
 //
-//  | LPAREN COLONCOLON RPAREN LPAREN pattern COMMA pattern error
+//  | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression error
 //
 //  | LAZY ext_attributes ? simple_pattern
 //
@@ -1124,15 +1200,15 @@ simple_pattern ::=
 //
 //  | LBRACKETBAR pattern_semi_list opt_semi error
 //
-//  | LPAREN pattern RPAREN
+//  | LPAREN pattern_expression RPAREN
 //
-//  | LPAREN pattern error
+//  | LPAREN pattern_expression error
 //
-//  | LPAREN pattern COLON core_type RPAREN
+//  | LPAREN pattern_expression COLON core_type RPAREN
 //
-//  | LPAREN pattern COLON core_type error
+//  | LPAREN pattern_expression COLON core_type error
 //
-//  | LPAREN pattern COLON error
+//  | LPAREN pattern_expression COLON error
 //
 //  | LPAREN MODULE ext_attributes ? UIDENT RPAREN
 //
@@ -1144,16 +1220,16 @@ simple_pattern ::=
 
 comma_list_pattern_expression ::=
     pattern_expression (COMMA pattern_expression) +
-//  | pattern COMMA error
+//  | pattern_expression COMMA error
 //
 //pattern_no_exn_comma_list ::=
-//    pattern_no_exn_comma_list COMMA pattern
-//  | pattern_no_exn COMMA pattern
+//    pattern_no_exn_comma_list COMMA pattern_expression
+//  | pattern_no_exn COMMA pattern_expression
 //  | pattern_no_exn COMMA error
 //
 //pattern_semi_list ::=
-//    pattern
-//  | pattern_semi_list SEMI pattern
+//    pattern_expression
+//  | pattern_semi_list SEMI pattern_expression
 //
 //lbl_pattern_list ::=
 //    lbl_pattern
@@ -1163,7 +1239,7 @@ comma_list_pattern_expression ::=
 //
 //
 //lbl_pattern ::=
-//    label_longident opt_pattern_type_constraint EQUAL pattern
+//    label_longident opt_pattern_type_constraint EQUAL pattern_expression
 //
 //  | label_longident opt_pattern_type_constraint
 //
@@ -1478,13 +1554,13 @@ simple_core_type2 ::=
 //
 //  | LBRACKET row_field BAR row_field_list RBRACKET
 //
-//  | LBRACKETGREATER opt_bar row_field_list RBRACKET
+//  | LBRACKETGREATER BAR ? row_field_list RBRACKET
 //
 //  | LBRACKETGREATER RBRACKET
 //
-//  | LBRACKETLESS opt_bar row_field_list RBRACKET
+//  | LBRACKETLESS BAR ? row_field_list RBRACKET
 //
-//  | LBRACKETLESS opt_bar row_field_list GREATER name_tag_list RBRACKET
+//  | LBRACKETLESS BAR ? row_field_list GREATER name_tag_list RBRACKET
 //
 //  | LPAREN MODULE ext_attributes ? package_type RPAREN
 //
@@ -1676,11 +1752,11 @@ name_tag ::=
 //nonrec_flag ::=
 //    /* empty */
 //  | NONREC
-//
-//direction_flag ::=
-//    TO
-//  | DOWNTO
-//
+
+direction_flag ::=
+    TO
+  | DOWNTO
+
 //private_flag ::=
 //    /* empty */
 //  | PRIVATE
@@ -1703,10 +1779,6 @@ name_tag ::=
 override_flag ::=
   BANG
 
-//opt_bar ::=
-//    /* empty */
-//  | BAR
-//
 //opt_semi ::=
 //  | /* empty */
 //  | SEMI
@@ -1810,7 +1882,7 @@ payload ::=
   COLON signature ?
   | structure
 //  | COLON core_type
-//  | QUESTION pattern
-//  | QUESTION pattern WHEN seq_expr
+//  | QUESTION pattern_expression
+//  | QUESTION pattern_expression WHEN seq_expr
 //
 
