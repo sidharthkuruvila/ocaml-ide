@@ -1,9 +1,17 @@
 {
   tokens = [
     PLUS = "+"
+    ARROW = "->"
     MINUS = "-"
+    MUL = "*"
     DOT = "."
     NUMBER = "number"
+    LET = "if"
+    IF = "if"
+    THEN = "then"
+    ELSE = "else"
+    EQUAL = "="
+    IDENTIFIER = "id"
   ]
 
   extends(".*simple")=simple
@@ -12,8 +20,12 @@
 }
 
 expr ::=
-   /* simple_expr
-  | */ plus_operator_expr
+    block_expr
+  | plus_operator_expr
+
+block_expr ::=
+    LET IDENTIFIER EQUAL expr
+  | IF expr THEN expr (ELSE expr)?
 
 plus_operator_expr ::=
   expr '+' expr
@@ -22,11 +34,20 @@ simple_expr ::=
   simple
 
 simple ::=
-  constant_simple
+    constant_simple
   | dot_operator_simple
+
+value ::=
+    IDENTIFIER
+  | constant
+
+constant ::=
+    NUMBER
 
 constant_simple ::=
     NUMBER
+
+
 
 dot_operator_simple ::=
   simple '.' simple

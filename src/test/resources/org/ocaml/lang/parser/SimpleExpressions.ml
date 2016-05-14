@@ -32,4 +32,5 @@ abc def ~ghi ?klm ?opq:rst ~uvw:xyz;
 (if true then 1);
 (while true do 123 done);
 (for i = 1 to 10 do 123 done);
-(::)(1, 3)
+(::)(1, 3);
+1 :: 2 :: 3

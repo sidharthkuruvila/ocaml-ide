@@ -124,6 +124,7 @@
     //generateTokenAccessors=true
 
     extends(".*pattern_expression")=pattern_expression
+    extends("coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
 }
 /* Entry points */
 
@@ -744,41 +745,10 @@ let_pattern ::=
 //            NEW PREFIXOP STRING TRUE UIDENT
 //            LBRACKETPERCENT LBRACKETPERCENTPERCENT
 expr ::=
-
-    simple_expr labeled_simple_expr *
-  | simple_expr //%prec below_SHARP
-  | let_bindings IN seq_expr
-  | LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
-  | LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
-  | LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
-  | FUNCTION ext_attributes ? BAR ? match_cases
-  | FUN ext_attributes ? labeled_simple_pattern fun_def
-
-  | FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
-
-  | MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
-
-  | TRY ext_attributes ? seq_expr WITH BAR ? match_cases
-
-  //| TRY ext_attributes ? seq_expr WITH error
-
-  //| expr_comma_list //%prec below_COMMA
-
-  | constr_longident simple_expr //%prec below_SHARP
-
-  | name_tag simple_expr //%prec below_SHARP
-
-  | IF ext_attributes ? seq_expr THEN expr ELSE expr
-
-  | IF ext_attributes ? seq_expr THEN expr
-
-  | WHILE ext_attributes ? seq_expr DO seq_expr DONE
-
-  | FOR ext_attributes ? pattern_expression EQUAL seq_expr direction_flag seq_expr DO seq_expr DONE
-
-//  | expr COLONCOLON expr
-  | LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
-
+  /*  expr_comma_list //%prec below_COMMA
+  |*/ non_op_expr
+  | coloncolon_bin_expr
+//  |
 //  | expr INFIXOP0 expr
 //
 //  | expr INFIXOP1 expr
@@ -847,41 +817,70 @@ expr ::=
 //
 //
 
-simple_expr_expr ::=
+non_op_expr ::=
     simple_expr labeled_simple_expr *
   | simple_expr //%prec below_SHARP
+  | let_bindings IN seq_expr
+  | LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
+  | LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
+  | LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
+  | FUNCTION ext_attributes ? BAR ? match_cases
+  | FUN ext_attributes ? labeled_simple_pattern fun_def
+  | FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
+  | MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
+  | TRY ext_attributes ? seq_expr WITH BAR ? match_cases
+//  | TRY ext_attributes ? seq_expr WITH error
+  | constr_longident simple_expr //%prec below_SHARP
+  | name_tag simple_expr //%prec below_SHARP
+  | if_else_expr
+//  | IF ext_attributes ? seq_expr THEN expr
+  | WHILE ext_attributes ? seq_expr DO seq_expr DONE
+  | FOR ext_attributes ? pattern_expression EQUAL seq_expr direction_flag seq_expr DO seq_expr DONE
+  | coloncolon_app_rule
 
-let_binding_expr ::=
-    let_bindings IN seq_expr
+coloncolon_app_rule ::= LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
 
-let_module_expr ::=
-    LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
+if_else_expr ::=
+    IF ext_attributes ? seq_expr THEN expr (ELSE expr) ?
 
-let_exception_expr ::=
-    LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
-
-let_open_expr ::=
-    LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
-
-function_expr ::=
-    FUNCTION ext_attributes ? BAR ? match_cases
-
-fun1_expr ::=
-    FUN ext_attributes ? labeled_simple_pattern fun_def
-
-fun2_expr ::=
-    FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
-
-match_expr ::=
-    MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
-
-try_expr ::=
-    TRY ext_attributes ? seq_expr WITH BAR ? match_cases
-
-constructor_expr ::=
-    constr_longident simple_expr //%prec below_SHARP
-
-tag_expr ::=
+coloncolon_bin_expr ::=
+    expr COLONCOLON expr { rightAssociative = true }
+//
+//simple_expr_expr ::=
+//    simple_expr labeled_simple_expr *
+//  | simple_expr //%prec below_SHARP
+//
+//let_binding_expr ::=
+//    let_bindings IN seq_expr
+//
+//let_module_expr ::=
+//    LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
+//
+//let_exception_expr ::=
+//    LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
+//
+//let_open_expr ::=
+//    LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
+//
+//function_expr ::=
+//    FUNCTION ext_attributes ? BAR ? match_cases
+//
+//fun1_expr ::=
+//    FUN ext_attributes ? labeled_simple_pattern fun_def
+//
+//fun2_expr ::=
+//    FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
+//
+//match_expr ::=
+//    MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
+//
+//try_expr ::=
+//    TRY ext_attributes ? seq_expr WITH BAR ? match_cases
+//
+//constructor_expr ::=
+//    constr_longident simple_expr //%prec below_SHARP
+//
+//tag_expr ::=
 
 
 simple_expr ::=
@@ -1058,9 +1057,8 @@ fun_def ::=
 //  | LPAREN TYPE lident_list RPAREN fun_def
 //
 //
-//expr_comma_list ::=
-//    expr_comma_list COMMA expr
-//  | expr COMMA expr
+expr_comma_list ::=
+    expr (COMMA expr) +
 //
 //record_expr ::=
 //    simple_expr WITH lbl_expr_list
