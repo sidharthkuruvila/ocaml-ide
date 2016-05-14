@@ -124,7 +124,8 @@
     //generateTokenAccessors=true
 
     extends(".*pattern_expression")=pattern_expression
-    extends("coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
+    extends("ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
+
 }
 /* Entry points */
 
@@ -440,12 +441,12 @@ signature_item ::=
 //
 //
 //class_declaration ::=
-//    CLASS ext_attributes ? virtual_flag class_type_parameters LIDENT
+//    CLASS ext_attributes ? VIRTUAL ? class_type_parameters LIDENT
 //    class_fun_binding post_item_attributes ?
 //
 //
 //and_class_declaration ::=
-//    AND attributes virtual_flag class_type_parameters LIDENT class_fun_binding
+//    AND attributes VIRTUAL ? class_type_parameters LIDENT class_fun_binding
 //    post_item_attributes ?
 //
 //
@@ -460,184 +461,129 @@ signature_item ::=
 //class_type_parameters ::=
 //    /*empty*/
 //  | LBRACKET type_parameter_list RBRACKET
+
+class_fun_def ::=
+    labeled_simple_pattern + MINUSGREATER class_expr
+
+class_expr ::=
+    class_simple_expr simple_labeled_expr_list attributes ?
+  | class_simple_expr attributes ?
+  | FUN attributes? class_fun_def attributes ?
+  | let_bindings IN class_expr attributes ?
+  | extension attributes ?
 //
-//class_fun_def ::=
-//    labeled_simple_pattern MINUSGREATER class_expr
-//
-//  | labeled_simple_pattern class_fun_def
-//
-//
-//class_expr ::=
-//    class_simple_expr
-//
-//  | FUN attributes class_fun_def
-//
-//  | class_simple_expr simple_labeled_expr_list
-//
-//  | let_bindings IN class_expr
-//
-//  | class_expr attribute
-//
-//  | extension
-//
-//
-//class_simple_expr ::=
-//    LBRACKET core_type_comma_list RBRACKET class_longident
-//
-//  | class_longident
-//
-//  | OBJECT attributes class_structure END
-//
-//  | OBJECT attributes class_structure error
-//
-//  | LPAREN class_expr COLON class_type RPAREN
-//
-//  | LPAREN class_expr COLON class_type error
-//
-//  | LPAREN class_expr RPAREN
-//
-//  | LPAREN class_expr error
+class_simple_expr ::=
+    LBRACKET core_type_comma_list RBRACKET class_longident
+  | class_longident
+  | OBJECT attributes ? class_structure ? END
+  //| OBJECT attributes ? class_structure ? error
+  | LPAREN class_expr COLON class_type RPAREN
+  //| LPAREN class_expr COLON class_type error
+  | LPAREN class_expr RPAREN
+  //| LPAREN class_expr error
+
+
+class_structure ::=
+   class_self_pattern ? class_fields ?
 //
 //
-//class_structure ::=
-//  |  class_self_pattern class_fields
-//
-//
-//class_self_pattern ::=
-//    LPAREN pattern_expression RPAREN
-//
-//  | LPAREN pattern_expression COLON core_type RPAREN
-//
-//  | /* empty */
-//
-//
-//class_fields ::=
-//    /* empty */
-//
-//  | class_fields class_field
-//
-//
-//class_field ::=
-//  | INHERIT override_flag ? attributes class_expr parent_binder
-//    post_item_attributes ?
-//
-//  | VAL value post_item_attributes ?
-//
-//  | METHOD_KEYWORD method_ post_item_attributes ?
-//
-//  | CONSTRAINT attributes constrain_field post_item_attributes ?
-//
-//  | INITIALIZER attributes seq_expr post_item_attributes ?
-//
+class_self_pattern ::=
+    LPAREN pattern_expression RPAREN
+  | LPAREN pattern_expression COLON core_type RPAREN
+
+
+class_fields ::=
+    class_field +
+
+class_field ::=
+  INHERIT override_flag ? attributes ? class_expr parent_binder ? post_item_attributes ?
+  | VAL value post_item_attributes ?
+  | METHOD_KEYWORD method_ post_item_attributes ?
+  | CONSTRAINT attributes ? constrain_field post_item_attributes ?
+
+  | INITIALIZER attributes ? seq_expr post_item_attributes ?
+
 //  | item_extension post_item_attributes ?
 //
 //  | floating_attribute
+
+
+parent_binder ::=
+    AS LIDENT
 //
 //
-//parent_binder ::=
-//    AS LIDENT
-//
-//  | /* empty */
-//
-//
-//value ::=
-///* TODO: factorize these rules (also with method): */
-//    override_flag ? attributes MUTABLE VIRTUAL label COLON core_type
-//
-//  | override_flag ? attributes VIRTUAL mutable_flag label COLON core_type
-//
-//  | override_flag ? attributes mutable_flag label EQUAL seq_expr
-//
-//  | override_flag ? attributes mutable_flag label type_constraint EQUAL seq_expr
-//
-//
-//method_ ::=
-///* TODO: factorize those rules... */
-//    override_flag ? attributes PRIVATE VIRTUAL label COLON poly_type
-//
-//  | override_flag ? attributes VIRTUAL private_flag label COLON poly_type
-//
-//  | override_flag ? attributes private_flag label strict_binding
-//
-//  | override_flag ? attributes private_flag label COLON poly_type EQUAL seq_expr
-//
-//  | override_flag ? attributes private_flag label COLON TYPE lident_list
-//    DOT core_type EQUAL seq_expr
-//
-//
-//
+value ::=
+/* TODO: factorize these rules (also with method): */
+    override_flag ? attributes ? MUTABLE VIRTUAL label COLON core_type
+  | override_flag ? attributes ? VIRTUAL MUTABLE ? label COLON core_type
+  | override_flag ? attributes ? MUTABLE ? label EQUAL seq_expr
+  | override_flag ? attributes ? MUTABLE ? label type_constraint EQUAL seq_expr
+
+method_ ::=
+/* TODO: factorize those rules... */
+    override_flag ? attributes ? PRIVATE VIRTUAL label COLON poly_type
+
+  | override_flag ? attributes ? VIRTUAL PRIVATE ? label COLON poly_type
+  | override_flag ? attributes ? PRIVATE ? label strict_binding
+  | override_flag ? attributes ? PRIVATE ? label COLON poly_type EQUAL seq_expr
+  | override_flag ? attributes ? PRIVATE ? label COLON TYPE lident_list
+    DOT core_type EQUAL seq_expr
+
+
+
 ///* Class types */
+
+class_type ::=
+    class_signature
+  | QUESTION LIDENT COLON simple_core_type_or_tuple MINUSGREATER class_type
+  | OPTLABEL simple_core_type_or_tuple MINUSGREATER class_type
+  | LIDENT COLON simple_core_type_or_tuple MINUSGREATER class_type
+  | simple_core_type_or_tuple MINUSGREATER class_type
+
+class_signature ::=
+    LBRACKET core_type_comma_list RBRACKET clty_longident attributes ?
+  | clty_longident attributes ?
+  | OBJECT attributes ? class_sig_body END attributes ?
+  //| OBJECT attributes ? class_sig_body error attributes ?
+  | extension attributes ?
+
 //
-//class_type ::=
-//    class_signature
-//
-//  | QUESTION LIDENT COLON simple_core_type_or_tuple MINUSGREATER
-//    class_type
-//
-//  | OPTLABEL simple_core_type_or_tuple MINUSGREATER class_type
-//
-//  | LIDENT COLON simple_core_type_or_tuple MINUSGREATER class_type
-//
-//  | simple_core_type_or_tuple MINUSGREATER class_type
-//
-//
-//class_signature ::=
-//    LBRACKET core_type_comma_list RBRACKET clty_longident
-//
-//  | clty_longident
-//
-//  | OBJECT attributes class_sig_body END
-//
-//  | OBJECT attributes class_sig_body error
-//
-//  | class_signature attribute
-//
-//  | extension
-//
-//
-//class_sig_body ::=
-//    class_self_type class_sig_fields
-//
-//
-//class_self_type ::=
-//    LPAREN core_type RPAREN
-//
-//  | /* empty */
-//
-//
-//class_sig_fields ::=
-//    /* empty */
-//| class_sig_fields class_sig_field
-//
-//class_sig_field ::=
-//    INHERIT attributes class_signature post_item_attributes ?
-//
-//  | VAL attributes value_type post_item_attributes ?
-//
-//  | METHOD_KEYWORD attributes private_virtual_flags label COLON poly_type
-//    post_item_attributes ?
-//
-//  | CONSTRAINT attributes constrain_field post_item_attributes ?
-//
-//  | item_extension post_item_attributes ?
-//
-//  | floating_attribute
-//
-//
-//value_type ::=
-//    VIRTUAL mutable_flag label COLON core_type
-//
-//  | MUTABLE virtual_flag label COLON core_type
-//
-//  | label COLON core_type
+class_sig_body ::=
+    class_self_type ? class_sig_fields ?
+
+
+class_self_type ::=
+    LPAREN core_type RPAREN
+
+class_sig_fields ::=
+    class_sig_field +
+
+class_sig_field ::=
+    INHERIT attributes ? class_signature post_item_attributes ?
+  | VAL attributes ? value_type post_item_attributes ?
+
+  | METHOD_KEYWORD attributes ? private_virtual_flags ? label COLON poly_type
+    post_item_attributes ?
+
+  | CONSTRAINT attributes ? constrain_field post_item_attributes ?
+
+  | item_extension post_item_attributes ?
+
+  | floating_attribute
+
+
+value_type ::=
+    VIRTUAL MUTABLE ? label COLON core_type
+  | MUTABLE VIRTUAL ? label COLON core_type
+  | label COLON core_type
 //
 //
 //constrain ::=
 //        core_type EQUAL core_type
-//
-//constrain_field ::=
-//        core_type EQUAL core_type
-//
+
+constrain_field ::=
+        core_type EQUAL core_type
+
 //class_descriptions ::=
 //    class_description
 //
@@ -645,12 +591,12 @@ signature_item ::=
 //
 //
 //class_description ::=
-//    CLASS ext_attributes ? virtual_flag class_type_parameters LIDENT COLON
+//    CLASS ext_attributes ? VIRTUAL ? class_type_parameters LIDENT COLON
 //    class_type post_item_attributes ?
 //
 //
 //and_class_description ::=
-//    AND attributes virtual_flag class_type_parameters LIDENT COLON class_type
+//    AND attributes VIRTUAL ? class_type_parameters LIDENT COLON class_type
 //    post_item_attributes ?
 //
 //
@@ -661,12 +607,12 @@ signature_item ::=
 //
 //
 //class_type_declaration ::=
-//    CLASS TYPE ext_attributes ? virtual_flag class_type_parameters LIDENT EQUAL
+//    CLASS TYPE ext_attributes ? VIRTUAL ? class_type_parameters LIDENT EQUAL
 //    class_signature post_item_attributes ?
 //
 //
 //and_class_type_declaration ::=
-//    AND attributes virtual_flag class_type_parameters LIDENT EQUAL
+//    AND attributes VIRTUAL ? class_type_parameters LIDENT EQUAL
 //    class_signature post_item_attributes ?
 //
 //
@@ -747,70 +693,16 @@ let_pattern ::=
 expr ::=
   /*  expr_comma_list //%prec below_COMMA
   |*/ non_op_expr
+  | ref_read_bin_expr
+  | or_bin_expr
+  | and_bin_expr
+  | compare_bin_expr
+  | infixop1_bin_expr
   | coloncolon_bin_expr
-//  |
-//  | expr INFIXOP0 expr
-//
-//  | expr INFIXOP1 expr
-//
-//  | expr INFIXOP2 expr
-//
-//  | expr INFIXOP3 expr
-//
-//  | expr INFIXOP4 expr
-//
-//  | expr PLUS expr
-//
-//  | expr PLUSDOT expr
-//
-//  | expr PLUSEQ expr
-//
-//  | expr MINUS expr
-//
-//  | expr MINUSDOT expr
-//
-//  | expr STAR expr
-//
-//  | expr PERCENT expr
-//
-//  | expr EQUAL expr
-//
-//  | expr LESS expr
-//
-//  | expr GREATER expr
-//
-//  | expr OR expr
-//
-//  | expr BARBAR expr
-//
-//  | expr AMPERSAND expr
-//
-//  | expr AMPERAMPER expr
-//
-//  | expr COLONEQUAL expr
-//
-//  | subtractive expr //%prec prec_unary_minus
-//
-//  | additive expr //%prec prec_unary_plus
-//
-//  | simple_expr DOT label_longident LESSMINUS expr
-//
-//  | simple_expr DOT LPAREN seq_expr RPAREN LESSMINUS expr
-//
-//  | simple_expr DOT LBRACKET seq_expr RBRACKET LESSMINUS expr
-//
-//  | simple_expr DOT LBRACE expr RBRACE LESSMINUS expr
-//
-//  | label LESSMINUS expr
-//
-//  | ASSERT ext_attributes ? simple_expr //%prec below_SHARP
-//
-//  | LAZY ext_attributes ? simple_expr //%prec below_SHARP
-//
-//  | OBJECT ext_attributes ? class_structure END
-//
-//  | OBJECT ext_attributes ? class_structure error
-//
+  | sum_bin_expr
+  | mul_bin_expr
+  | infixop4_bin_expr
+  | sign_unary_expr
 //  | expr attribute
 //
 //  | UNDERSCORE
@@ -818,7 +710,10 @@ expr ::=
 //
 
 non_op_expr ::=
-    simple_expr labeled_simple_expr *
+
+    ref_assign_expr
+
+  | simple_expr labeled_simple_expr *
   | simple_expr //%prec below_SHARP
   | let_bindings IN seq_expr
   | LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
@@ -837,14 +732,54 @@ non_op_expr ::=
   | WHILE ext_attributes ? seq_expr DO seq_expr DONE
   | FOR ext_attributes ? pattern_expression EQUAL seq_expr direction_flag seq_expr DO seq_expr DONE
   | coloncolon_app_rule
+  | ASSERT ext_attributes ? simple_expr //%prec below_SHARP
+  | LAZY ext_attributes ? simple_expr //%prec below_SHARP
+  | OBJECT ext_attributes ? class_structure ? END
+  //| OBJECT ext_attributes ? class_structure error
+
+
+
+ref_assign_expr ::=
+    simple_expr DOT label_longident LESSMINUS expr
+  | simple_expr DOT LPAREN seq_expr RPAREN LESSMINUS expr
+  | simple_expr DOT LBRACKET seq_expr RBRACKET LESSMINUS expr
+  | simple_expr DOT LBRACE expr RBRACE LESSMINUS expr
+  | label LESSMINUS expr
 
 coloncolon_app_rule ::= LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
 
 if_else_expr ::=
     IF ext_attributes ? seq_expr THEN expr (ELSE expr) ?
 
+ref_read_bin_expr ::=
+    expr COLONEQUAL expr { rightAssociative = true }
+
 coloncolon_bin_expr ::=
     expr COLONCOLON expr { rightAssociative = true }
+
+compare_bin_expr ::=
+    expr (INFIXOP0 | EQUAL | LESS | GREATER) expr
+
+or_bin_expr ::=
+  expr (OR | BARBAR) expr { rightAssociative = true }
+
+and_bin_expr ::=
+  expr (AMPERSAND | AMPERAMPER) expr { rightAssociative = true }
+
+infixop1_bin_expr ::=
+    expr INFIXOP1 expr
+
+sum_bin_expr ::=
+    expr (INFIXOP2 | PLUS | PLUSDOT | MINUS | MINUSDOT) expr
+
+mul_bin_expr ::=
+    expr (INFIXOP3 | STAR | PERCENT) expr
+
+infixop4_bin_expr ::=
+    expr INFIXOP4 expr  { rightAssociative = true }
+
+sign_unary_expr ::=
+    (subtractive | additive) expr
 //
 //simple_expr_expr ::=
 //    simple_expr labeled_simple_expr *
@@ -1302,13 +1237,13 @@ value_description ::=
 //
 //  | EQUAL DOTDOT
 //
-//  | EQUAL private_flag LBRACE label_declarations RBRACE
+//  | EQUAL private_flag ? LBRACE label_declarations RBRACE
 //
-//  | EQUAL core_type EQUAL private_flag constructor_declarations
+//  | EQUAL core_type EQUAL private_flag ? constructor_declarations
 //
 //  | EQUAL core_type EQUAL DOTDOT
 //
-//  | EQUAL core_type EQUAL private_flag LBRACE label_declarations RBRACE
+//  | EQUAL core_type EQUAL private_flag ? LBRACE label_declarations RBRACE
 //
 //
 //optional_type_parameters ::=
@@ -1391,11 +1326,11 @@ constructor_arguments ::=
 //  | label_declaration_semi label_declarations
 //
 //label_declaration ::=
-//    mutable_flag label COLON poly_type_no_attr attributes
+//    MUTABLE ? label COLON poly_type_no_attr attributes
 //
 //
 //label_declaration_semi ::=
-//    mutable_flag label COLON poly_type_no_attr attributes SEMI attributes
+//    MUTABLE ? label COLON poly_type_no_attr attributes SEMI attributes
 //
 //
 //
@@ -1403,12 +1338,12 @@ constructor_arguments ::=
 //
 //str_type_extension ::=
 //  TYPE ext_attributes ? nonrec_flag optional_type_parameters type_longident
-//  PLUSEQ private_flag str_extension_constructors post_item_attributes ?
+//  PLUSEQ private_flag ? str_extension_constructors post_item_attributes ?
 //
 //
 //sig_type_extension ::=
 //  TYPE ext_attributes ? nonrec_flag optional_type_parameters type_longident
-//  PLUSEQ private_flag sig_extension_constructors post_item_attributes ?
+//  PLUSEQ private_flag ? sig_extension_constructors post_item_attributes ?
 //
 //
 //str_extension_constructors ::=
@@ -1469,16 +1404,15 @@ constructor_arguments ::=
 //
 //
 ///* Polymorphic types */
-//
-//typevar_list ::=
-//        QUOTE ident
-//      | typevar_list QUOTE ident
-//
-//poly_type ::=
-//        core_type
-//
-//      | typevar_list DOT core_type
-//
+
+typevar_list ::=
+    (QUOTE ident) +
+
+poly_type ::=
+    typevar_list DOT core_type
+  | core_type
+
+
 //
 //poly_type_no_attr ::=
 //        core_type_no_attr
@@ -1523,10 +1457,9 @@ simple_core_type ::=
 //
 simple_core_type2 ::=
     QUOTE ident
-//
 //  | UNDERSCORE
 //
-//  | type_longident
+ | type_longident
 //
 //  | simple_core_type2 type_longident
 //
@@ -1599,9 +1532,8 @@ simple_core_type_or_tuple ::=
 //  | simple_core_type STAR core_type_list
 //
 //
-//core_type_comma_list ::=
-//    core_type
-//  | core_type_comma_list COMMA core_type
+core_type_comma_list ::=
+    core_type (COMMA core_type) *
 //
 core_type_list ::=
     simple_core_type
@@ -1620,13 +1552,10 @@ core_type_list ::=
 //
 //field_semi ::=
 //  label COLON poly_type_no_attr attributes SEMI attributes
-//
-//
-//
-//label ::=
-//    LIDENT
-//
-//
+
+label ::=
+    LIDENT
+
 ///* Constants */
 //
 constant ::=
@@ -1704,30 +1633,28 @@ constr_longident ::=
 label_longident ::=
     LIDENT
 //  | mod_longident DOT LIDENT
-//
-//type_longident ::=
-//    LIDENT
-//  | mod_ext_longident DOT LIDENT
-//
+
+type_longident ::=
+    LIDENT
+  | mod_ext_longident DOT LIDENT
+
 mod_longident ::=
     UIDENT (DOT UIDENT) *
 
-//mod_ext_longident ::=
-//    UIDENT
-//  | mod_ext_longident DOT UIDENT
-//  | mod_ext_longident LPAREN mod_ext_longident RPAREN
+mod_ext_longident ::=
+    UIDENT (LPAREN mod_ext_longident RPAREN | DOT UIDENT)?
 //
 //mty_longident ::=
 //    ident
 //  | mod_ext_longident DOT ident
 //
-//clty_longident ::=
-//    LIDENT
-//  | mod_ext_longident DOT LIDENT
+clty_longident ::=
+    LIDENT
+  | mod_ext_longident DOT LIDENT
 //
-//class_longident ::=
-//    LIDENT
-//  | mod_longident DOT LIDENT
+class_longident ::=
+    LIDENT
+  | mod_longident DOT LIDENT
 //
 //
 ///* Toplevel directives */
@@ -1755,24 +1682,11 @@ direction_flag ::=
     TO
   | DOWNTO
 
-//private_flag ::=
-//    /* empty */
-//  | PRIVATE
-//
-//mutable_flag ::=
-//    /* empty */
-//  | MUTABLE
-//
-//virtual_flag ::=
-//    /* empty */
-//  | VIRTUAL
-//
-//private_virtual_flags ::=
-//    /* empty */
-//  | PRIVATE
-//  | VIRTUAL
-//  | PRIVATE VIRTUAL
-//  | VIRTUAL PRIVATE
+private_virtual_flags ::=
+    PRIVATE
+  | VIRTUAL
+  | PRIVATE VIRTUAL
+  | VIRTUAL PRIVATE
 
 override_flag ::=
   BANG
@@ -1781,13 +1695,13 @@ override_flag ::=
 //  | /* empty */
 //  | SEMI
 //
-//subtractive ::=
-//  | MINUS
-//  | MINUSDOT
+subtractive ::=
+  MINUS
+  | MINUSDOT
 //
-//additive ::=
-//  | PLUS
-//  | PLUSDOT
+additive ::=
+  PLUS
+  | PLUSDOT
 //
 //
 ///* Attributes and extensions */
@@ -1857,9 +1771,9 @@ attribute ::=
 post_item_attribute ::=
   LBRACKETATAT attr_id payload RBRACKET
 
-//floating_attribute ::=
-//  LBRACKETATATAT attr_id payload RBRACKET
-//
+floating_attribute ::=
+  LBRACKETATATAT attr_id payload RBRACKET
+
 post_item_attributes ::=
     post_item_attribute +
 
@@ -1870,14 +1784,14 @@ ext_attributes ::=
     attributes
   | PERCENT attr_id attributes ?
 
-//extension ::=
-//  LBRACKETPERCENT attr_id payload RBRACKET
-//
-//item_extension ::=
-//  LBRACKETPERCENTPERCENT attr_id payload RBRACKET
-//
+extension ::=
+  LBRACKETPERCENT attr_id payload RBRACKET
+
+item_extension ::=
+  LBRACKETPERCENTPERCENT attr_id payload RBRACKET
+
 payload ::=
-  COLON signature ?
+  COLON signature
   | structure
 //  | COLON core_type
 //  | QUESTION pattern_expression
