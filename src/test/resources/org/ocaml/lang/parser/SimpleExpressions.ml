@@ -66,3 +66,12 @@ end
 let a = 1
 
 external ext : int = "a" "b"
+
+type nonrec 'a simpletype = int constraint int = string
+
+type simpletype +=
+    Int of int
+    | Float = Float2
+
+exception Ex of int
+exception Ex = Ex

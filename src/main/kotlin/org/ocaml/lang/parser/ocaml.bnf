@@ -253,16 +253,11 @@ structure ::=
 
 structure_item ::=
     let_bindings
-
   | primitive_declaration
-
-//  | value_description
-//
-//  | type_declarations
-//
-//  | str_type_extension
-//
-//  | str_exception_declaration
+  | value_description
+  | str_type_extension
+  | type_declarations
+  | str_exception_declaration
 //
 //  | module_binding
 //
@@ -567,10 +562,9 @@ value_type ::=
     VIRTUAL MUTABLE ? label COLON core_type
   | MUTABLE VIRTUAL ? label COLON core_type
   | label COLON core_type
-//
-//
-//constrain ::=
-//        core_type EQUAL core_type
+
+constrain ::=
+        core_type EQUAL core_type
 
 constrain_field ::=
         core_type EQUAL core_type
@@ -1101,7 +1095,7 @@ simple_pattern ::=
 comma_list_pattern_expression ::=
     pattern_expression (COMMA pattern_expression) +
 //  | pattern_expression COMMA error
-//
+
 //pattern_no_exn_comma_list ::=
 //    pattern_no_exn_comma_list COMMA pattern_expression
 //  | pattern_no_exn COMMA pattern_expression
@@ -1146,33 +1140,24 @@ primitive_declaration ::=
     primitive_declaration_body post_item_attributes ?
 
 /* Type declarations */
-//
-//type_declarations ::=
-//    type_declaration
-//
-//  | type_declarations and_type_declaration
-//
-//
-//
-//type_declaration ::=
-//    TYPE ext_attributes ? nonrec_flag optional_type_parameters LIDENT
-//    type_kind constraints post_item_attributes ?
-//
-//
-//and_type_declaration ::=
-//    AND attributes optional_type_parameters LIDENT type_kind constraints
-//    post_item_attributes ?
-//
-//
-//constraints ::=
-//        constraints CONSTRAINT constrain
-//      | /* empty */
-//
-//type_kind ::=
-//    /*empty*/
-//
-//  | EQUAL core_type
-//
+
+type_declarations ::=
+    type_declaration and_type_declaration *
+
+type_declaration ::=
+    TYPE ext_attributes ? NONREC ? optional_type_parameters ? LIDENT
+    type_kind ? constraints ? post_item_attributes ?
+
+and_type_declaration ::=
+    AND attributes optional_type_parameters ? LIDENT type_kind ? constraints ?
+    post_item_attributes ?
+
+constraints ::=
+      (CONSTRAINT constrain) *
+
+type_kind ::=
+    EQUAL core_type
+
 //  | EQUAL PRIVATE core_type
 //
 //  | EQUAL constructor_declarations
@@ -1181,46 +1166,41 @@ primitive_declaration ::=
 //
 //  | EQUAL DOTDOT
 //
-//  | EQUAL private_flag ? LBRACE label_declarations RBRACE
+//  | EQUAL PRIVATE ? LBRACE label_declarations RBRACE
 //
-//  | EQUAL core_type EQUAL private_flag ? constructor_declarations
+//  | EQUAL core_type EQUAL PRIVATE ? constructor_declarations
 //
 //  | EQUAL core_type EQUAL DOTDOT
 //
-//  | EQUAL core_type EQUAL private_flag ? LBRACE label_declarations RBRACE
-//
-//
-//optional_type_parameters ::=
-//    /*empty*/
-//  | optional_type_parameter
-//  | LPAREN optional_type_parameter_list RPAREN
-//
-//optional_type_parameter ::=
-//    type_variance optional_type_variable
-//
-//optional_type_parameter_list ::=
-//    optional_type_parameter
-//  | optional_type_parameter_list COMMA optional_type_parameter
-//
-//optional_type_variable ::=
-//    QUOTE ident
-//  | UNDERSCORE
-//
-//
-//
+//  | EQUAL core_type EQUAL PRIVATE ? LBRACE label_declarations RBRACE
+
+
+optional_type_parameters ::=
+    optional_type_parameter
+  | LPAREN optional_type_parameter_list RPAREN
+
+optional_type_parameter ::=
+    type_variance ? optional_type_variable
+
+optional_type_parameter_list ::=
+    optional_type_parameter (COMMA optional_type_parameter) *
+
+optional_type_variable ::=
+    QUOTE ident
+  | UNDERSCORE
+
 //type_parameters ::=
 //    /*empty*/
 //  | type_parameter
 //  | LPAREN type_parameter_list RPAREN
 //
 //type_parameter ::=
-//    type_variance type_variable
-//
-//type_variance ::=
-//    /* empty */
-//  | PLUS
-//  | MINUS
-//
+//    type_variance ? type_variable
+
+type_variance ::=
+    PLUS
+  | MINUS
+
 //type_variable ::=
 //    QUOTE ident
 //
@@ -1239,27 +1219,22 @@ primitive_declaration ::=
 //
 //bar_constructor_declaration ::=
 //  | BAR constr_ident generalized_constructor_arguments ? attributes
-//
-//
-//str_exception_declaration ::=
-//  | sig_exception_declaration
-//  | EXCEPTION ext_attributes ? constr_ident EQUAL constr_longident attributes
-//    post_item_attributes ?
-//
-//
-//sig_exception_declaration ::=
-//  | EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ?
-//    attributes post_item_attributes ?
-//
-//
+
+
+str_exception_declaration ::=
+    EXCEPTION ext_attributes ? constr_ident EQUAL constr_longident attributes ?
+    post_item_attributes ?
+  | EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ?
+        attributes ? post_item_attributes ?
+
+
+
+
 generalized_constructor_arguments ::=
-     OF constructor_arguments
-//  | COLON constructor_arguments MINUSGREATER simple_core_type
-//
-//  | COLON simple_core_type
-//
-//
-//
+    OF constructor_arguments
+  | COLON constructor_arguments MINUSGREATER simple_core_type
+  | COLON simple_core_type
+
 constructor_arguments ::=
     core_type_list
 //  | LBRACE label_declarations RBRACE
@@ -1279,26 +1254,19 @@ constructor_arguments ::=
 //
 //
 ///* Type Extensions */
-//
-//str_type_extension ::=
-//  TYPE ext_attributes ? nonrec_flag optional_type_parameters type_longident
-//  PLUSEQ private_flag ? str_extension_constructors post_item_attributes ?
-//
-//
+
+str_type_extension ::=
+  TYPE ext_attributes ? NONREC ? optional_type_parameters ? type_longident
+  PLUSEQ PRIVATE ? str_extension_constructors post_item_attributes ?
+
 //sig_type_extension ::=
-//  TYPE ext_attributes ? nonrec_flag optional_type_parameters type_longident
-//  PLUSEQ private_flag ? sig_extension_constructors post_item_attributes ?
+//  TYPE ext_attributes ? NONREC ? optional_type_parameters ? type_longident
+//  PLUSEQ PRIVATE ? sig_extension_constructors post_item_attributes ?
 //
 //
-//str_extension_constructors ::=
-//    extension_constructor_declaration
-//  | bar_extension_constructor_declaration
-//  | extension_constructor_rebind
-//  | bar_extension_constructor_rebind
-//  | str_extension_constructors bar_extension_constructor_declaration
-//
-//  | str_extension_constructors bar_extension_constructor_rebind
-//
+str_extension_constructors ::=
+    BAR ? (extension_constructor_rebind | extension_constructor_declaration ) (BAR (extension_constructor_rebind | extension_constructor_declaration ))*
+  //
 //
 //sig_extension_constructors ::=
 //    extension_constructor_declaration
@@ -1306,24 +1274,13 @@ constructor_arguments ::=
 //  | sig_extension_constructors bar_extension_constructor_declaration
 //
 //
-//extension_constructor_declaration ::=
-//  | constr_ident generalized_constructor_arguments ? attributes
-//
-//
-//bar_extension_constructor_declaration ::=
-//  | BAR constr_ident generalized_constructor_arguments ? attributes
-//
-//
-//extension_constructor_rebind ::=
-//  | constr_ident EQUAL constr_longident attributes
-//
-//
-//bar_extension_constructor_rebind ::=
-//  | BAR constr_ident EQUAL constr_longident attributes
-//
-//
-//
-///* "with" constraints (additional type equations over signature components) */
+extension_constructor_declaration ::=
+    constr_ident generalized_constructor_arguments ? attributes ?
+
+extension_constructor_rebind ::=
+    constr_ident EQUAL constr_longident attributes ?
+
+///* "with" constraints ? (additional type equations over signature components) */
 //
 //with_constraints ::=
 //    with_constraint
@@ -1331,7 +1288,7 @@ constructor_arguments ::=
 //
 //with_constraint ::=
 //    TYPE type_parameters label_longident with_type_binder core_type_no_attr
-//    constraints
+//    constraints ?
 //
 //    /* used label_longident instead of type_longident to disallow
 //       functor applications in type path */
@@ -1604,10 +1561,6 @@ class_longident ::=
 name_tag ::=
     BACKQUOTE ident
 
-//nonrec_flag ::=
-//    /* empty */
-//  | NONREC
-
 direction_flag ::=
     TO
   | DOWNTO
@@ -1725,5 +1678,5 @@ payload ::=
   | COLON core_type
   | QUESTION pattern_expression
   | QUESTION pattern_expression WHEN seq_expr
-    | structure
+  | structure
 
