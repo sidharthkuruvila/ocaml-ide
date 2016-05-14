@@ -65,4 +65,4 @@ end
 
 let a = 1
 
-
+external ext : int = "a" "b"

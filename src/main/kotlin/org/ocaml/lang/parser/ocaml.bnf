@@ -253,9 +253,9 @@ structure ::=
 
 structure_item ::=
     let_bindings
-//
-//  | primitive_declaration
-//
+
+  | primitive_declaration
+
 //  | value_description
 //
 //  | type_declarations
@@ -1133,22 +1133,19 @@ comma_list_pattern_expression ::=
 //
 value_description ::=
     VAL ext_attributes ? val_ident COLON core_type post_item_attributes ?
-//
-//
-//
-///* Primitive declarations */
-//
-//primitive_declaration_body ::=
-//    STRING
-//  | STRING primitive_declaration_body
-//
-//primitive_declaration ::=
-//    EXTERNAL ext_attributes ? val_ident COLON core_type EQUAL
-//    primitive_declaration_body post_item_attributes ?
-//
-//
-//
-///* Type declarations */
+
+
+
+/* Primitive declarations */
+
+primitive_declaration_body ::=
+    STRING +
+
+primitive_declaration ::=
+    EXTERNAL ext_attributes ? val_ident COLON core_type EQUAL
+    primitive_declaration_body post_item_attributes ?
+
+/* Type declarations */
 //
 //type_declarations ::=
 //    type_declaration
