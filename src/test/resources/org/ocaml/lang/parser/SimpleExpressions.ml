@@ -44,7 +44,7 @@ abc def ~ghi ?klm ?opq:rst ~uvw:xyz;
 (a.{b} <- c);
 (a <- b);
 object
-    (*val mutable virtual x : int
+    val mutable virtual x : int
     val virtual mutable y : int
     val mutable z = "hello"
     val w : int = 123
@@ -54,7 +54,7 @@ object
     inherit klass a b
     inherit [klass1, klass2] a b
     inherit (klass a b : identifier)
-    inherit ! [@identifier abc] [@identifier 123] [klass1, klass2] a b [@identifier 123]*)
+    inherit ! [@identifier abc] [@identifier 123] [klass1, klass2] a b [@identifier 123]
     inherit (klass a b : object
         (*[@identifier abc] (int)
         val virtual mutable a : int
@@ -62,5 +62,7 @@ object
         [%% abc : val a: int]
     end) [@identifier abc]
 end
+
+let a = 1
 
 

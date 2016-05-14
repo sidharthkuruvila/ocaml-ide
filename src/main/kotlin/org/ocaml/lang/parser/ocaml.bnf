@@ -249,16 +249,10 @@ module_expr ::=
 //
 //
 structure ::=
-    seq_expr? //post_item_attributes ? structure_tail
-  //| structure_tail
-//
-//structure_tail ::=
-//    /* empty */
-//  | SEMISEMI structure
-//  | structure_item structure_tail
-//
-//structure_item ::=
-//    let_bindings
+    (seq_expr post_item_attributes?)? (SEMISEMI seq_expr post_item_attributes? | SEMISEMI | structure_item)*
+
+structure_item ::=
+    let_bindings
 //
 //  | primitive_declaration
 //
@@ -500,12 +494,9 @@ class_field ::=
   | VAL value post_item_attributes ?
   | METHOD_KEYWORD method_ post_item_attributes ?
   | CONSTRAINT attributes ? constrain_field post_item_attributes ?
-
   | INITIALIZER attributes ? seq_expr post_item_attributes ?
-
-//  | item_extension post_item_attributes ?
-//
-//  | floating_attribute
+  | item_extension post_item_attributes ?
+  | floating_attribute
 
 
 parent_binder ::=
@@ -710,9 +701,7 @@ expr ::=
 //
 
 non_op_expr ::=
-
     ref_assign_expr
-
   | simple_expr labeled_simple_expr *
   | simple_expr //%prec below_SHARP
   | let_bindings IN seq_expr
@@ -736,8 +725,6 @@ non_op_expr ::=
   | LAZY ext_attributes ? simple_expr //%prec below_SHARP
   | OBJECT ext_attributes ? class_structure ? END
   //| OBJECT ext_attributes ? class_structure error
-
-
 
 ref_assign_expr ::=
     simple_expr DOT label_longident LESSMINUS expr
@@ -780,43 +767,6 @@ infixop4_bin_expr ::=
 
 sign_unary_expr ::=
     (subtractive | additive) expr
-//
-//simple_expr_expr ::=
-//    simple_expr labeled_simple_expr *
-//  | simple_expr //%prec below_SHARP
-//
-//let_binding_expr ::=
-//    let_bindings IN seq_expr
-//
-//let_module_expr ::=
-//    LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
-//
-//let_exception_expr ::=
-//    LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
-//
-//let_open_expr ::=
-//    LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
-//
-//function_expr ::=
-//    FUNCTION ext_attributes ? BAR ? match_cases
-//
-//fun1_expr ::=
-//    FUN ext_attributes ? labeled_simple_pattern fun_def
-//
-//fun2_expr ::=
-//    FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
-//
-//match_expr ::=
-//    MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
-//
-//try_expr ::=
-//    TRY ext_attributes ? seq_expr WITH BAR ? match_cases
-//
-//constructor_expr ::=
-//    constr_longident simple_expr //%prec below_SHARP
-//
-//tag_expr ::=
-
 
 simple_expr ::=
     val_longident
@@ -925,11 +875,8 @@ labeled_simple_expr ::=
 
 label_expr ::=
     LABEL_OP simple_expr //%prec below_SHARP
-
   | TILDE label_ident
-
   | QUESTION label_ident
-
   | OPTLABEL simple_expr //%prec below_SHARP
 
 label_ident ::=
@@ -1425,19 +1372,14 @@ poly_type ::=
 //
 core_type ::=
     core_type_no_attr
-//
 //  | core_type attribute
-//
-//
+
 core_type_no_attr ::=
     core_type2 ////%prec MINUSGREATER
-//
 //  | core_type2 AS QUOTE ident
-//
-//
+
 core_type2 ::=
     simple_core_type_or_tuple
-//
 //  | QUESTION LIDENT COLON core_type2 MINUSGREATER core_type2
 //
 //  | OPTLABEL core_type2 MINUSGREATER core_type2
@@ -1445,22 +1387,14 @@ core_type2 ::=
 //  | LIDENT COLON core_type2 MINUSGREATER core_type2
 //
 //  | core_type2 MINUSGREATER core_type2
-//
-//
-//
+
 simple_core_type ::=
     simple_core_type2  ////%prec below_SHARP
-//
 //  | LPAREN core_type_comma_list RPAREN ////%prec below_SHARP
-//
-//
-//
 simple_core_type2 ::=
     QUOTE ident
 //  | UNDERSCORE
-//
- | type_longident
-//
+    | type_longident
 //  | simple_core_type2 type_longident
 //
 //  | LPAREN core_type_comma_list RPAREN type_longident
@@ -1530,11 +1464,10 @@ simple_core_type2 ::=
 simple_core_type_or_tuple ::=
     simple_core_type
 //  | simple_core_type STAR core_type_list
-//
-//
+
 core_type_comma_list ::=
     core_type (COMMA core_type) *
-//
+
 core_type_list ::=
     simple_core_type
 //  | core_type_list STAR simple_core_type
@@ -1621,7 +1554,7 @@ constr_ident ::=
 
 val_longident ::=
     val_ident
-//  /*| mod_longident DOT val_ident*/
+  | mod_longident DOT val_ident
 
 constr_longident ::=
     mod_longident       ////%prec below_DOT
@@ -1683,10 +1616,11 @@ direction_flag ::=
   | DOWNTO
 
 private_virtual_flags ::=
-    PRIVATE
-  | VIRTUAL
-  | PRIVATE VIRTUAL
+    PRIVATE VIRTUAL
   | VIRTUAL PRIVATE
+  |  PRIVATE
+  | VIRTUAL
+
 
 override_flag ::=
   BANG
@@ -1762,8 +1696,7 @@ single_attr_id ::=
 
 
 attr_id ::=
-    single_attr_id
-//  | single_attr_id DOT attr_id
+    single_attr_id (DOT attr_id)?
 
 attribute ::=
   LBRACKETAT attr_id payload RBRACKET
@@ -1791,10 +1724,9 @@ item_extension ::=
   LBRACKETPERCENTPERCENT attr_id payload RBRACKET
 
 payload ::=
-  COLON signature
-  | structure
-//  | COLON core_type
-//  | QUESTION pattern_expression
-//  | QUESTION pattern_expression WHEN seq_expr
-//
+    COLON signature
+  | COLON core_type
+  | QUESTION pattern_expression
+  | QUESTION pattern_expression WHEN seq_expr
+    | structure
 
