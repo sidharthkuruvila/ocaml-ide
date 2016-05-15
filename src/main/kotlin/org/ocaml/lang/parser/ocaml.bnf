@@ -235,20 +235,15 @@ structure_item ::=
   | module_type_declaration
   | open_statement
   | class_declarations
+  | class_type_declarations
+  | str_include_statement
+  | item_extension post_item_attributes ?
+  | floating_attribute
 
-//  | class_type_declarations
-//
-//  | str_include_statement
-//
-//  | item_extension post_item_attributes ?
-//
-//  | floating_attribute
-//
-//
-//str_include_statement ::=
-//    INCLUDE ext_attributes ? module_expr post_item_attributes ?
-//
-//
+
+str_include_statement ::=
+    INCLUDE ext_attributes ? module_expr post_item_attributes ?
+
 module_binding_body ::=
     EQUAL module_expr
   | COLON module_type EQUAL module_expr
@@ -534,25 +529,19 @@ constrain_field ::=
 //and_class_description ::=
 //    AND attributes ? VIRTUAL ? class_type_parameters ? LIDENT COLON class_type
 //    post_item_attributes ?
-//
-//
-//class_type_declarations ::=
-//    class_type_declaration
-//
-//  | class_type_declarations and_class_type_declaration
-//
-//
-//class_type_declaration ::=
-//    CLASS TYPE ext_attributes ? VIRTUAL ? class_type_parameters ? LIDENT EQUAL
-//    class_signature post_item_attributes ?
-//
-//
-//and_class_type_declaration ::=
-//    AND attributes ? VIRTUAL ? class_type_parameters ? LIDENT EQUAL
-//    class_signature post_item_attributes ?
-//
-//
-//
+
+class_type_declarations ::=
+    class_type_declaration and_class_type_declaration *
+
+class_type_declaration ::=
+    CLASS TYPE ext_attributes ? VIRTUAL ? class_type_parameters ? LIDENT EQUAL
+    class_signature post_item_attributes ?
+
+and_class_type_declaration ::=
+    AND attributes ? VIRTUAL ? class_type_parameters ? LIDENT EQUAL
+    class_signature post_item_attributes ?
+
+
 ///* Core expressions */
 //
 seq_expr ::= expr (SEMI expr)*  //%prec below_SEMI

@@ -82,3 +82,8 @@ module SimpleModule : int = functor (Mod1 : int) -> Mod
 module SimpleModule : int = ( val 123 : Mod :> Mod)
 
 class [+'a, -'b] klass a b = klass
+
+class type virtual ['a] klass = object
+
+    inherit abc
+end
