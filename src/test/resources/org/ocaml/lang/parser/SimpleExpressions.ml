@@ -75,3 +75,10 @@ type simpletype +=
 
 exception Ex of int
 exception Ex = Ex
+
+module SimpleModule : int = Mod2
+module SimpleModule : int = functor (Mod1 : int) -> Mod
+
+module SimpleModule : int = ( val 123 : Mod :> Mod)
+
+class [+'a, -'b] klass a b = klass
