@@ -265,34 +265,24 @@ and_module_binding ::=
 //
 ///* Module types */
 //
+
+module_type_suffix ::=
+    (MINUSGREATER module_type //%prec below_WITH
+    | WITH with_constraints | attribute)
+
 module_type ::=
-    mty_longident
-//
-//  | SIG attributes ? signature ? END
-//
+    mty_longident module_type_suffix ?
+  | SIG attributes ? signature ? END module_type_suffix ?
 //  | SIG attributes ? signature ? error
-//
-//  | FUNCTOR attributes ? functor_args MINUSGREATER module_type
-//      //%prec below_WITH
-//
-//  | module_type MINUSGREATER module_type
-//      //%prec below_WITH
-//
-//  | module_type WITH with_constraints
-//
-//  | MODULE TYPE OF attributes ? module_expr //%prec below_LBRACKETAT
-//
-///*  | LPAREN MODULE mod_longident RPAREN
-//       */
-//  | LPAREN module_type RPAREN
-//
+  | FUNCTOR attributes ? functor_args MINUSGREATER module_type module_type_suffix ?
+      //%prec below_WITH
+  | MODULE TYPE OF attributes ? module_expr module_type_suffix ? //%prec below_LBRACKETAT
+/*  | LPAREN MODULE mod_longident RPAREN
+       */
+  | LPAREN module_type RPAREN module_type_suffix ?
 //  | LPAREN module_type error
-//
-//  | extension
-//
-//  | module_type attribute
-//
-//
+  | extension module_type_suffix ?
+
 signature ::=
     SEMISEMI signature ?
   | signature_item signature ?
@@ -1129,10 +1119,9 @@ optional_type_variable ::=
     QUOTE ident
   | UNDERSCORE
 
-//type_parameters ::=
-//    /*empty*/
-//  | type_parameter
-//  | LPAREN type_parameter_list RPAREN
+type_parameters ::=
+    type_parameter
+  | LPAREN type_parameter_list RPAREN
 //
 type_parameter ::=
     type_variance ? type_variable
@@ -1220,29 +1209,26 @@ extension_constructor_rebind ::=
     constr_ident EQUAL constr_longident attributes ?
 
 ///* "with" constraints ? (additional type equations over signature components) */
-//
-//with_constraints ::=
-//    with_constraint
-//  | with_constraints AND with_constraint
-//
-//with_constraint ::=
-//    TYPE type_parameters label_longident with_type_binder core_type_no_attr
-//    constraints ?
-//
-//    /* used label_longident instead of type_longident to disallow
-//       functor applications in type path */
-//  | TYPE type_parameters label COLONEQUAL core_type_no_attr
-//
-//  | MODULE mod_longident EQUAL mod_ext_longident
-//
-//  | MODULE UIDENT COLONEQUAL mod_ext_longident
-//
-//
-//with_type_binder ::=
-//    EQUAL
-//  | EQUAL PRIVATE
-//
-//
+
+with_constraints ::=
+    with_constraint ( AND with_constraint ) *
+
+with_constraint ::=
+    TYPE type_parameters ? label_longident with_type_binder core_type_no_attr
+    constraints ?
+    /* used label_longident instead of type_longident to disallow
+       functor applications in type path */
+  | TYPE type_parameters ? label COLONEQUAL core_type_no_attr
+
+  | MODULE mod_longident EQUAL mod_ext_longident
+
+  | MODULE UIDENT COLONEQUAL mod_ext_longident
+
+with_type_binder ::=
+    EQUAL PRIVATE
+  | EQUAL
+
+
 ///* Polymorphic types */
 
 typevar_list ::=
