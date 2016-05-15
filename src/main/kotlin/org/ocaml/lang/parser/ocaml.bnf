@@ -125,7 +125,7 @@
 
     extends(".*pattern_expression")=pattern_expression
     extends("ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
-
+    extends("non_op_simple_expr|simple_expr")=simple_expr
 }
 /* Entry points */
 
@@ -488,14 +488,14 @@ constrain_field ::=
 class_descriptions ::=
     class_description (and_class_description) *
 
-//class_description ::=
-//    CLASS ext_attributes ? VIRTUAL ? class_type_parameters ? LIDENT COLON
-//    class_type post_item_attributes ?
-//
-//
-//and_class_description ::=
-//    AND attributes ? VIRTUAL ? class_type_parameters ? LIDENT COLON class_type
-//    post_item_attributes ?
+class_description ::=
+    CLASS ext_attributes ? VIRTUAL ? class_type_parameters ? LIDENT COLON
+    class_type post_item_attributes ?
+
+
+and_class_description ::=
+    AND attributes ? VIRTUAL ? class_type_parameters ? LIDENT COLON class_type
+    post_item_attributes ?
 
 class_type_declarations ::=
     class_type_declaration and_class_type_declaration *
@@ -670,15 +670,7 @@ sign_unary_expr ::=
     (subtractive | additive) expr
 
 simple_expr ::=
-    val_longident
-  | constant
-  | constr_longident //%prec prec_constant_constructor
-  | name_tag //%prec prec_constant_constructor
-  | LPAREN seq_expr RPAREN
-//  | LPAREN seq_expr error
-  | BEGIN ext_attributes ? seq_expr ? END
-//  | BEGIN ext_attributes ? seq_expr error
-  | LPAREN seq_expr type_constraint RPAREN
+    non_op_simple_expr
 
 //  | simple_expr DOT label_longident
 //
@@ -766,6 +758,18 @@ simple_expr ::=
 //  | */
 //
 
+
+non_op_simple_expr ::=
+   val_longident
+  | constant
+  | constr_longident //%prec prec_constant_constructor
+  | name_tag //%prec prec_constant_constructor
+  | LPAREN seq_expr RPAREN
+//  | LPAREN seq_expr error
+  | BEGIN ext_attributes ? seq_expr ? END
+//  | BEGIN ext_attributes ? seq_expr error
+  | LPAREN seq_expr type_constraint RPAREN
+
 simple_labeled_expr_list ::=
   labeled_simple_expr *
 
@@ -788,12 +792,9 @@ lident_list ::=
 
 let_binding_body ::=
     val_ident fun_binding
-//  | val_ident COLON typevar_list DOT core_type EQUAL seq_expr
-//
-//  | val_ident COLON TYPE lident_list DOT core_type EQUAL seq_expr
-//
+  | val_ident COLON typevar_list DOT core_type EQUAL seq_expr
+  | val_ident COLON TYPE lident_list DOT core_type EQUAL seq_expr
 //  | pattern_no_exn EQUAL seq_expr
-//
 //  | simple_pattern_not_ident COLON core_type EQUAL seq_expr
 
 let_bindings ::=
@@ -813,33 +814,26 @@ fun_binding ::=
 
 strict_binding ::=
     EQUAL seq_expr
-
-//  | labeled_simple_pattern fun_binding
-//
-//  | LPAREN TYPE lident_list RPAREN fun_binding
+  | labeled_simple_pattern fun_binding
+  | LPAREN TYPE lident_list RPAREN fun_binding
 
 match_cases ::=
     match_case (BAR match_case) *
 
 match_case ::=
     pattern_expression MINUSGREATER seq_expr
-//
-//  | pattern_expression WHEN seq_expr MINUSGREATER seq_expr
-//
-//  | pattern_expression MINUSGREATER DOT
+  | pattern_expression WHEN seq_expr MINUSGREATER seq_expr
+  | pattern_expression MINUSGREATER DOT
 
 
 fun_def ::=
     MINUSGREATER seq_expr
+  | COLON simple_core_type MINUSGREATER seq_expr
+/* Cf #5939: we used to accept (fun p when e0 -> e) */
+  | labeled_simple_pattern fun_def
+  | LPAREN TYPE lident_list RPAREN fun_def
 
-//  | COLON simple_core_type MINUSGREATER seq_expr
-//
-///* Cf #5939: we used to accept (fun p when e0 -> e) */
-//  | labeled_simple_pattern fun_def
-//
-//  | LPAREN TYPE lident_list RPAREN fun_def
-//
-//
+
 expr_comma_list ::=
     expr (COMMA expr) +
 //
@@ -874,7 +868,7 @@ expr_comma_list ::=
 //
 type_constraint ::=
     COLON core_type
-//  | COLON core_type COLONGREATER core_type
+  | COLON core_type COLONGREATER core_type
 //  | COLONGREATER core_type
 //  | COLON error
 //  | COLONGREATER error
@@ -937,18 +931,12 @@ exception_pattern_expression ::=
 
 pattern_gen ::=
     simple_pattern
-
-//  | constr_longident pattern_expression //%prec prec_constr_appl
-//
-//  | name_tag pattern_expression //%prec prec_constr_appl
-//
-//  | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression RPAREN
-//
+  | constr_longident pattern_expression //%prec prec_constr_appl
+  | name_tag pattern_expression //%prec prec_constr_appl
+  | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression RPAREN
 //  | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression error
-//
-//  | LAZY ext_attributes ? simple_pattern
-//
-//
+  | LAZY ext_attributes ? simple_pattern
+
 simple_pattern ::=
     val_ident //%prec below_EQUAL
 //
@@ -1215,15 +1203,13 @@ poly_type ::=
     typevar_list DOT core_type
   | core_type
 
-
 //
 //poly_type_no_attr ::=
 //        core_type_no_attr
 //
 //      | typevar_list DOT core_type_no_attr
-//
-//
-//
+
+
 ///* Core types */
 //
 core_type ::=
@@ -1232,60 +1218,41 @@ core_type ::=
 
 core_type_no_attr ::=
     core_type2 ////%prec MINUSGREATER
-//  | core_type2 AS QUOTE ident
+  | core_type2 AS QUOTE ident
 
 core_type2 ::=
     simple_core_type_or_tuple
-//  | QUESTION LIDENT COLON core_type2 MINUSGREATER core_type2
-//
-//  | OPTLABEL core_type2 MINUSGREATER core_type2
-//
-//  | LIDENT COLON core_type2 MINUSGREATER core_type2
-//
+  | QUESTION LIDENT COLON core_type2 MINUSGREATER core_type2
+  | OPTLABEL core_type2 MINUSGREATER core_type2
+  | LIDENT COLON core_type2 MINUSGREATER core_type2
 //  | core_type2 MINUSGREATER core_type2
 
 simple_core_type ::=
     simple_core_type2  ////%prec below_SHARP
-//  | LPAREN core_type_comma_list RPAREN ////%prec below_SHARP
+  | LPAREN core_type_comma_list RPAREN ////%prec below_SHARP
 simple_core_type2 ::=
     QUOTE ident
-//  | UNDERSCORE
+  | UNDERSCORE
     | type_longident
-//  | simple_core_type2 type_longident
-//
-//  | LPAREN core_type_comma_list RPAREN type_longident
-//
+ // | simple_core_type2 type_longident
+  | LPAREN core_type_comma_list RPAREN type_longident
 //  | LESS meth_list GREATER
-//
-//  | LESS GREATER
-//
-//  | SHARP class_longident
-//
+  | LESS GREATER
+  | SHARP class_longident
 //  | simple_core_type2 SHARP class_longident
-//
-//  | LPAREN core_type_comma_list RPAREN SHARP class_longident
-//
+  | LPAREN core_type_comma_list RPAREN SHARP class_longident
 //  | LBRACKET tag_field RBRACKET
-//
 ///* PR#3835: this is not LR(1), would need lookahead=2
-//  | LBRACKET simple_core_type RBRACKET
-//
+  | LBRACKET simple_core_type RBRACKET
 //*/
 //  | LBRACKET BAR row_field_list RBRACKET
-//
 //  | LBRACKET row_field BAR row_field_list RBRACKET
-//
 //  | LBRACKETGREATER BAR ? row_field_list RBRACKET
-//
-//  | LBRACKETGREATER RBRACKET
-//
+  | LBRACKETGREATER RBRACKET
 //  | LBRACKETLESS BAR ? row_field_list RBRACKET
-//
 //  | LBRACKETLESS BAR ? row_field_list GREATER name_tag_list RBRACKET
-//
-//  | LPAREN MODULE ext_attributes ? package_type RPAREN
-//
-//  | extension
+  | LPAREN MODULE ext_attributes ? package_type RPAREN
+  | extension
 
 package_type ::=
     module_type
@@ -1317,16 +1284,14 @@ package_type ::=
 //  | name_tag_list name_tag
 //
 simple_core_type_or_tuple ::=
-    simple_core_type
-//  | simple_core_type STAR core_type_list
+    simple_core_type (STAR core_type_list) ?
 
 core_type_comma_list ::=
     core_type (COMMA core_type) *
 
 core_type_list ::=
-    simple_core_type
-//  | core_type_list STAR simple_core_type
-//
+    simple_core_type (STAR simple_core_type) *
+
 //meth_list ::=
 //    field_semi meth_list
 //  | field_semi
@@ -1420,7 +1385,7 @@ constr_longident ::=
 
 label_longident ::=
     LIDENT
-//  | mod_longident DOT LIDENT
+  | mod_longident DOT LIDENT
 
 type_longident ::=
     LIDENT
