@@ -88,3 +88,6 @@ class type virtual ['a] klass = object
 end
 
 module type Mod = int with type a = private int
+
+module type Mod = sig type identifier +=  A of int end
+module type Mod = sig val a : int end

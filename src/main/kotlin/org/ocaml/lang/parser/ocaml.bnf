@@ -289,73 +289,53 @@ signature ::=
 
 signature_item ::=
     value_description
-
-//  | primitive_declaration
-//
-//  | type_declarations
-//
-//  | sig_type_extension
-//
-//  | sig_exception_declaration
-//
-//  | module_declaration
-//
-//  | module_alias
-//
-//  | rec_module_declarations
-//
-//  | module_type_declaration
-//
-//  | open_statement
-//
-//  | sig_include_statement
-//
-//  | class_descriptions
-//
-//  | class_type_declarations
-//
-//  | item_extension post_item_attributes ?
-//
-//  | floating_attribute
+  | primitive_declaration
+  | sig_type_extension
+  | type_declarations
+  | sig_exception_declaration
+  | module_declaration
+  | module_alias
+  | rec_module_declarations
+  | module_type_declaration
+  | open_statement
+  | sig_include_statement
+  | class_descriptions
+  | class_type_declarations
+  | item_extension post_item_attributes ?
+  | floating_attribute
 
 
 open_statement ::=
   OPEN override_flag ? ext_attributes ? mod_longident post_item_attributes ?
 
-//sig_include_statement ::=
-//    INCLUDE ext_attributes ? module_type post_item_attributes ? //%prec below_WITH
-//
-//
-//module_declaration_body ::=
-//    COLON module_type
-//
-//  | LPAREN UIDENT COLON module_type RPAREN module_declaration_body
-//
-//  | LPAREN RPAREN module_declaration_body
-//
-//
-//module_declaration ::=
-//    MODULE ext_attributes ? UIDENT module_declaration_body post_item_attributes ?
-//
-//
-//module_alias ::=
-//    MODULE ext_attributes ? UIDENT EQUAL mod_longident post_item_attributes ?
-//
-//
-//rec_module_declarations ::=
-//    rec_module_declaration
-//
-//  | rec_module_declarations and_module_declaration
-//
-//
-//rec_module_declaration ::=
-//    MODULE ext_attributes ? REC UIDENT COLON module_type post_item_attributes ?
-//
-//
-//and_module_declaration ::=
-//    AND attributes ? UIDENT COLON module_type post_item_attributes ?
-//
-//
+sig_include_statement ::=
+    INCLUDE ext_attributes ? module_type post_item_attributes ? //%prec below_WITH
+
+module_declaration_body ::=
+    COLON module_type
+
+  | LPAREN UIDENT COLON module_type RPAREN module_declaration_body
+
+  | LPAREN RPAREN module_declaration_body
+
+
+module_declaration ::=
+    MODULE ext_attributes ? UIDENT module_declaration_body post_item_attributes ?
+
+module_alias ::=
+    MODULE ext_attributes ? UIDENT EQUAL mod_longident post_item_attributes ?
+
+rec_module_declarations ::=
+    rec_module_declaration (and_module_declaration)*
+
+
+rec_module_declaration ::=
+    MODULE ext_attributes ? REC UIDENT COLON module_type post_item_attributes ?
+
+and_module_declaration ::=
+    AND attributes ? UIDENT COLON module_type post_item_attributes ?
+
+
 module_type_declaration_body ::=
     EQUAL module_type
 
@@ -505,12 +485,9 @@ constrain ::=
 constrain_field ::=
         core_type EQUAL core_type
 
-//class_descriptions ::=
-//    class_description
-//
-//  | class_descriptions and_class_description
-//
-//
+class_descriptions ::=
+    class_description (and_class_description) *
+
 //class_description ::=
 //    CLASS ext_attributes ? VIRTUAL ? class_type_parameters ? LIDENT COLON
 //    class_type post_item_attributes ?
@@ -1152,8 +1129,11 @@ type_parameter_list ::=
 str_exception_declaration ::=
     EXCEPTION ext_attributes ? constr_ident EQUAL constr_longident attributes ?
     post_item_attributes ?
-  | EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ?
-        attributes ? post_item_attributes ?
+  | sig_exception_declaration
+
+sig_exception_declaration ::=
+  EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ?
+          attributes ? post_item_attributes ?
 
 
 
@@ -1187,21 +1167,18 @@ str_type_extension ::=
   TYPE ext_attributes ? NONREC ? optional_type_parameters ? type_longident
   PLUSEQ PRIVATE ? str_extension_constructors post_item_attributes ?
 
-//sig_type_extension ::=
-//  TYPE ext_attributes ? NONREC ? optional_type_parameters ? type_longident
-//  PLUSEQ PRIVATE ? sig_extension_constructors post_item_attributes ?
-//
-//
+sig_type_extension ::=
+  TYPE ext_attributes ? NONREC ? optional_type_parameters ? type_longident
+  PLUSEQ PRIVATE ? sig_extension_constructors post_item_attributes ?
+
+
 str_extension_constructors ::=
     BAR ? (extension_constructor_rebind | extension_constructor_declaration ) (BAR (extension_constructor_rebind | extension_constructor_declaration ))*
-  //
-//
-//sig_extension_constructors ::=
-//    extension_constructor_declaration
-//  | bar_extension_constructor_declaration
-//  | sig_extension_constructors bar_extension_constructor_declaration
-//
-//
+
+sig_extension_constructors ::=
+    BAR ? extension_constructor_declaration (BAR extension_constructor_declaration) *
+
+
 extension_constructor_declaration ::=
     constr_ident generalized_constructor_arguments ? attributes ?
 
