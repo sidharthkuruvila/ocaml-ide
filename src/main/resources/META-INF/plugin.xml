@@ -33,6 +33,7 @@
     <lang.syntaxHighlighterFactory key="Ocaml" implementationClass="org.ocaml.ide.highlighter.OcamlSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="org.ocaml.ide.colorscheme.OcamlColorSettingsPage"/>
     <completion.contributor language="Ocaml" implementationClass="org.ocaml.ide.completion.OcamlCompletionContributor"/>
+    <lang.commenter language="Ocaml" implementationClass="org.ocaml.ide.commenter.OcamlCommenter"/>
   </extensions>
 
   <actions>
