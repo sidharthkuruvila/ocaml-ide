@@ -204,21 +204,14 @@ module_expr_sufix ::=
 module_expr ::=
     mod_longident module_expr_sufix?
   | STRUCT attributes ? structure END module_expr_sufix?
-//  | STRUCT attributes structure error
   | FUNCTOR attributes ? functor_args MINUSGREATER module_expr module_expr_sufix?
-//  | module_expr LPAREN module_expr error
   | LPAREN module_expr COLON module_type RPAREN
-//  | LPAREN module_expr COLON module_type error
   | LPAREN module_expr RPAREN
-//  | LPAREN module_expr error
   | LPAREN VAL attributes ? expr RPAREN
   | LPAREN VAL attributes ? expr COLON package_type RPAREN
   | LPAREN VAL attributes ? expr COLON package_type COLONGREATER package_type
     RPAREN
   | LPAREN VAL attributes ? expr COLONGREATER package_type RPAREN
-//  | LPAREN VAL attributes ? expr COLON error
-//  | LPAREN VAL attributes ? expr COLONGREATER error
-//  | LPAREN VAL attributes ? expr error
   | extension
 
 structure ::=
@@ -274,14 +267,12 @@ module_type_suffix ::=
 module_type ::=
     mty_longident module_type_suffix ?
   | SIG attributes ? signature ? END module_type_suffix ?
-//  | SIG attributes ? signature ? error
   | FUNCTOR attributes ? functor_args MINUSGREATER module_type module_type_suffix ?
       //%prec below_WITH
   | MODULE TYPE OF attributes ? module_expr module_type_suffix ? //%prec below_LBRACKETAT
 /*  | LPAREN MODULE mod_longident RPAREN
        */
   | LPAREN module_type RPAREN module_type_suffix ?
-//  | LPAREN module_type error
   | extension module_type_suffix ?
 
 signature ::=
@@ -382,11 +373,8 @@ class_simple_expr ::=
     LBRACKET core_type_comma_list RBRACKET class_longident
   | class_longident
   | OBJECT attributes ? class_structure ? END
-  //| OBJECT attributes ? class_structure ? error
   | LPAREN class_expr COLON class_type RPAREN
-  //| LPAREN class_expr COLON class_type error
   | LPAREN class_expr RPAREN
-  //| LPAREN class_expr error
 
 
 class_structure ::=
@@ -447,7 +435,6 @@ class_signature ::=
     LBRACKET core_type_comma_list RBRACKET clty_longident attributes ?
   | clty_longident attributes ?
   | OBJECT attributes ? class_sig_body END attributes ?
-  //| OBJECT attributes ? class_sig_body error attributes ?
   | extension attributes ?
 
 //
@@ -612,7 +599,6 @@ non_op_expr ::=
   | FUN ext_attributes ? LPAREN TYPE lident_list RPAREN fun_def
   | MATCH ext_attributes ? seq_expr WITH BAR ? match_cases
   | TRY ext_attributes ? seq_expr WITH BAR ? match_cases
-//  | TRY ext_attributes ? seq_expr WITH error
   | constr_longident simple_expr //%prec below_SHARP
   | name_tag simple_expr //%prec below_SHARP
   | if_else_expr
@@ -626,7 +612,6 @@ non_op_expr ::=
   | ASSERT ext_attributes ? simple_expr //%prec below_SHARP
   | LAZY ext_attributes ? simple_expr //%prec below_SHARP
   | OBJECT ext_attributes ? class_structure ? END
-  //| OBJECT ext_attributes ? class_structure error
   | simple_expr labeled_simple_expr *
   | simple_expr //%prec below_SHARP
 
@@ -684,12 +669,8 @@ simple_expr ::=
 //
 //  | LPAREN MODULE ext_attributes ? module_expr COLON package_type RPAREN
 //
-//  | LPAREN MODULE ext_attributes ? module_expr COLON error
-//
 //  | mod_longident DOT LPAREN MODULE ext_attributes ? module_expr COLON
 //    package_type RPAREN
-//
-//  | mod_longident DOT LPAREN MODULE ext_attributes ? module_expr COLON error
 //
 //  | extension
 //
@@ -756,18 +737,15 @@ new_object_expr ::=
 
 self_copy_object_expr ::=
     LBRACELESS field_expr_list ? GREATERRBRACE
-    //  | LBRACELESS field_expr_list error
 
 send_message_object_expr ::=
     simple_expr SHARP label
 
 array_constructor_expr ::=
   LBRACKETBAR (expr_semi_list SEMI ?) ? BARRBRACKET
-//  | LBRACKETBAR expr_semi_list SEMI ? error
 
 list_constructor_expr ::=
     LBRACKET expr_semi_list SEMI ? RBRACKET
-//  | LBRACKET expr_semi_list SEMI ? error
 
 field_lookup_expr ::=
     simple_expr DOT label_longident
@@ -777,7 +755,6 @@ field_assign_expr ::=
 
 array_lookup_expr ::=
     simple_expr DOT LPAREN seq_expr RPAREN
-//  | simple_expr DOT LPAREN seq_expr error
 
 array_assign_expr ::=
     simple_expr DOT LPAREN seq_expr RPAREN assignment
@@ -785,14 +762,12 @@ array_assign_expr ::=
 
 string_lookup_expr ::=
   simple_expr DOT LBRACKET seq_expr RBRACKET
-//  | simple_expr DOT LBRACKET seq_expr error
 
 string_assign_expr ::=
     simple_expr DOT LBRACKET seq_expr RBRACKET assignment
 
 bigarray_lookup_expr ::=
   simple_expr DOT LBRACE expr RBRACE
-//  | simple_expr DOT LBRACE expr_comma_list error
 
 bigarray_assign_expr ::=
     simple_expr DOT LBRACE expr RBRACE assignment
@@ -805,7 +780,6 @@ label_assign_expr ::=
 
 record_constructor_expr ::=
     LBRACE record_expr RBRACE
-//  | LBRACE record_expr error
 
 
 sharpop_expr ::=
@@ -904,9 +878,7 @@ expr_semi_list ::=
 type_constraint ::=
     COLON core_type
   | COLON core_type COLONGREATER core_type
-//  | COLONGREATER core_type
-//  | COLON error
-//  | COLONGREATER error
+  | COLONGREATER core_type
 //
 //opt_type_constraint ::=
 //    type_constraint
@@ -917,12 +889,9 @@ type_constraint ::=
 //
 pattern_expression ::=
     val_ident_pattern_expression
-//  | pattern_expression AS error
   | comma_list_pattern_expression  //%prec below_COMMA
   | coloncolon_separated_pattern_expression
-//  | pattern_expression COLONCOLON error
   | bar_pattern_expression
-//  | pattern_expression BAR error
   | exception_pattern_expression
   | attribute_pattern_expression
   | pattern_gen_pattern_expression
@@ -947,19 +916,10 @@ exception_pattern_expression ::=
 
 //pattern_no_exn ::=
 //  | pattern_no_exn AS val_ident
-//
-//  | pattern_no_exn AS error
-//
 //  | pattern_no_exn_comma_list  //%prec below_COMMA
 //
 //  | pattern_no_exn COLONCOLON pattern_expression
-//
-//  | pattern_no_exn COLONCOLON error
-//
 //  | pattern_no_exn BAR pattern_expression
-//
-//  | pattern_no_exn BAR error
-//
 //  | pattern_no_exn attribute
 //
 //  | pattern_gen
@@ -969,7 +929,6 @@ pattern_gen ::=
   | constr_longident pattern_expression //%prec prec_constr_appl
   | name_tag pattern_expression //%prec prec_constr_appl
   | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression RPAREN
-//  | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression error
   | LAZY ext_attributes ? simple_pattern
 
 simple_pattern ::=
@@ -991,46 +950,23 @@ simple_pattern ::=
 //  | SHARP type_longident
 //
 //  | LBRACE lbl_pattern_list RBRACE
-//
-//  | LBRACE lbl_pattern_list error
-//
 //  | LBRACKET pattern_semi_list SEMI ? RBRACKET
-//
-//  | LBRACKET pattern_semi_list SEMI ? error
-//
 //  | LBRACKETBAR pattern_semi_list SEMI ? BARRBRACKET
 //
 //  | LBRACKETBAR BARRBRACKET
-//
-//  | LBRACKETBAR pattern_semi_list SEMI ? error
-//
 //  | LPAREN pattern_expression RPAREN
-//
-//  | LPAREN pattern_expression error
-//
 //  | LPAREN pattern_expression COLON core_type RPAREN
-//
-//  | LPAREN pattern_expression COLON core_type error
-//
-//  | LPAREN pattern_expression COLON error
-//
 //  | LPAREN MODULE ext_attributes ? UIDENT RPAREN
 //
 //  | LPAREN MODULE ext_attributes ? UIDENT COLON package_type RPAREN
-//
-//  | LPAREN MODULE ext_attributes ? UIDENT COLON package_type error
-//
 //  | extension
 
 comma_list_pattern_expression ::=
     pattern_expression (COMMA pattern_expression) +
-//  | pattern_expression COMMA error
-
 //pattern_no_exn_comma_list ::=
 //    pattern_no_exn_comma_list COMMA pattern_expression
 //  | pattern_no_exn COMMA pattern_expression
-//  | pattern_no_exn COMMA error
-//
+
 //pattern_semi_list ::=
 //    pattern_expression
 //  | pattern_semi_list SEMI pattern_expression
@@ -1369,10 +1305,7 @@ ident ::=
 val_ident ::=
     LIDENT
   | LPAREN operator RPAREN
-//  | LPAREN operator error
-//  | LPAREN error
-//  | LPAREN MODULE error
-//
+
 operator ::=
     PREFIXOP
   | INFIXOP0
