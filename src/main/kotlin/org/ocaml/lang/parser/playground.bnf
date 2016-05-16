@@ -12,43 +12,42 @@
     ELSE = "else"
     EQUAL = "="
     IDENTIFIER = "id"
+
+    space       = 'regexp:\s+'
   ]
 
-  extends(".*simple")=simple
-  extends(".*expr")=expr
+  extends("sum_expr|constant|lookup_expr|simple")=simple
+  extends("non_op_expr|expr")=expr
 
 }
+start ::= expr
 
 expr ::=
-    block_expr
-  | plus_operator_expr
+    non_op_expr
+    mul_expr
 
-block_expr ::=
-    LET IDENTIFIER EQUAL expr
-  | IF expr THEN expr (ELSE expr)?
+non_op_expr ::=
+    assign_expr
+  | simple
 
-plus_operator_expr ::=
-  expr '+' expr
+mul_expr ::=
+    expr MUL expr
 
-simple_expr ::=
-  simple
+assign_expr ::=
+    simple DOT IDENTIFIER EQUAL expr
+
 
 simple ::=
-    constant_simple
-  | dot_operator_simple
-
-value ::=
-    IDENTIFIER
+    sum_expr
+  //| lookup_expr
   | constant
+
+
+sum_expr ::=
+  simple PLUS simple
+
+lookup_expr ::=
+    simple DOT IDENTIFIER
 
 constant ::=
     NUMBER
-
-constant_simple ::=
-    NUMBER
-
-
-
-dot_operator_simple ::=
-  simple '.' simple
-

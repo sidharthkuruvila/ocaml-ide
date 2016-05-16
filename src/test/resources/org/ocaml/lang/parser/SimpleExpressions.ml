@@ -91,3 +91,13 @@ module type Mod = int with type a = private int
 
 module type Mod = sig type identifier +=  A of int end
 module type Mod = sig val a : int end
+
+;;
+
+a.(1);
+a.[1];
+a.{1};
+a.(1).[1].{1}.[1];
+{a = 1; b = 3};
+{r with a: int = 7; b}
+a.[0]

@@ -124,8 +124,9 @@
     //generateTokenAccessors=true
 
     extends(".*pattern_expression")=pattern_expression
-    extends("ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
-    extends("non_op_simple_expr|simple_expr")=simple_expr
+    extends("label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
+    extends(".*_assign_expr|.*_lookup_expr|ident_bigarray_lookup|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
+
 }
 /* Entry points */
 
@@ -602,10 +603,7 @@ expr ::=
 //
 
 non_op_expr ::=
-    ref_assign_expr
-  | simple_expr labeled_simple_expr *
-  | simple_expr //%prec below_SHARP
-  | let_bindings IN seq_expr
+    let_bindings IN seq_expr
   | LET MODULE ext_attributes ? UIDENT module_binding_body IN seq_expr
   | LET EXCEPTION ext_attributes ? constr_ident generalized_constructor_arguments ? attributes ? IN seq_expr
   | LET OPEN override_flag ? ext_attributes ? mod_longident IN seq_expr
@@ -622,17 +620,15 @@ non_op_expr ::=
   | WHILE ext_attributes ? seq_expr DO seq_expr DONE
   | FOR ext_attributes ? pattern_expression EQUAL seq_expr direction_flag seq_expr DO seq_expr DONE
   | coloncolon_app_rule
+
+  | label_assign_expr
+
   | ASSERT ext_attributes ? simple_expr //%prec below_SHARP
   | LAZY ext_attributes ? simple_expr //%prec below_SHARP
   | OBJECT ext_attributes ? class_structure ? END
   //| OBJECT ext_attributes ? class_structure error
-
-ref_assign_expr ::=
-    simple_expr DOT label_longident LESSMINUS expr
-  | simple_expr DOT LPAREN seq_expr RPAREN LESSMINUS expr
-  | simple_expr DOT LBRACKET seq_expr RBRACKET LESSMINUS expr
-  | simple_expr DOT LBRACE expr RBRACE LESSMINUS expr
-  | label LESSMINUS expr
+  | simple_expr labeled_simple_expr *
+  | simple_expr //%prec below_SHARP
 
 coloncolon_app_rule ::= LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
 
@@ -670,57 +666,33 @@ sign_unary_expr ::=
     (subtractive | additive) expr
 
 simple_expr ::=
-    non_op_simple_expr
+     non_op_simple_expr
+   | record_constructor_expr
+   | assign_expr
+   | lookup_expr
 
-//  | simple_expr DOT label_longident
 //
-//  | mod_longident DOT LPAREN seq_expr RPAREN
+//  | LBRACKETBAR expr_semi_list SEMI ? BARRBRACKET
 //
-//  | mod_longident DOT LPAREN RPAREN
-//
-//  | mod_longident DOT LPAREN seq_expr error
-//
-//  | simple_expr DOT LPAREN seq_expr RPAREN
-//
-//  | simple_expr DOT LPAREN seq_expr error
-//
-//  | simple_expr DOT LBRACKET seq_expr RBRACKET
-//
-//  | simple_expr DOT LBRACKET seq_expr error
-//
-//  | simple_expr DOT LBRACE expr RBRACE
-//
-//  | simple_expr DOT LBRACE expr_comma_list error
-//
-//  | LBRACE record_expr RBRACE
-//
-//  | LBRACE record_expr error
-//
-//  | mod_longident DOT LBRACE record_expr RBRACE
-//
-//  | mod_longident DOT LBRACE record_expr error
-//
-//  | LBRACKETBAR expr_semi_list opt_semi BARRBRACKET
-//
-//  | LBRACKETBAR expr_semi_list opt_semi error
+//  | LBRACKETBAR expr_semi_list SEMI ? error
 //
 //  | LBRACKETBAR BARRBRACKET
 //
-//  | mod_longident DOT LBRACKETBAR expr_semi_list opt_semi BARRBRACKET
+//  | mod_longident DOT LBRACKETBAR expr_semi_list SEMI ? BARRBRACKET
 //
 //  | mod_longident DOT LBRACKETBAR BARRBRACKET
 //
-//  | mod_longident DOT LBRACKETBAR expr_semi_list opt_semi error
+//  | mod_longident DOT LBRACKETBAR expr_semi_list SEMI ? error
 //
-//  | LBRACKET expr_semi_list opt_semi RBRACKET
+//  | LBRACKET expr_semi_list SEMI ? RBRACKET
 //
-//  | LBRACKET expr_semi_list opt_semi error
+//  | LBRACKET expr_semi_list SEMI ? error
 //
-//  | mod_longident DOT LBRACKET expr_semi_list opt_semi RBRACKET
+//  | mod_longident DOT LBRACKET expr_semi_list SEMI ? RBRACKET
 //
 //  | mod_longident DOT LBRACKET RBRACKET
 //
-//  | mod_longident DOT LBRACKET expr_semi_list opt_semi error
+//  | mod_longident DOT LBRACKET expr_semi_list SEMI ? error
 //
 //  | PREFIXOP simple_expr
 //
@@ -755,12 +727,12 @@ simple_expr ::=
 //
 //  | mod_longident DOT LPAREN MODULE ext_attributes ? module_expr COLON error
 //
-//  | */
+//  | extension
 //
 
 
 non_op_simple_expr ::=
-   val_longident
+    val_longident
   | constant
   | constr_longident //%prec prec_constant_constructor
   | name_tag //%prec prec_constant_constructor
@@ -769,6 +741,67 @@ non_op_simple_expr ::=
   | BEGIN ext_attributes ? seq_expr ? END
 //  | BEGIN ext_attributes ? seq_expr error
   | LPAREN seq_expr type_constraint RPAREN
+//  | mod_longident DOT LPAREN seq_expr RPAREN
+//  | mod_longident DOT LPAREN RPAREN
+//  | mod_longident DOT LPAREN seq_expr error
+
+
+private lookup_expr ::=
+    field_lookup_expr
+  | array_lookup_expr
+  | string_lookup_expr
+  | bigarray_lookup_expr
+  | ident_bigarray_lookup
+
+
+private assign_expr ::=
+    field_assign_expr
+  | array_assign_expr
+  | string_assign_expr
+  | bigarray_assign_expr
+
+field_lookup_expr ::=
+    simple_expr DOT label_longident
+
+field_assign_expr ::=
+    simple_expr DOT label_longident assignment
+
+
+array_lookup_expr ::=
+    simple_expr DOT LPAREN seq_expr RPAREN
+//  | simple_expr DOT LPAREN seq_expr error
+
+array_assign_expr ::=
+    simple_expr DOT LPAREN seq_expr RPAREN assignment
+
+
+string_lookup_expr ::=
+  simple_expr DOT LBRACKET seq_expr RBRACKET
+//  | simple_expr DOT LBRACKET seq_expr error
+
+string_assign_expr ::=
+    simple_expr DOT LBRACKET seq_expr RBRACKET assignment
+
+bigarray_lookup_expr ::=
+  simple_expr DOT LBRACE expr RBRACE
+//  | simple_expr DOT LBRACE expr_comma_list error
+
+bigarray_assign_expr ::=
+    simple_expr DOT LBRACE expr RBRACE assignment
+
+ident_bigarray_lookup ::=
+    mod_longident DOT LBRACE record_expr RBRACE
+//      | mod_longident DOT LBRACE record_expr error
+
+assignment ::=
+    LESSMINUS expr
+
+label_assign_expr ::=
+    label LESSMINUS expr
+
+record_constructor_expr ::=
+    LBRACE record_expr RBRACE
+//  | LBRACE record_expr error
 
 simple_labeled_expr_list ::=
   labeled_simple_expr *
@@ -836,24 +869,21 @@ fun_def ::=
 
 expr_comma_list ::=
     expr (COMMA expr) +
+
+record_expr ::=
+    simple_expr WITH lbl_expr_list
+  | lbl_expr_list
 //
-//record_expr ::=
-//    simple_expr WITH lbl_expr_list
-//  | lbl_expr_list
+lbl_expr_list ::=
+    lbl_expr (SEMI lbl_expr) * SEMI?
 //
-//lbl_expr_list ::=
-//     lbl_expr
-//  |  lbl_expr SEMI lbl_expr_list
-//  |  lbl_expr SEMI
-//
-//lbl_expr ::=
-//    label_longident opt_type_constraint EQUAL expr
-//
-//  | label_longident opt_type_constraint
+lbl_expr ::=
+    label_longident type_constraint ? EQUAL expr
+  | label_longident type_constraint ?
 //
 //
 //field_expr_list ::=
-//    field_expr opt_semi
+//    field_expr SEMI ?
 //  | field_expr SEMI field_expr_list
 //
 //field_expr ::=
@@ -959,15 +989,15 @@ simple_pattern ::=
 //
 //  | LBRACE lbl_pattern_list error
 //
-//  | LBRACKET pattern_semi_list opt_semi RBRACKET
+//  | LBRACKET pattern_semi_list SEMI ? RBRACKET
 //
-//  | LBRACKET pattern_semi_list opt_semi error
+//  | LBRACKET pattern_semi_list SEMI ? error
 //
-//  | LBRACKETBAR pattern_semi_list opt_semi BARRBRACKET
+//  | LBRACKETBAR pattern_semi_list SEMI ? BARRBRACKET
 //
 //  | LBRACKETBAR BARRBRACKET
 //
-//  | LBRACKETBAR pattern_semi_list opt_semi error
+//  | LBRACKETBAR pattern_semi_list SEMI ? error
 //
 //  | LPAREN pattern_expression RPAREN
 //
@@ -1003,7 +1033,7 @@ comma_list_pattern_expression ::=
 //lbl_pattern_list ::=
 //    lbl_pattern
 //  | lbl_pattern SEMI
-//  | lbl_pattern SEMI UNDERSCORE opt_semi
+//  | lbl_pattern SEMI UNDERSCORE SEMI ?
 //  | lbl_pattern SEMI lbl_pattern_list
 //
 //
@@ -1441,10 +1471,6 @@ private_virtual_flags ::=
 override_flag ::=
   BANG
 
-//opt_semi ::=
-//  | /* empty */
-//  | SEMI
-//
 subtractive ::=
   MINUS
   | MINUSDOT
