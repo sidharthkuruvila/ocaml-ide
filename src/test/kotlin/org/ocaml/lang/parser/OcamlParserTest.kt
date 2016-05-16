@@ -24,6 +24,19 @@ class OcamlParserTest : ParsingTestCase("org/ocaml/lang/parser", "ml", OcamlPars
 
     }
 
+    fun testSimpleExpressions2() {
+        try {
+            OcamlC.assertParses(getTestFile())
+        } catch (e: java.lang.AssertionError) {
+            e.printStackTrace()
+        }
+        doTest(true)
+        OcamlC.assertParses(getTestFile())
+
+
+    }
+
+
     override fun getTestDataPath(): String {
         return "src/test/resources";
     }

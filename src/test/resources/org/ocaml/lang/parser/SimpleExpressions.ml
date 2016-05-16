@@ -120,7 +120,8 @@ let f = 1
 
 type sometype = {
   mutable a: SomeMod.t;
-  b: int
+  b: int;
+  c: int list
 }
 
 type sometype =
@@ -128,6 +129,16 @@ type sometype =
     | B of b
 
 type sometype = ..
+
+
+let f (a,b,c : sometype) = "abc"
+
+;;
+[ `A "abc" ];
+(match abc, Some def with
+    | (`A, Some b) -> a);
+(function
+   | [ `A "abc" ] -> 123)
 
 
 

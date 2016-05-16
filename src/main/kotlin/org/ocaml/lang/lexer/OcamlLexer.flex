@@ -254,12 +254,12 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
 
 <IN_QUOTED_STRING> {
     { NEWLINE }  { }
-    <<EOF>> { yybegin(INITIAL); tokenEnd(); return QUOTED_STRING; } //Should probable create a special token here
+    <<EOF>> { yybegin(INITIAL); tokenEnd(); return STRING; } //Should probable create a special token here
     "|" { LOWERCASE  } * "}" {
         yybegin(INITIAL);
         CharSequence text = yytext();
         if(text.subSequence(1, text.length() - 1).equals(quotedStringId)) {
-            tokenEnd(); return QUOTED_STRING;
+            tokenEnd(); return STRING;
         }
      }
      . { }

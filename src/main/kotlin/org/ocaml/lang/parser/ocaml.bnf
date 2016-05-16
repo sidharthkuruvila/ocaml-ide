@@ -126,7 +126,7 @@
 
     extends(".*pattern_no_exn")=pattern_no_exn
     extends(".*pattern_expression")=pattern_expression
-    extends("label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
+    extends("coloncolon_app_rule|label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
     extends("first_class_module_expr|sharpop_expr|.*_object_expr|.*_with_local_open_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
 
 }
@@ -573,8 +573,9 @@ let_pattern ::=
 //            NEW PREFIXOP STRING TRUE UIDENT
 //            LBRACKETPERCENT LBRACKETPERCENTPERCENT
 expr ::=
-  /*  expr_comma_list //%prec below_COMMA
-  |*/ non_op_expr
+    coloncolon_app_rule
+  | expr_comma_list //%prec below_COMMA
+  | non_op_expr
   | ref_read_bin_expr
   | or_bin_expr
   | and_bin_expr
@@ -607,8 +608,6 @@ non_op_expr ::=
 //  | IF ext_attributes ? seq_expr THEN expr
   | WHILE ext_attributes ? seq_expr DO seq_expr DONE
   | FOR ext_attributes ? pattern_expression EQUAL seq_expr direction_flag seq_expr DO seq_expr DONE
-  | coloncolon_app_rule
-
   | label_assign_expr
 
   | ASSERT ext_attributes ? simple_expr //%prec below_SHARP
@@ -617,7 +616,11 @@ non_op_expr ::=
   | simple_expr labeled_simple_expr *
   | simple_expr //%prec below_SHARP
 
-coloncolon_app_rule ::= LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
+coloncolon_app_rule ::=
+    LPAREN COLONCOLON RPAREN LPAREN expr RPAREN
+    //expr already greadily matches commas
+    //TODO: Replace the above rule with the following more restrited rule
+    //LPAREN COLONCOLON RPAREN LPAREN expr COMMA expr RPAREN
 
 if_else_expr ::=
     IF ext_attributes ? seq_expr THEN expr (ELSE expr) ?
@@ -810,7 +813,7 @@ let_binding_body ::=
   | val_ident COLON typevar_list DOT core_type EQUAL seq_expr
   | val_ident COLON TYPE lident_list DOT core_type EQUAL seq_expr
   | pattern_no_exn EQUAL seq_expr
-//  | simple_pattern_not_ident COLON core_type EQUAL seq_expr
+  | simple_pattern_not_ident COLON core_type EQUAL seq_expr
 
 let_bindings ::=
     let_binding and_let_binding *
@@ -944,9 +947,9 @@ comma_list_pattern_no_exn ::=
     pattern_no_exn (COMMA pattern_expression) +
 
 pattern_gen ::=
-    simple_pattern
-  | constr_longident pattern_expression //%prec prec_constr_appl
+    constr_longident pattern_expression //%prec prec_constr_appl
   | name_tag pattern_expression //%prec prec_constr_appl
+  | simple_pattern
   | LPAREN COLONCOLON RPAREN LPAREN pattern_expression COMMA pattern_expression RPAREN
   | LAZY ext_attributes ? simple_pattern
 
@@ -962,21 +965,18 @@ simple_pattern_not_ident ::=
   | name_tag
   | SHARP type_longident
   | LBRACE lbl_pattern_list RBRACE
-//  | LBRACKET pattern_semi_list SEMI ? RBRACKET
-//  | LBRACKETBAR pattern_semi_list SEMI ? BARRBRACKET
-//
-//  | LBRACKETBAR BARRBRACKET
-//  | LPAREN pattern_expression RPAREN
-//  | LPAREN pattern_expression COLON core_type RPAREN
-//  | LPAREN MODULE ext_attributes ? UIDENT RPAREN
-//
-//  | LPAREN MODULE ext_attributes ? UIDENT COLON package_type RPAREN
-//  | extension
+  | LBRACKET pattern_semi_list SEMI ? RBRACKET
+  | LBRACKETBAR pattern_semi_list SEMI ? BARRBRACKET
+  | LBRACKETBAR BARRBRACKET
+  | LPAREN pattern_expression RPAREN
+  | LPAREN pattern_expression COLON core_type RPAREN
+  | LPAREN MODULE ext_attributes ? UIDENT RPAREN
+  | LPAREN MODULE ext_attributes ? UIDENT COLON package_type RPAREN
+  | extension
 
-//pattern_semi_list ::=
-//    pattern_expression
-//  | pattern_semi_list SEMI pattern_expression
-//
+pattern_semi_list ::=
+    pattern_expression (SEMI pattern_expression) *
+
 lbl_pattern_list ::=
     lbl_pattern (SEMI lbl_pattern) * (SEMI UNDERSCORE)? SEMI?
 
@@ -1174,24 +1174,29 @@ core_type2 ::=
   | LIDENT COLON core_type2 MINUSGREATER core_type2
 //  | core_type2 MINUSGREATER core_type2
 
+
+
 simple_core_type ::=
-    simple_core_type2  ////%prec below_SHARP
+    simple_core_type2 sumple_core_type2_suffix ? ////%prec below_SHARP
   | LPAREN core_type_comma_list RPAREN ////%prec below_SHARP
+
+
+sumple_core_type2_suffix ::=
+    ( SHARP class_longident | type_longident ) +
+
 simple_core_type2 ::=
     QUOTE ident
   | UNDERSCORE
-    | type_longident
- // | simple_core_type2 type_longident
+  | type_longident
   | LPAREN core_type_comma_list RPAREN type_longident
 //  | LESS meth_list GREATER
   | LESS GREATER
   | SHARP class_longident
-//  | simple_core_type2 SHARP class_longident
   | LPAREN core_type_comma_list RPAREN SHARP class_longident
 //  | LBRACKET tag_field RBRACKET
-///* PR#3835: this is not LR(1), would need lookahead=2
+/* PR#3835: this is not LR(1), would need lookahead=2
   | LBRACKET simple_core_type RBRACKET
-//*/
+*/
 //  | LBRACKET BAR row_field_list RBRACKET
 //  | LBRACKET row_field BAR row_field_list RBRACKET
 //  | LBRACKETGREATER BAR ? row_field_list RBRACKET
