@@ -501,7 +501,7 @@ and_class_type_declaration ::=
 
 ///* Core expressions */
 //
-seq_expr ::= expr (SEMI expr)*  //%prec below_SEMI
+seq_expr ::= expr (SEMI expr)*  SEMI ? //%prec below_SEMI
 
 labeled_simple_pattern ::=
     QUESTION LPAREN label_let_pattern opt_default ? RPAREN
