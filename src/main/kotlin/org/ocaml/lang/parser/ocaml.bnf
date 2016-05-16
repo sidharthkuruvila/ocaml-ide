@@ -1,6 +1,7 @@
 
 {
     parserClass='org.ocaml.lang.parser.OcamlParser'
+    parserUtilClass="org.ocaml.lang.parser.OcamlParserUtil"
     psiPackage='org.ocaml.lang.parser.psi'
     psiImplPackage='org.ocaml.lang.parser.psi.impl'
 
@@ -123,7 +124,7 @@
     generateTokens=false
     //generateTokenAccessors=true
 
-    extends("pattern_gen_pattern_no_exn|pattern_no_exn_comma_list|pattern_no_exn")=pattern_no_exn
+    extends(".*pattern_no_exn")=pattern_no_exn
     extends(".*pattern_expression")=pattern_expression
     extends("label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
     extends("first_class_module_expr|sharpop_expr|.*_object_expr|.*_with_local_open_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
@@ -912,22 +913,35 @@ attribute_pattern_expression ::=
 exception_pattern_expression ::=
     EXCEPTION ext_attributes ? pattern_expression //%prec prec_constr_appl
 
+comma_list_pattern_expression ::=
+    pattern_expression (COMMA pattern_expression) +
+
+
 pattern_no_exn ::=
-//  | pattern_no_exn AS val_ident
-   pattern_no_exn_comma_list  //%prec below_COMMA
-//
-//  | pattern_no_exn COLONCOLON pattern_expression
-//  | pattern_no_exn BAR pattern_expression
-//  | pattern_no_exn attribute
+    val_ident_pattern_no_exn
+  | comma_list_pattern_no_exn  //%prec below_COMMA
+  | coloncolon_separated_pattern_no_exn
+  | bar_pattern_no_exn
+  | attribute_pattern_no_exn
   | pattern_gen_pattern_no_exn
+
+val_ident_pattern_no_exn ::=
+    pattern_no_exn AS val_ident
+
+coloncolon_separated_pattern_no_exn ::=
+    pattern_no_exn COLONCOLON pattern_no_exn
+
+bar_pattern_no_exn ::=
+    pattern_no_exn BAR pattern_no_exn
 
 pattern_gen_pattern_no_exn ::=
     pattern_gen
 
-pattern_no_exn_comma_list ::=
+attribute_pattern_no_exn ::=
+    pattern_no_exn attribute
+
+comma_list_pattern_no_exn ::=
     pattern_no_exn (COMMA pattern_expression) +
-
-
 
 pattern_gen ::=
     simple_pattern
@@ -938,23 +952,16 @@ pattern_gen ::=
 
 simple_pattern ::=
     val_ident //%prec below_EQUAL
-//
-//  | simple_pattern_not_ident
-//
-//simple_pattern_not_ident ::=
-//  | UNDERSCORE
-//
-//  | signed_constant
-//
-//  | signed_constant DOTDOT signed_constant
-//
-//  | constr_longident
-//
-//  | name_tag
-//
-//  | SHARP type_longident
-//
-//  | LBRACE lbl_pattern_list RBRACE
+  | simple_pattern_not_ident
+
+simple_pattern_not_ident ::=
+  UNDERSCORE
+  | signed_constant DOTDOT signed_constant
+  | signed_constant
+  | constr_longident
+  | name_tag
+  | SHARP type_longident
+  | LBRACE lbl_pattern_list RBRACE
 //  | LBRACKET pattern_semi_list SEMI ? RBRACKET
 //  | LBRACKETBAR pattern_semi_list SEMI ? BARRBRACKET
 //
@@ -966,33 +973,22 @@ simple_pattern ::=
 //  | LPAREN MODULE ext_attributes ? UIDENT COLON package_type RPAREN
 //  | extension
 
-comma_list_pattern_expression ::=
-    pattern_expression (COMMA pattern_expression) +
-
-
-
 //pattern_semi_list ::=
 //    pattern_expression
 //  | pattern_semi_list SEMI pattern_expression
 //
-//lbl_pattern_list ::=
-//    lbl_pattern
-//  | lbl_pattern SEMI
-//  | lbl_pattern SEMI UNDERSCORE SEMI ?
-//  | lbl_pattern SEMI lbl_pattern_list
-//
-//
-//lbl_pattern ::=
-//    label_longident opt_pattern_type_constraint EQUAL pattern_expression
-//
-//  | label_longident opt_pattern_type_constraint
-//
-//
-//opt_pattern_type_constraint ::=
-//    COLON core_type
-//  | /* empty */
-//
-//
+lbl_pattern_list ::=
+    lbl_pattern (SEMI lbl_pattern) * (SEMI UNDERSCORE)? SEMI?
+
+lbl_pattern ::=
+    label_longident opt_pattern_type_constraint ? EQUAL pattern_expression
+  | label_longident opt_pattern_type_constraint ?
+
+
+opt_pattern_type_constraint ::=
+    COLON core_type
+
+
 ///* Value descriptions */
 //
 value_description ::=
@@ -1283,14 +1279,13 @@ constant ::=
   | CHAR
   | STRING
   | FLOAT
-//
-//signed_constant ::=
-//    constant
-//  | MINUS INT
-//  | MINUS FLOAT
-//  | PLUS INT
-//  | PLUS FLOAT
 
+signed_constant ::=
+    constant
+  | MINUS INT
+  | MINUS FLOAT
+  | PLUS INT
+  | PLUS FLOAT
 
 /* Identifiers and long identifiers */
 
