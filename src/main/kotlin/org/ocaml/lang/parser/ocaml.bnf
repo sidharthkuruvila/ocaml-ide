@@ -125,7 +125,7 @@
 
     extends(".*pattern_expression")=pattern_expression
     extends("label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
-    extends("new_object_expr|object_self_copy_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|ident_bigarray_lookup|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
+    extends(".*_with_local_open_expr|new_object_expr|object_self_copy_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
 
 }
 /* Entry points */
@@ -666,30 +666,18 @@ sign_unary_expr ::=
     (subtractive | additive) expr
 
 simple_expr ::=
-     non_op_simple_expr
-   | record_constructor_expr
-   | assign_expr
-   | lookup_expr
-   | array_constructor_expr
-   | list_constructor_expr
-//
-//  TODO: Find out if this one is needed looks like the string lookup
-//  | mod_longident DOT LBRACKET expr_semi_list SEMI ? RBRACKET
-//  | mod_longident DOT LBRACKET RBRACKET
-//  | mod_longident DOT LBRACKET expr_semi_list SEMI ? error
-//
+    local_open_group
+  | non_op_simple_expr
+  | record_constructor_expr
+  | assign_expr
+  | lookup_expr
+  | array_constructor_expr
+  | list_constructor_expr
   | prefix_op_expr
   | bang_expr
   | new_object_expr
   | object_self_copy_expr
 
-//
-//  | mod_longident DOT LBRACELESS field_expr_list GREATERRBRACE
-//
-//  | mod_longident DOT LBRACELESS GREATERRBRACE
-//
-//  | mod_longident DOT LBRACELESS field_expr_list error
-//
 //  | simple_expr SHARP label
 //
 //  | simple_expr SHARPOP simple_expr
@@ -709,19 +697,40 @@ simple_expr ::=
 //
 
 
+
+private local_open_group ::=
+      object_copy_with_local_open_expr
+    | expr_with_local_open_expr
+    | list_constructor_with_local_open_expr
+    | array_constructor_with_local_open_expr
+    | record_constructor_with_local_open_expr
+
+
+record_constructor_with_local_open_expr ::=
+    mod_longident DOT LBRACE record_expr RBRACE
+
+object_copy_with_local_open_expr ::=
+    mod_longident DOT LBRACELESS field_expr_list ? GREATERRBRACE
+
+expr_with_local_open_expr ::=
+   mod_longident DOT LPAREN seq_expr RPAREN
+
+list_constructor_with_local_open_expr ::=
+   mod_longident DOT LBRACKET expr_semi_list SEMI ? RBRACKET
+
+array_constructor_with_local_open_expr ::=
+    mod_longident DOT LBRACKETBAR ( expr_semi_list SEMI ? )? BARRBRACKET
+
+
 non_op_simple_expr ::=
     val_longident
   | constant
   | constr_longident //%prec prec_constant_constructor
   | name_tag //%prec prec_constant_constructor
   | LPAREN seq_expr RPAREN
-//  | LPAREN seq_expr error
   | BEGIN ext_attributes ? seq_expr ? END
-//  | BEGIN ext_attributes ? seq_expr error
   | LPAREN seq_expr type_constraint RPAREN
-//  | mod_longident DOT LPAREN seq_expr RPAREN
-//  | mod_longident DOT LPAREN RPAREN
-//  | mod_longident DOT LPAREN seq_expr error
+
 
 
 private lookup_expr ::=
@@ -729,7 +738,6 @@ private lookup_expr ::=
   | array_lookup_expr
   | string_lookup_expr
   | bigarray_lookup_expr
-  | ident_bigarray_lookup
 
 
 private assign_expr ::=
@@ -766,7 +774,6 @@ field_lookup_expr ::=
 field_assign_expr ::=
     simple_expr DOT label_longident assignment
 
-
 array_lookup_expr ::=
     simple_expr DOT LPAREN seq_expr RPAREN
 //  | simple_expr DOT LPAREN seq_expr error
@@ -788,10 +795,6 @@ bigarray_lookup_expr ::=
 
 bigarray_assign_expr ::=
     simple_expr DOT LBRACE expr RBRACE assignment
-
-ident_bigarray_lookup ::=
-    mod_longident DOT LBRACE record_expr RBRACE
-//      | mod_longident DOT LBRACE record_expr error
 
 assignment ::=
     LESSMINUS expr
