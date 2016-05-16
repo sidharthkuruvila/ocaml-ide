@@ -113,3 +113,9 @@ new klass;
 Mod.{< a = 5; b >};
 p#print;
 1 #! 2
+
+;;
+
+let f = 1
+
+
