@@ -118,4 +118,18 @@ p#print;
 
 let f = 1
 
+type sometype = {
+  mutable a: SomeMod.t;
+  b: int
+}
+
+type sometype =
+    | A of a
+    | B of b
+
+type sometype = ..
+
+
+
+
 

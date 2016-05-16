@@ -28,11 +28,11 @@
     <!-- Add your extensions here -->
 
     <fileTypeFactory implementation="org.ocaml.lang.MlFileTypeFactory"/>
-    <!--lang.parserDefinition language="Ocaml" implementationClass="org.ocaml.lang.parser.OcamlParserDefinition"/ -->
+    <lang.parserDefinition language="Ocaml" implementationClass="org.ocaml.lang.parser.OcamlParserDefinition"/>
 
     <lang.syntaxHighlighterFactory key="Ocaml" implementationClass="org.ocaml.ide.highlighter.OcamlSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="org.ocaml.ide.colorscheme.OcamlColorSettingsPage"/>
-    <!-- completion.contributor language="Ocaml" implementationClass="org.ocaml.ide.completion.OcamlCompletionContributor"/ -->
+    <completion.contributor language="Ocaml" implementationClass="org.ocaml.ide.completion.OcamlCompletionContributor"/>
   </extensions>
 
   <actions>

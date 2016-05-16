@@ -1023,14 +1023,14 @@ constraints ::=
 
 type_kind ::=
     EQUAL core_type
-//  | EQUAL PRIVATE core_type
-//  | EQUAL constructor_declarations
-//  | EQUAL PRIVATE constructor_declarations
-//  | EQUAL DOTDOT
-//  | EQUAL PRIVATE ? LBRACE label_declarations RBRACE
-//  | EQUAL core_type EQUAL PRIVATE ? constructor_declarations
-//  | EQUAL core_type EQUAL DOTDOT
-//  | EQUAL core_type EQUAL PRIVATE ? LBRACE label_declarations RBRACE
+  | EQUAL PRIVATE core_type
+  | EQUAL constructor_declarations
+  | EQUAL PRIVATE constructor_declarations
+  | EQUAL DOTDOT
+  | EQUAL PRIVATE ? LBRACE label_declarations RBRACE
+  | EQUAL core_type EQUAL PRIVATE ? constructor_declarations
+  | EQUAL core_type EQUAL DOTDOT
+  | EQUAL core_type EQUAL PRIVATE ? LBRACE label_declarations RBRACE
 
 
 optional_type_parameters ::=
@@ -1064,18 +1064,11 @@ type_variable ::=
 type_parameter_list ::=
     type_parameter ( COMMA type_parameter ) *
 
-//constructor_declarations ::=
-//    constructor_declaration
-//  | bar_constructor_declaration
-//  | constructor_declarations bar_constructor_declaration
-//
-//constructor_declaration ::=
-//  | constr_ident generalized_constructor_arguments ? attributes ?
-//
-//
-//bar_constructor_declaration ::=
-//  | BAR constr_ident generalized_constructor_arguments ? attributes ?
+constructor_declarations ::=
+    BAR ? constructor_declaration (BAR constructor_declaration) *
 
+constructor_declaration ::=
+    constr_ident generalized_constructor_arguments ? attributes ?
 
 str_exception_declaration ::=
     EXCEPTION ext_attributes ? constr_ident EQUAL constr_longident attributes ?
@@ -1098,20 +1091,12 @@ constructor_arguments ::=
     core_type_list
 //  | LBRACE label_declarations RBRACE
 //
-//label_declarations ::=
-//    label_declaration
-//  | label_declaration_semi
-//  | label_declaration_semi label_declarations
+label_declarations ::=
+    label_declaration (SEMI attributes ? label_declaration) * (SEMI attributes ?)?
 //
-//label_declaration ::=
-//    MUTABLE ? label COLON poly_type_no_attr attributes ?
-//
-//
-//label_declaration_semi ::=
-//    MUTABLE ? label COLON poly_type_no_attr attributes ? SEMI attributes ?
-//
-//
-//
+label_declaration ::=
+    MUTABLE ? label COLON poly_type_no_attr attributes ?
+
 ///* Type Extensions */
 
 str_type_extension ::=
@@ -1166,11 +1151,10 @@ poly_type ::=
     typevar_list DOT core_type
   | core_type
 
-//
-//poly_type_no_attr ::=
-//        core_type_no_attr
-//
-//      | typevar_list DOT core_type_no_attr
+
+poly_type_no_attr ::=
+        core_type_no_attr
+      | typevar_list DOT core_type_no_attr
 
 
 ///* Core types */
