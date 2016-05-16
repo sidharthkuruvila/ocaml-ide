@@ -125,7 +125,7 @@
 
     extends(".*pattern_expression")=pattern_expression
     extends("label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
-    extends(".*_with_local_open_expr|new_object_expr|object_self_copy_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
+    extends("sharpop_expr|.*_object_expr|.*_with_local_open_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
 
 }
 /* Entry points */
@@ -676,11 +676,9 @@ simple_expr ::=
   | prefix_op_expr
   | bang_expr
   | new_object_expr
-  | object_self_copy_expr
-
-//  | simple_expr SHARP label
-//
-//  | simple_expr SHARPOP simple_expr
+  | self_copy_object_expr
+  | send_message_object_expr
+  | sharpop_expr
 //
 //  | LPAREN MODULE ext_attributes ? module_expr RPAREN
 //
@@ -756,9 +754,12 @@ bang_expr ::=
 new_object_expr ::=
     NEW ext_attributes ? class_longident
 
-object_self_copy_expr ::=
+self_copy_object_expr ::=
     LBRACELESS field_expr_list ? GREATERRBRACE
     //  | LBRACELESS field_expr_list error
+
+send_message_object_expr ::=
+    simple_expr SHARP label
 
 array_constructor_expr ::=
   LBRACKETBAR (expr_semi_list SEMI ?) ? BARRBRACKET
@@ -805,6 +806,11 @@ label_assign_expr ::=
 record_constructor_expr ::=
     LBRACE record_expr RBRACE
 //  | LBRACE record_expr error
+
+
+sharpop_expr ::=
+    simple_expr SHARPOP simple_expr
+
 
 simple_labeled_expr_list ::=
   labeled_simple_expr *
