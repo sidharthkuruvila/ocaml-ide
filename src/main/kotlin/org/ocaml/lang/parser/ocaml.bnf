@@ -125,7 +125,7 @@
 
     extends(".*pattern_expression")=pattern_expression
     extends("label_assign_expr|ref_read_bin_expr|infixop4_bin_expr|ref_assign_bin_expr|sign_unary_expr|mul_bin_expr|sum_bin_expr|infixop1_bin_expr|and_bin_expr|or_bin_expr|compare_bin_expr|coloncolon_bin_expr|expr_comma_list|non_op_expr|expr")=expr
-    extends("sharpop_expr|.*_object_expr|.*_with_local_open_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
+    extends("first_class_module_expr|sharpop_expr|.*_object_expr|.*_with_local_open_expr|prefix_op_expr|bang_expr|list_constructor_expr|array_constructor_expr|.*_assign_expr|.*_lookup_expr|record_constructor_expr|sharp_op_expr|non_op_simple_expr|simple_expr")=simple_expr
 
 }
 /* Entry points */
@@ -664,18 +664,11 @@ simple_expr ::=
   | self_copy_object_expr
   | send_message_object_expr
   | sharpop_expr
-//
-//  | LPAREN MODULE ext_attributes ? module_expr RPAREN
-//
-//  | LPAREN MODULE ext_attributes ? module_expr COLON package_type RPAREN
-//
-//  | mod_longident DOT LPAREN MODULE ext_attributes ? module_expr COLON
-//    package_type RPAREN
-//
-//  | extension
-//
+  | first_class_module_expr
 
 
+first_class_module_expr ::=
+    LPAREN MODULE ext_attributes ? module_expr (COLON package_type) ? RPAREN
 
 private local_open_group ::=
       object_copy_with_local_open_expr
@@ -683,7 +676,10 @@ private local_open_group ::=
     | list_constructor_with_local_open_expr
     | array_constructor_with_local_open_expr
     | record_constructor_with_local_open_expr
+    | first_class_module_with_local_open_expr
 
+first_class_module_with_local_open_expr ::=
+    mod_longident DOT LPAREN MODULE ext_attributes ? module_expr COLON package_type RPAREN
 
 record_constructor_with_local_open_expr ::=
     mod_longident DOT LBRACE record_expr RBRACE
@@ -709,6 +705,7 @@ non_op_simple_expr ::=
   | LPAREN seq_expr RPAREN
   | BEGIN ext_attributes ? seq_expr ? END
   | LPAREN seq_expr type_constraint RPAREN
+  | extension
 
 
 
