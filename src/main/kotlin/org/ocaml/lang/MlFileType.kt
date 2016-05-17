@@ -28,7 +28,7 @@ class MlFileType : LanguageFileType(OcamlLanguage.INSTANCE) {
     }
 
     override fun getIcon(): Icon? {
-        return OcamlIcons.FILE
+        return OcamlIcons.MODULE_ICON_FILE
     }
 
 }

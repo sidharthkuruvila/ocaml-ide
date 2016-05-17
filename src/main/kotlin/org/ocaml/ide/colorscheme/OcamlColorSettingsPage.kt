@@ -14,7 +14,7 @@ import javax.swing.Icon
  */
 class OcamlColorSettingsPage : ColorSettingsPage {
     override fun getIcon(): Icon? {
-        return OcamlIcons.FILE
+        return OcamlIcons.MODULE_ICON_FILE
     }
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): MutableMap<String, TextAttributesKey>? {

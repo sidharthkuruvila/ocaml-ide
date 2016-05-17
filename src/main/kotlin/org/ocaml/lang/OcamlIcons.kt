@@ -8,7 +8,8 @@ import com.intellij.openapi.util.IconLoader
 
 class OcamlIcons {
     companion object {
-        val FILE = IconLoader.getIcon("/org/ocaml/ocamlidea/icons/jar-gray.png")
+        val MODULE_ICON_FILE = IconLoader.getIcon("/org/ocaml/ocamlidea/icons/module.png")
+        val INTERFACE_ICON_FILE = IconLoader.getIcon("/org/ocaml/ocamlidea/icons/interface.png")
     }
 }
 
