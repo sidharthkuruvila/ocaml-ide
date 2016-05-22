@@ -38,6 +38,15 @@
 
     <fileTypeFactory implementation="org.ocaml.ide.mli.MliFileTypeFactory"/>
     <lang.syntaxHighlighterFactory key="Ocaml Interface" implementationClass="org.ocaml.ide.highlighter.OcamlSyntaxHighlighterFactory"/>
+
+    <!-- Projects -->
+    <moduleType id="OcamlModuleType" implementationClass="org.ocaml.ide.project.OcamlModuleType"/>
+    <moduleBuilder builderClass="org.ocaml.ide.project.OcamlModuleBuilder"/>
+
+    <!-- Run configurations -->
+    <configurationType implementation="org.ocaml.ide.runconfig.OcamlRunConfigurationType" />
+    <programRunner id="ocamlRunner" implementation="org.ocaml.ide.runconfig.OcamlRunner" />
+
   </extensions>
 
   <actions>
