@@ -70,7 +70,7 @@ def jflexArgs(srcFlex, targetDir) {
 
 task generateOcamlLexer(type: JavaExec) {
     ext.src = "parser/OcamlLexer.flex"
-    ext.dst = "src/main/java/org/ocaml/lang/lexer/"
+    ext.dst = "gen/org/ocaml/lang/lexer/"
 
     main = "jflex.Main"
 
@@ -85,7 +85,7 @@ task generateOcamlLexer(type: JavaExec) {
 
 
 task generateOcamlPsiAndParser(type: JavaExec) {
-    ext.src     = "src/main/kotlin/org/ocaml/lang/parser/ocaml.bnf"
+    ext.src     = "parser/ocaml.bnf"
     ext.dstRoot = "gen"
 
     main = "org.intellij.grammar.Main"
