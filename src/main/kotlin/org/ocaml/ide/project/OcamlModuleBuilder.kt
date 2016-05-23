@@ -12,5 +12,7 @@ class OcamlModuleBuilder : ModuleBuilder() {
         return OcamlModuleType.getInstance()
     }
 
-    override fun setupRootModel(modifiableRootModel: ModifiableRootModel?) { }
+    override fun setupRootModel(modifiableRootModel: ModifiableRootModel?) {
+        println("hello")
+    }
 }
