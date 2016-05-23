@@ -11,6 +11,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import org.ocaml.ide.runconfig.form.OcamlRunConfigurationForm
 
 
 /**
