@@ -3,3 +3,10 @@
 *.iml
 .gradle/
 build
+/classes
+/gen
+diff.diff
+*.cmi
+*.cmo
+a.out
+	
