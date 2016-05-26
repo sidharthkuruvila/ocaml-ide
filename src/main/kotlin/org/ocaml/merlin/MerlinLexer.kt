@@ -38,10 +38,6 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
         currentTokenType = TokenType.WHITE_SPACE
     }
 
-    companion object {
-        private val LOG = Logger.getInstance(MerlinLexer::class.java)
-    }
-
     val keyWords = setOf("AND", "AS", "ASSERT", "BEGIN", "CLASS", "CONSTRAINT", "DO", "DONE", "DOWNTO", "ELSE", "END",
             "EXCEPTION", "EXTERNAL", "FALSE", "FOR", "FUN", "FUNCTION", "FUNCTOR", "IF", "IN", "INCLUDE", "INHERIT",
             "INITIALIZER", "LAZY", "LET", "MATCH", "METHOD", "MODULE", "MUTABLE", "NEW", "OBJECT", "OF", "OPEN", "OR",

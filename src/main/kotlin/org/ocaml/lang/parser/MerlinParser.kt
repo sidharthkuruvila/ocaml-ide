@@ -77,6 +77,4 @@ class MerlinParser(private val filename: String, private val merlin: Merlin) : P
 
 }
 
-data class IndexWithPosition(val index: Int, val position: Position)
-
 data class NodeWithIndex(val start: Int, val end: Int, val kind: String, val children: List<NodeWithIndex>)

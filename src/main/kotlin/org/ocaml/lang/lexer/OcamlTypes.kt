@@ -252,7 +252,4 @@ object OcamlTypes {
 
     @JvmField
     val BAD_LITERAL = OcamlTokenElementType("BAD_LITERAL")
-
-    @JvmField
-    val QUOTED_STRING = OcamlTokenElementType("QUOTED_STRING")
 }

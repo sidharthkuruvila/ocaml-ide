@@ -110,12 +110,6 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 
 }
 
-data class Context(val fileName: String) {
-    fun asJson(objectMapper: ObjectMapper): String {
-        return """["auto", "$fileName"]"""
-    }
-}
-
 data class MerlinError(val start: Position, val end: Position, val valid: Boolean,
                        val message: String, val type: String)
 

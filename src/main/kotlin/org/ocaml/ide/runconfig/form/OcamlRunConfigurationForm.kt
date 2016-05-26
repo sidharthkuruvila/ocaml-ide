@@ -17,18 +17,18 @@ class OcamlRunConfigurationForm(project: Project) : SettingsEditor<OcamlFileRunC
     private lateinit var root: JPanel
 
     init {
-        mlFilePath!!.addBrowseFolderListener("Something", "Something", project,
+        mlFilePath.addBrowseFolderListener("Something", "Something", project,
                 FileChooserDescriptorFactory.createSingleFileDescriptor("ml"))
     }
 
     override fun resetEditorFrom(s: OcamlFileRunConfiguration) {
-        mlFilePath!!.text = s.mlFilePath
+        mlFilePath.text = s.mlFilePath
     }
 
     @Throws(ConfigurationException::class)
     override fun applyEditorTo(s: OcamlFileRunConfiguration) {
 
-        s.mlFilePath = mlFilePath!!.text
+        s.mlFilePath = mlFilePath.text
     }
 
     override fun createEditor(): JComponent {
