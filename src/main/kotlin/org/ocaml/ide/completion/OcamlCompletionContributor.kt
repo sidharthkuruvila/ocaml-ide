@@ -2,6 +2,7 @@ package org.ocaml.ide.completion
 
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.util.Key
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.util.ProcessingContext
 import org.ocaml.lang.lexer.OcamlTypes

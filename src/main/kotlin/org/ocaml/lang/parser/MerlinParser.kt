@@ -10,13 +10,13 @@ import org.ocaml.merlin.Merlin
 import org.ocaml.merlin.Position
 import java.util.regex.Pattern
 
-class MerlinParser(private val merlin: Merlin) : PsiParser {
+class MerlinParser(private val filename: String, private val merlin: Merlin) : PsiParser {
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         val rootMarker = builder.mark()
         val src = builder.originalText
-        merlin.drop()
-        merlin.tellSource(src)
-        val treeList = merlin.dumpBrowse()
+        merlin.drop(filename)
+        merlin.tellSource(filename, src)
+        val treeList = merlin.dumpBrowse(filename)
 
         val tree = nodesWithIndex(src, treeList[0])
 

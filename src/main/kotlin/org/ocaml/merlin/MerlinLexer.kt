@@ -197,7 +197,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
         _state = initialState
 
         if(buffer.length != 0) {
-            tokens = tokensWithIndex(buffer)
+            tokens = tokensWithIndex("dummyfile", buffer)
 
             updateCurrentTokenIndex(startOffset)
             updateEndOffset(endOffset)
@@ -240,7 +240,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
         return _state
     }
 
-    private fun tokensWithIndex(source: CharSequence): List<TokenWithIndex> {
+    private fun tokensWithIndex(filename: String, source: CharSequence): List<TokenWithIndex> {
 
         fun nextIndex(curIndex: Int, curPos: Position, nextPos: Position): Int {
             var i = curIndex
@@ -261,7 +261,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
             throw IllegalStateException("The line number ${nextPos.line} and culumn number ${nextPos.col} are outside the source length ${source.length}")
         }
 
-        val merlinTokens = merlinTokens(source)
+        val merlinTokens = merlinTokens(filename, source)
         val twps = mutableListOf<TokenWithIndex>()
         var curIndex = 0
         var curPos = Position(line = 1, col = 0)
@@ -286,11 +286,11 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
 
     }
 
-    private fun merlinTokens(source: CharSequence): List<Token> {
-        merlin.seekExact(Position(1, 0))
-        merlin.drop()
-        merlin.tellSource(source.toString() + " ")
-        val merlinTokens = merlin.dumpTokens()
+    private fun merlinTokens(filename: String, source: CharSequence): List<Token> {
+        merlin.seekExact(filename, Position(1, 0))
+        merlin.drop(filename)
+        merlin.tellSource(filename, source.toString() + " ")
+        val merlinTokens = merlin.dumpTokens(filename)
         return merlinTokens
     }
 }

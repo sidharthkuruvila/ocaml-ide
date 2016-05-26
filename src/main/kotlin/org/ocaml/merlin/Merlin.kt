@@ -26,7 +26,11 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
         }
 
         private fun merlinProcess(): Process {
-            val pb = ProcessBuilder("/Users/sidharthkuruvila/Code/ocaml_idea_plugin/merlin/ocamlmerlin")
+            val cmd = """
+            . /Users/sidharthkuruvila/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+            ocamlmerlin
+            """
+            val pb = ProcessBuilder("bash", "-c", cmd)
             return pb.start()
         }
 
@@ -38,37 +42,46 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
     private val writer = OutputStreamWriter(merlinProcess.outputStream)
     private val reader = BufferedReader(InputStreamReader(merlinProcess.inputStream))
 
-    fun tellSource(source: CharSequence): TellResponse {
-        val request = """["tell","source", ${objectMapper.writeValueAsString(source)}]"""
-        return makeRequest(request, object : TypeReference<TellResponse>() {})
+    fun tellSource(filename: String, source: CharSequence): TellResponse {
+        val request = """["tell", "source", ${objectMapper.writeValueAsString(source)}]"""
+        return makeRequest(filename, request, object : TypeReference<TellResponse>() {})
     }
 
-    fun dumpTokens(): List<Token> {
+    fun errors(filename: String): List<MerlinError> {
+        val request = """["errors"]"""
+        return makeRequest(filename, request, object : TypeReference<List<MerlinError>>() {})
+    }
+
+    fun dumpTokens(filename: String): List<Token> {
         val request = """["dump", "tokens"]"""
-        return makeRequest(request, object : TypeReference<List<Token>>() {})
+        return makeRequest(filename, request, object : TypeReference<List<Token>>() {})
     }
 
-    fun drop() {
+    fun drop(filename: String) {
         val request = """["drop"]"""
-        makeRequest(request, object : TypeReference<TellResponse>() {})
+        makeRequest(filename, request, object : TypeReference<TellResponse>() {})
     }
 
-    fun seekExact(position: Position) {
+    fun seekExact(filename: String, position: Position) {
         val request = """["seek", "exact", ${objectMapper.writeValueAsString(position)}]"""
-        makeRequest(request, object : TypeReference<TellResponse>() {})
+        makeRequest(filename, request, object : TypeReference<TellResponse>() {})
     }
 
-    fun dumpBrowse(): List<BrowseNode> {
+    fun dumpBrowse(filename: String): List<BrowseNode> {
         val request = """["dump", "browse"]"""
-        return makeRequest(request, object : TypeReference<List<BrowseNode>>() {})
+        return makeRequest(filename, request, object : TypeReference<List<BrowseNode>>() {})
     }
 
-    fun dumpBrowse2(): JsonNode {
+    fun dumpBrowse2(filename: String): JsonNode {
         val request = """["dump", "browse"]"""
-        return makeRequest(request, object : TypeReference<JsonNode>() {})
+        return makeRequest(filename, request, object : TypeReference<JsonNode>() {})
     }
 
-    private fun <T> makeRequest(request: String, c: TypeReference<T>): T {
+
+    private fun <T> makeRequest(filename: String, query: String, c: TypeReference<T>): T {
+        val request = """{"context": ["auto", ${objectMapper.writeValueAsString(filename)}],
+            "query": $query
+        }"""
         writer.write(request)
         writer.write("\n")
         writer.flush()
@@ -91,6 +104,14 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 
 }
 
+data class Context(val fileName: String) {
+    fun asJson(objectMapper: ObjectMapper): String {
+        return """["auto", "$fileName"]"""
+    }
+}
+
+data class MerlinError(val start: Position, val end: Position, val valid: Boolean,
+                       val message: String, val type: String)
 
 data class Position(val line: Int, val col: Int)
 

@@ -13,38 +13,56 @@ import org.junit.Test
 
 class TestMerlin {
 
-
+    val fn = "abc"
     @Test
     fun testTellSource() {
         val m = merlinInstance()
-        val resp1 = m.tellSource("let f x = x;;")
-        m.seekExact(Position(1, 0))
-        m.drop()
-        val resp2 = m.tellSource("let f x = x;;")
+        val resp1 = m.tellSource(fn, "let f x = x;; `")
+        m.seekExact(fn, Position(1, 0))
+        m.drop(fn)
+        val resp2 = m.tellSource(fn, "let f x = x;;")
         assertEquals(TellResponse(cursor = Position(line = 1, col = 13), marker = false), resp2)
+    }
+
+
+    @Test
+    fun testError() {
+        val src = """
+        let f x = print_string x
+        let g x = f 1
+        let _ = g "a"
+        """
+        val m = merlinInstance()
+        m.tellSource(fn, src)
+        val expected = listOf(MerlinError(start=Position(line=3, col=20), end=Position(line=3, col=21), valid=true,
+                message="Error: This expression has type int but an expression was expected of type\n         string",
+                type="type"))
+        val resp = m.errors(fn)
+        assertEquals(expected, resp)
+
     }
 
     @Test
     fun testDumpTokens() {
         val m = merlinInstance()
-        m.tellSource("let f x = x;;")
+        m.tellSource(fn, "let f x = x;;")
         val exp = listOf(Token(start = Position(line = 1, col = 0), end = Position(line = 1, col = 3), token = "LET"),
                 Token(start = Position(line = 1, col = 4), end = Position(line = 1, col = 5), token = "LIDENT"),
                 Token(start = Position(line = 1, col = 6), end = Position(line = 1, col = 7), token = "LIDENT"),
                 Token(start = Position(line = 1, col = 8), end = Position(line = 1, col = 9), token = "EQUAL"),
                 Token(start = Position(line = 1, col = 10), end = Position(line = 1, col = 11), token = "LIDENT"),
                 Token(start = Position(line = 1, col = 11), end = Position(line = 1, col = 13), token = "SEMISEMI"))
-        val resp = m.dumpTokens()
+        val resp = m.dumpTokens(fn)
         assertEquals(exp, resp)
     }
 
     @Test
     fun testDumpBrowse1() {
         val m = merlinInstance()
-        m.tellSource("""#!/var/bin
+        m.tellSource(fn, """#!/var/bin
             open Mood
                 let f x = x let x = 2""")
-        val resp = m.dumpBrowse2()
+        val resp = m.dumpBrowse2(fn)
         println(resp)
     }
 
@@ -52,8 +70,8 @@ class TestMerlin {
     //@Ignore
     fun xtestDumpBrowse() {
         val m = merlinInstance()
-        m.tellSource("let f x = x;;")
-        val resp = m.dumpBrowse()
+        m.tellSource(fn, "let f x = x;;")
+        val resp = m.dumpBrowse(fn)
 
         val exp = listOf(
                 BrowseNode(
