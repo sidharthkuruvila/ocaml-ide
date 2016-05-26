@@ -38,14 +38,14 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
         val NUMBER_TOKENS = setOf(OcamlTypes.INT32, OcamlTypes.NATIVEINT, OcamlTypes.INT, OcamlTypes.FLOAT,
                 OcamlTypes.CHAR, OcamlTypes.INT64)
 
-        val OPERATOR_TOKENS = setOf(OcamlTypes.COLONGREATER, OcamlTypes.STAR, OcamlTypes.LESS, OcamlTypes.PLUSDOT,
-                OcamlTypes.EQUAL, OcamlTypes.BARBAR, OcamlTypes.BAR, OcamlTypes.MINUS, OcamlTypes.DOTDOT,
-                OcamlTypes.SEMI, OcamlTypes.QUOTE, OcamlTypes.NONREC, OcamlTypes.QUESTION, OcamlTypes.AMPERAMPER,
-                OcamlTypes.PLUS, OcamlTypes.TILDE, OcamlTypes.SHARP, OcamlTypes.PREFIXOP,
-                OcamlTypes.MINUSGREATER, OcamlTypes.COLONEQUAL, OcamlTypes.PERCENT, OcamlTypes.COLONCOLON,
-                OcamlTypes.INFIXOP4, OcamlTypes.BANG, OcamlTypes.INFIXOP1, OcamlTypes.INFIXOP0, OcamlTypes.INFIXOP3,
-                OcamlTypes.INFIXOP2, OcamlTypes.LESSMINUS, OcamlTypes.MINUSDOT, OcamlTypes.GREATER, OcamlTypes.SHARPOP,
-                OcamlTypes.PLUSEQ, OcamlTypes.AMPERSAND)
+//        val OPERATOR_TOKENS = setOf(OcamlTypes.COLONGREATER, OcamlTypes.STAR, OcamlTypes.LESS, OcamlTypes.PLUSDOT,
+//                OcamlTypes.EQUAL, OcamlTypes.BARBAR, OcamlTypes.BAR, OcamlTypes.MINUS, OcamlTypes.DOTDOT,
+//                OcamlTypes.SEMI, OcamlTypes.QUOTE, OcamlTypes.NONREC, OcamlTypes.QUESTION, OcamlTypes.AMPERAMPER,
+//                OcamlTypes.PLUS, OcamlTypes.TILDE, OcamlTypes.SHARP, OcamlTypes.PREFIXOP,
+//                OcamlTypes.MINUSGREATER, OcamlTypes.COLONEQUAL, OcamlTypes.PERCENT, OcamlTypes.COLONCOLON,
+//                OcamlTypes.INFIXOP4, OcamlTypes.BANG, OcamlTypes.INFIXOP1, OcamlTypes.INFIXOP0, OcamlTypes.INFIXOP3,
+//                OcamlTypes.INFIXOP2, OcamlTypes.LESSMINUS, OcamlTypes.MINUSDOT, OcamlTypes.GREATER, OcamlTypes.SHARPOP,
+//                OcamlTypes.PLUSEQ, OcamlTypes.AMPERSAND)
 
 
 
@@ -81,12 +81,11 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
         val BRACE_KEYS = arrayOf(BRACE)
         val NUMBER_KEYS = arrayOf(NUMBER)
         val UIDENTIFIER_KEYS = arrayOf(UIDENTIFIER)
-        val OPERATOR_KEYS = arrayOf(OPERATOR)
+//        val OPERATOR_KEYS = arrayOf(OPERATOR)
     }
 
     override fun getHighlightingLexer(): Lexer {
         return FlexAdapter(_OcamlLexer(null))
-        //return MerlinLexer(Merlin.Companion.newInstance())
     }
 
     override fun getTokenHighlights(tokenType: IElementType?): Array<out TextAttributesKey> {
@@ -97,7 +96,7 @@ class OcamlSyntaxHighlighter : SyntaxHighlighterBase() {
             in KEYWORD_TOKENS -> KEYWORD_KEYS
             in BRACE_TOKENS -> BRACE_KEYS
             in NUMBER_TOKENS -> NUMBER_KEYS
-            //in OPERATOR_TOKENS -> OPERATOR_KEYS
+//            in OPERATOR_TOKENS -> OPERATOR_KEYS
             OcamlTypes.RPAREN, OcamlTypes.LPAREN -> PAREN_KEYS
             OcamlTypes.LIDENT -> IDENTIFIER_KEYS
             OcamlTypes.UIDENT -> UIDENTIFIER_KEYS
