@@ -4,7 +4,6 @@ import com.intellij.execution.configurations.RunProfile
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.runners.DefaultProgramRunner
 import com.intellij.openapi.diagnostic.Logger
-import org.ocaml.merlin.Merlin
 
 /**
  * Created by sidharthkuruvila on 18/05/16.

@@ -28,7 +28,7 @@ class OcamlFileRunConfiguration(name: String,
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> {
 
-        val ocamlRunConfigurationForm = OcamlRunConfigurationForm(getProject())
+        val ocamlRunConfigurationForm = OcamlRunConfigurationForm(project)
         return  ocamlRunConfigurationForm
     }
 

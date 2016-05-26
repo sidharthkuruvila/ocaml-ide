@@ -1,7 +1,6 @@
 package org.ocaml.lang
 
 import com.intellij.openapi.fileTypes.LanguageFileType
-import org.ocaml.lang.OcamlIcons
 import javax.swing.Icon
 
 /**

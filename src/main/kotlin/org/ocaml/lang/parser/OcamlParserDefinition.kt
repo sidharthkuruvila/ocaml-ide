@@ -1,6 +1,5 @@
 package org.ocaml.lang.parser
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.lang.LanguageUtil
 import com.intellij.lang.ParserDefinition
@@ -17,9 +16,6 @@ import org.ocaml.lang.OcamlLanguage
 import org.ocaml.lang.lexer.OcamlLexer
 import org.ocaml.lang.lexer.OcamlTypes
 import org.ocaml.lang.parser.psi.OcamlCompositeElementTypes
-import org.ocaml.lang.parser.psi.OcamlNonTerminals
-import org.ocaml.merlin.Merlin
-import org.ocaml.merlin.MerlinLexer
 
 /**
  * Created by sidharthkuruvila on 07/05/16.

@@ -33,7 +33,7 @@ class MerlinParser(private val filename: String, private val merlin: Merlin) : P
             builder.advanceLexer()
         }
         rootMarker.done(root)
-        return builder.getTreeBuilt();
+        return builder.treeBuilt;
     }
 
 
@@ -54,7 +54,7 @@ class MerlinParser(private val filename: String, private val merlin: Merlin) : P
                 }
                 i++
             }
-            throw IllegalStateException("The line number ${nextPos.line} and culumn number ${nextPos.col} are outside the source length ${source.length}")
+            throw IllegalStateException("The line number ${nextPos.line} and column number ${nextPos.col} are outside the source length ${source.length}")
         }
 
 

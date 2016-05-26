@@ -15,7 +15,7 @@ import org.ocaml.util.LineNumbering
 /**
  * Created by sidharthkuruvila on 26/05/16.
  */
-class MerlinErrorHighlightingAnnotater : ExternalAnnotator<MerlinInfo, Results>() {
+class MerlinErrorHighlightingAnnotator : ExternalAnnotator<MerlinInfo, Results>() {
 
     companion object {
         val merlinErrors = mapOf(
@@ -26,7 +26,7 @@ class MerlinErrorHighlightingAnnotater : ExternalAnnotator<MerlinInfo, Results>(
                 Pair("unkown", HighlightSeverity.INFORMATION))
     }
 
-    //TODO Add some inteligence here to help decide wether the annotator should run
+    //TODO Add some intelligence here to help decide whether the annotator should run
     override fun collectInformation(@NotNull file: PsiFile): MerlinInfo? {
         val component = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)
         val vf = file.virtualFile

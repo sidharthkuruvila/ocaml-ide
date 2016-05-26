@@ -1,8 +1,5 @@
 package org.ocaml.lang.lexer
 
-import com.intellij.lang.Language
-import org.ocaml.lang.OcamlLanguage
-
 /**
  * Created by sidharthkuruvila on 02/05/16.
  */

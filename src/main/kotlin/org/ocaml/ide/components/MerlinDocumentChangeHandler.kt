@@ -16,22 +16,22 @@ data class MerlinDocumentChangeHandler(val merlin: Merlin, val event: DocumentEv
 
     fun handle(){
         if(event.isWholeTextReplaced){
-            fullupdate();
+            fullUpdate();
         }
         else if(isTagged()){
-            diffupdate()
+            diffUpdate()
         } else {
-            fullupdate()
+            fullUpdate()
         }
     }
 
-    private fun diffupdate() {
+    private fun diffUpdate() {
         merlin.seekExact(filename, Position(1, 0))
         merlin.drop(filename)
         merlin.tellSource(filename, doc.charsSequence)
     }
 
-    private fun fullupdate() {
+    private fun fullUpdate() {
         merlin.seekExact(filename, Position(1, 0))
         merlin.drop(filename)
         merlin.tellSource(filename, doc.charsSequence)

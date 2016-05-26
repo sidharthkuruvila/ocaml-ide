@@ -258,7 +258,7 @@ class MerlinLexer(private val merlin: Merlin) : LexerBase() {
                 }
                 i++
                }
-            throw IllegalStateException("The line number ${nextPos.line} and culumn number ${nextPos.col} are outside the source length ${source.length}")
+            throw IllegalStateException("The line number ${nextPos.line} and column number ${nextPos.col} are outside the source length ${source.length}")
         }
 
         val merlinTokens = merlinTokens(filename, source)

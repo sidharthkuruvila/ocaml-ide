@@ -37,7 +37,7 @@
     <lang.parserDefinition language="Ocaml" implementationClass="org.ocaml.lang.parser.OcamlParserDefinition"/>
 
     <lang.syntaxHighlighterFactory key="Ocaml" implementationClass="org.ocaml.ide.highlighter.OcamlSyntaxHighlighterFactory"/>
-    <externalAnnotator language="Ocaml" implementationClass="org.ocaml.ide.highlighter.MerlinErrorHighlightingAnnotater" />
+    <externalAnnotator language="Ocaml" implementationClass="org.ocaml.ide.highlighter.MerlinErrorHighlightingAnnotator" />
 
     <colorSettingsPage implementation="org.ocaml.ide.colorscheme.OcamlColorSettingsPage"/>
     <completion.contributor language="Ocaml" implementationClass="org.ocaml.ide.completion.OcamlCompletionContributor"/>
@@ -54,9 +54,6 @@
     <!-- Run configurations -->
     <configurationType implementation="org.ocaml.ide.runconfig.OcamlRunConfigurationType" />
     <programRunner id="ocamlRunner" implementation="org.ocaml.ide.runconfig.OcamlRunner" />
-
-    <!-- Services -->
-    <applicationService serviceInterface="org.ocaml.ide.components.impl.MerlinServiceComponentImpl" serviceImplementation="org.ocaml.ide.components.impl.MerlinServiceImpl" />
 
   </extensions>
 

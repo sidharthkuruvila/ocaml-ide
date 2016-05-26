@@ -26,13 +26,13 @@ class OcamlFileRunProfileState(environment: ExecutionEnvironment) : CommandLineS
     fun buildAndRunCmd(environment: ExecutionEnvironment, filepath: String) : String {
         val basePath = environment.project.baseDir
 
-        val relFilname = File(filepath).toRelativeString(File(basePath.path))
+        val relFilename = File(filepath).toRelativeString(File(basePath.path))
 
         if(!filepath.endsWith(".ml")) {
             throw IllegalStateException("Can only run ml files")
         }
 
-        val outputFile = relFilname.toString().replace(".ml", ".native")
+        val outputFile = relFilename.toString().replace(".ml", ".native")
         val s = "pwd && ocamlbuild $outputFile && ./$outputFile"
         return s
     }
