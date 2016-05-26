@@ -33,7 +33,6 @@ class OcamlCompletionContributor : CompletionContributor() {
     }
 
     fun findSuitablePrefix(parameters: CompletionParameters): String {
-        val p = parameters.position
         return ""
     }
 }

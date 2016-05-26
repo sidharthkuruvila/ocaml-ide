@@ -17,7 +17,7 @@ class TestMerlin {
     @Test
     fun testTellSource() {
         val m = merlinInstance()
-        val resp1 = m.tellSource(fn, "let f x = x;; `")
+        m.tellSource(fn, "let f x = x;; `")
         m.seekExact(fn, Position(1, 0))
         m.drop(fn)
         val resp2 = m.tellSource(fn, "let f x = x;;")
@@ -85,8 +85,7 @@ class TestMerlin {
         m.tellSource(fn, """#!/var/bin
             open Mood
                 let f x = x let x = 2""")
-        val resp = m.dumpBrowse2(fn)
-        //println(resp)
+        m.dumpBrowse2(fn)
     }
 
     //@Test
