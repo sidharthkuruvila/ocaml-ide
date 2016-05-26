@@ -43,6 +43,29 @@ class TestMerlin {
     }
 
     @Test
+    fun testComplete() {
+        val src = """
+        let l1 = [1;2;3]
+        let sq x = x*x
+        let l2 = List.ma sq l
+        let _ = print_string "hello"
+        """
+        val m = merlinInstance()
+        m.tellSource(fn, src)
+        val expected = Completions(
+                entries=listOf(
+                        CompletionEntry(name="List.mapi", kind="Value", desc="(int -> 'a -> 'b) -> 'a list -> 'b list", info=""),
+                        CompletionEntry(name="List.map2", kind="Value", desc="('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info=""),
+                        CompletionEntry(name="List.map", kind="Value", desc="('a -> 'b) -> 'a list -> 'b list", info=""),
+                        CompletionEntry(name="ListLabels.mapi", kind="Value", desc="f:(int -> 'a -> 'b) -> 'a list -> 'b list", info=""),
+                        CompletionEntry(name="ListLabels.map2", kind="Value", desc="f:('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info=""),
+                        CompletionEntry(name="ListLabels.map", kind="Value", desc="f:('a -> 'b) -> 'a list -> 'b list", info="")),
+                context=null)
+        val resp = m.complete(fn, "List.ma", Position(4, 21))
+        assertEquals(expected, resp)
+    }
+
+    @Test
     fun testDumpTokens() {
         val m = merlinInstance()
         m.tellSource(fn, "let f x = x;;")
@@ -63,7 +86,7 @@ class TestMerlin {
             open Mood
                 let f x = x let x = 2""")
         val resp = m.dumpBrowse2(fn)
-        println(resp)
+        //println(resp)
     }
 
     //@Test

@@ -4,8 +4,10 @@ import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.vfs.VirtualFile
 import org.ocaml.ide.components.MerlinServiceComponent
 import org.ocaml.ide.components.MerlinServiceDocumentListener
+import org.ocaml.merlin.CompletionEntry
 import org.ocaml.merlin.Merlin
 import org.ocaml.merlin.MerlinError
+import org.ocaml.merlin.Position
 
 /**
  * Created by sidharthkuruvila on 24/05/16.
@@ -30,5 +32,9 @@ class MerlinServiceComponentImpl : MerlinServiceComponent {
 
     override fun errors(file: VirtualFile): List<MerlinError> {
         return merlin.errors(file.canonicalPath!!)
+    }
+
+    override fun completions(file: VirtualFile, prefix: String, position: Position): List<CompletionEntry> {
+        return merlin.complete(file.canonicalPath!!, prefix, position).entries
     }
 }

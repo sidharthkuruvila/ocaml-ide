@@ -47,9 +47,15 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
         return makeRequest(filename, request, object : TypeReference<TellResponse>() {})
     }
 
+
     fun errors(filename: String): List<MerlinError> {
         val request = """["errors"]"""
         return makeRequest(filename, request, object : TypeReference<List<MerlinError>>() {})
+    }
+
+    fun complete(filename: String, prefix: String, position: Position): Completions {
+        val request = """["expand", "prefix", ${objectMapper.writeValueAsString(prefix)}, "at", ${objectMapper.writeValueAsString(position)}]"""
+        return makeRequest(filename, request, object : TypeReference<Completions>() {})
     }
 
     fun dumpTokens(filename: String): List<Token> {
@@ -121,3 +127,11 @@ data class Token(val start: Position, val end: Position, val token: String)
 
 data class BrowseNode(val start: Position, val end: Position, val ghost: Boolean,
                       val attrs: List<String>, val kind: String, val children: List<BrowseNode>)
+
+
+data class Completions(val entries: List<CompletionEntry>, val context: CompletionContext?)
+
+data class CompletionEntry(val name: String, val kind: String, val desc: String, val info: String)
+
+
+object CompletionContext
