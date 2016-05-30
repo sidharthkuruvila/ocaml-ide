@@ -5,7 +5,6 @@ import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import org.jetbrains.annotations.NotNull
 import org.ocaml.ide.components.MerlinServiceComponent
@@ -29,8 +28,7 @@ class MerlinErrorHighlightingAnnotator : ExternalAnnotator<MerlinInfo, Results>(
     //TODO Add some intelligence here to help decide whether the annotator should run
     override fun collectInformation(@NotNull file: PsiFile): MerlinInfo? {
         val component = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)
-        val vf = file.virtualFile
-        return MerlinInfo(vf, file.text, component)
+        return MerlinInfo(file, file.text, component)
     }
 
     override fun doAnnotate(merlinInfo: MerlinInfo): Results? {
@@ -41,8 +39,9 @@ class MerlinErrorHighlightingAnnotator : ExternalAnnotator<MerlinInfo, Results>(
 
     override fun apply(file: PsiFile, results: Results, holder: AnnotationHolder) {
         val ln = results.lineNumbering
-        for(error in results.errors){
-            val range = TextRange(ln.index(error.start), ln.index(error.end))
+        val (t, f) = results.errors.partition { it.start == null || it.end == null }
+        for(error in t){
+            val range = TextRange(ln.index(error.start!!), ln.index(error.end!!))
             val severity = merlinErrors[error.type]!!
             val message = error.message
             holder.createAnnotation(severity, range, message)
@@ -52,7 +51,7 @@ class MerlinErrorHighlightingAnnotator : ExternalAnnotator<MerlinInfo, Results>(
 }
 
 data class MerlinInfo(
-        val file: VirtualFile,
+        val file: PsiFile,
         val source: String,
         val merlinService: MerlinServiceComponent)
 

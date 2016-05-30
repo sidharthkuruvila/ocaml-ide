@@ -110,7 +110,7 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 
 }
 
-data class MerlinError(val start: Position, val end: Position, val valid: Boolean,
+data class MerlinError(val start: Position?, val end: Position?, val valid: Boolean,
                        val message: String, val type: String)
 
 data class Position(val line: Int, val col: Int)

@@ -23,7 +23,7 @@ class OcamlCompletionContributor : CompletionContributor() {
                                        context: ProcessingContext,
                                        resultSet: CompletionResultSet) {
                         val ln = LineNumbering(parameters.originalFile.text)
-                        val completions = merlinService.completions(parameters.originalFile.virtualFile.canonicalFile!!,
+                        val completions = merlinService.completions(parameters.originalFile,
                                 findSuitablePrefix(parameters), ln.position(parameters.offset))
                         for(completion in completions) {
                             resultSet.addElement(LookupElementBuilder.create(completion.name).withTypeText(completion.desc));
