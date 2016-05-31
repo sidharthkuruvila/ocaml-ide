@@ -142,6 +142,9 @@ let f (a,b,c : sometype) = "abc"
 ;;
 
 type t = Mod.t -> unit
+type t = t t * (t -> t)
+type t
+type t = g:(f -> unit) -> unit
 
 
 
