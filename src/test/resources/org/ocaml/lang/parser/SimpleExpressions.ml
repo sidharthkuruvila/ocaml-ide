@@ -139,6 +139,9 @@ let f (a,b,c : sometype) = "abc"
     | (`A, Some b) -> a);
 (function
    | [ `A "abc" ] -> 123)
+;;
+
+type t = Mod.t -> unit
 
 
 

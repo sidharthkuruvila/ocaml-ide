@@ -40,7 +40,7 @@ class MerlinErrorHighlightingAnnotator : ExternalAnnotator<MerlinInfo, Results>(
     override fun apply(file: PsiFile, results: Results, holder: AnnotationHolder) {
         val ln = results.lineNumbering
         val (t, f) = results.errors.partition { it.start == null || it.end == null }
-        for(error in t){
+        for(error in f){
             val range = TextRange(ln.index(error.start!!), ln.index(error.end!!))
             val severity = merlinErrors[error.type]!!
             val message = error.message

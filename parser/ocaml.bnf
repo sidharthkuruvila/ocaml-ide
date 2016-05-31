@@ -1168,11 +1168,11 @@ core_type_no_attr ::=
   | core_type2 AS QUOTE ident
 
 core_type2 ::=
-    simple_core_type_or_tuple
+    core_type2 MINUSGREATER core_type2
+  | simple_core_type_or_tuple
   | QUESTION LIDENT COLON core_type2 MINUSGREATER core_type2
   | OPTLABEL core_type2 MINUSGREATER core_type2
   | LIDENT COLON core_type2 MINUSGREATER core_type2
-//  | core_type2 MINUSGREATER core_type2
 
 
 
