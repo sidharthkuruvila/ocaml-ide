@@ -1193,11 +1193,11 @@ simple_core_type2 ::=
   | LESS GREATER
   | SHARP class_longident
   | LPAREN core_type_comma_list RPAREN SHARP class_longident
-//  | LBRACKET tag_field RBRACKET
+  | LBRACKET tag_field RBRACKET
 /* PR#3835: this is not LR(1), would need lookahead=2
   | LBRACKET simple_core_type RBRACKET
 */
-//  | LBRACKET BAR row_field_list RBRACKET
+  | LBRACKET BAR row_field_list RBRACKET
 //  | LBRACKET row_field BAR row_field_list RBRACKET
 //  | LBRACKETGREATER BAR ? row_field_list RBRACKET
   | LBRACKETGREATER RBRACKET
@@ -1209,27 +1209,19 @@ simple_core_type2 ::=
 package_type ::=
     module_type
 
-//row_field_list ::=
-//    row_field
-//  | row_field_list BAR row_field
-//
-//row_field ::=
-//    tag_field
-//  | simple_core_type
-//
-//tag_field ::=
-//    name_tag OF opt_ampersand amper_type_list attributes ?
-//
-//  | name_tag attributes ?
-//
-//
-//opt_ampersand ::=
-//    AMPERSAND
-//  | /* empty */
-//
-//amper_type_list ::=
-//    core_type_no_attr
-//  | amper_type_list AMPERSAND core_type_no_attr
+row_field_list ::=
+    row_field (BAR row_field)*
+
+row_field ::=
+    tag_field
+  | simple_core_type
+
+tag_field ::=
+    name_tag OF AMPERSAND ? amper_type_list attributes ?
+  | name_tag attributes ?
+
+amper_type_list ::=
+    core_type_no_attr (AMPERSAND core_type_no_attr) *
 //
 //name_tag_list ::=
 //    name_tag

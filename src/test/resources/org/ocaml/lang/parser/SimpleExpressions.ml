@@ -150,5 +150,10 @@ type a = c
 and b = d
 
 
+type t = [
+  | `A of string
+  | `B of string
+  ]
+
 
 
