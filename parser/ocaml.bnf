@@ -1015,7 +1015,7 @@ type_declaration ::=
     type_kind ? constraints ? post_item_attributes ?
 
 and_type_declaration ::=
-    AND attributes optional_type_parameters ? LIDENT type_kind ? constraints ?
+    AND attributes ? optional_type_parameters ? LIDENT type_kind ? constraints ?
     post_item_attributes ?
 
 constraints ::=

@@ -146,6 +146,8 @@ type t = t t * (t -> t)
 type t
 type t = g:(f -> unit) -> unit
 
+type a = c
+and b = d
 
 
 
