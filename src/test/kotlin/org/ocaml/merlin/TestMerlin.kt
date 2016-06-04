@@ -1,9 +1,6 @@
 package org.ocaml.merlin
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -18,10 +15,8 @@ class TestMerlin {
     fun testTellSource() {
         val m = merlinInstance()
         m.tellSource(fn, "let f x = x;; `")
-        m.seekExact(fn, Position(1, 0))
-        m.drop(fn)
         val resp2 = m.tellSource(fn, "let f x = x;;")
-        assertEquals(TellResponse(cursor = Position(line = 1, col = 13), marker = false), resp2)
+        assertEquals(true, resp2)
     }
 
 
@@ -36,7 +31,7 @@ class TestMerlin {
         m.tellSource(fn, src)
         val expected = listOf(MerlinError(start=Position(line=3, col=20), end=Position(line=3, col=21), valid=true,
                 message="Error: This expression has type int but an expression was expected of type\n         string",
-                type="type"))
+                type="type", sub = emptyList()))
         val resp = m.errors(fn)
         assertEquals(expected, resp)
 
@@ -59,7 +54,7 @@ class TestMerlin {
                         CompletionEntry(name="List.map", kind="Value", desc="('a -> 'b) -> 'a list -> 'b list", info=""),
                         CompletionEntry(name="ListLabels.mapi", kind="Value", desc="f:(int -> 'a -> 'b) -> 'a list -> 'b list", info=""),
                         CompletionEntry(name="ListLabels.map2", kind="Value", desc="f:('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info=""),
-                        CompletionEntry(name="ListLabels.map", kind="Value", desc="f:('a -> 'b) -> 'a list -> 'b list", info="")),
+                        CompletionEntry(name="ListLabels.map", kind="Value", desc="f:('a -> 'b) -> 'a list -> 'b list", info="")).reversed(),
                 context=null)
         val resp = m.complete(fn, "List.ma", Position(4, 21))
         assertEquals(expected, resp)
@@ -69,12 +64,13 @@ class TestMerlin {
     fun testDumpTokens() {
         val m = merlinInstance()
         m.tellSource(fn, "let f x = x;;")
-        val exp = listOf(Token(start = Position(line = 1, col = 0), end = Position(line = 1, col = 3), token = "LET"),
-                Token(start = Position(line = 1, col = 4), end = Position(line = 1, col = 5), token = "LIDENT"),
-                Token(start = Position(line = 1, col = 6), end = Position(line = 1, col = 7), token = "LIDENT"),
-                Token(start = Position(line = 1, col = 8), end = Position(line = 1, col = 9), token = "EQUAL"),
-                Token(start = Position(line = 1, col = 10), end = Position(line = 1, col = 11), token = "LIDENT"),
-                Token(start = Position(line = 1, col = 11), end = Position(line = 1, col = 13), token = "SEMISEMI"))
+        val exp = listOf(Token(start = Position(line = 1, col = 0), end = Position(line = 1, col = 3), token = "let"),
+                Token(start = Position(line = 1, col = 4), end = Position(line = 1, col = 5), token = "LIDENT(\"f\")"),
+                Token(start = Position(line = 1, col = 6), end = Position(line = 1, col = 7), token = "LIDENT(\"x\")"),
+                Token(start = Position(line = 1, col = 8), end = Position(line = 1, col = 9), token = "="),
+                Token(start = Position(line = 1, col = 10), end = Position(line = 1, col = 11), token = "LIDENT(\"x\")"),
+                Token(start = Position(line = 1, col = 11), end = Position(line = 1, col = 13), token = ";;"),
+                Token(start=Position(line=1, col=13), end=Position(line=1, col=13), token="EOF"))
         val resp = m.dumpTokens(fn)
         assertEquals(exp, resp)
     }
@@ -153,11 +149,7 @@ class TestMerlin {
     }
 
     private fun merlinInstance(): Merlin {
-        val p = merlinProcess()
-        val om = ObjectMapper()
-        om.registerModule(KotlinModule())
-        val m = Merlin(om, p)
-        return m
+        return Merlin.newInstance()
     }
 
     private fun merlinProcess(): Process {

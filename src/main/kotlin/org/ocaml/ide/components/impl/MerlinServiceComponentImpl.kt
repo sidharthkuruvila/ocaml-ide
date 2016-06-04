@@ -45,8 +45,8 @@ class MerlinServiceComponentImpl : MerlinServiceComponent {
         val doc = PsiDocumentManager.getInstance(file.project).getCachedDocument(file)
         val filename = file.virtualFile.canonicalPath!!
         if(doc == null || doc.getUserData(MerlinServiceDocumentListener.DOCUMENT_CHANGED)?: true) {
-            merlin.seekExact(filename, Position(1, 0))
-            merlin.drop(filename)
+            //merlin.seekExact(filename, Position(1, 0))
+            //merlin.drop(filename)
             merlin.tellSource(filename, file.text)
             doc?.putUserData(MerlinServiceDocumentListener.DOCUMENT_CHANGED, false)
         }

@@ -42,9 +42,9 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
     private val writer = OutputStreamWriter(merlinProcess.outputStream)
     private val reader = BufferedReader(InputStreamReader(merlinProcess.inputStream))
 
-    fun tellSource(filename: String, source: CharSequence): TellResponse {
-        val request = """["tell", "source", ${objectMapper.writeValueAsString(source)}]"""
-        return makeRequest(filename, request, object : TypeReference<TellResponse>() {})
+    fun tellSource(filename: String, source: CharSequence): Boolean {
+        val request = """["tell", "start", "end", ${objectMapper.writeValueAsString(source)}]"""
+        return makeRequest(filename, request, object : TypeReference<Boolean>() {})
     }
 
 
@@ -61,16 +61,6 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
     fun dumpTokens(filename: String): List<Token> {
         val request = """["dump", "tokens"]"""
         return makeRequest(filename, request, object : TypeReference<List<Token>>() {})
-    }
-
-    fun drop(filename: String) {
-        val request = """["drop"]"""
-        makeRequest(filename, request, object : TypeReference<TellResponse>() {})
-    }
-
-    fun seekExact(filename: String, position: Position) {
-        val request = """["seek", "exact", ${objectMapper.writeValueAsString(position)}]"""
-        makeRequest(filename, request, object : TypeReference<TellResponse>() {})
     }
 
     fun dumpBrowse(filename: String): List<BrowseNode> {
@@ -111,7 +101,7 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
 }
 
 data class MerlinError(val start: Position?, val end: Position?, val valid: Boolean,
-                       val message: String, val type: String)
+                       val message: String, val type: String, val sub: List<JsonNode>)
 
 data class Position(val line: Int, val col: Int)
 
