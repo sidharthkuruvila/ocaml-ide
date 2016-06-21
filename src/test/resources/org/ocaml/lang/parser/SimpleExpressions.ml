@@ -16,7 +16,7 @@ abc def ~ghi ?klm ?opq:rst ~uvw:xyz;
 (let rec f = "a" ; "b"
      and g: 'identifier = 1 in "c");
 (let module SimpleModule = Mod.Mod in "abc");
-(let exception SimpleException of 'identifier in "abc");
+(*(let exception SimpleException of 'identifier in "abc"); Only works on the master branch of ocamlc *)
 (let open ! SimpleModule in "abc");
 (function a -> "a" | b -> "c");
 (fun ?(identifier : 'identifier = 123) -> "abc");

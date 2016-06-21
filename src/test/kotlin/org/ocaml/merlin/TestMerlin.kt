@@ -57,7 +57,9 @@ class TestMerlin {
                         CompletionEntry(name="ListLabels.map", kind="Value", desc="f:('a -> 'b) -> 'a list -> 'b list", info="")).reversed(),
                 context=null)
         val resp = m.complete(fn, "List.ma", Position(4, 21))
-        assertEquals(expected, resp)
+        assertEquals(expected.entries.toSet(), resp.entries.toSet())
+        assertEquals(expected.context, resp.context)
+
     }
 
     @Test

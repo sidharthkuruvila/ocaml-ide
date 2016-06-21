@@ -8,8 +8,7 @@ import java.io.File
  */
 object OcamlC {
 
-    //val ocamlc = "/usr/local/bin/ocamlc"
-    val ocamlc = "/Users/sidharthkuruvila/Code/ocaml_idea_plugin/ocaml/ocaml"
+    val ocamlc = "/usr/local/bin/ocamlc"
     /**
      * Check if file parses with ocamlc
      */
