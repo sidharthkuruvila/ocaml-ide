@@ -1,5 +1,6 @@
 package org.ocaml.util
 
+import com.intellij.openapi.util.io.endsWithName
 import org.ocaml.merlin.Position
 
 /**
@@ -24,6 +25,7 @@ class LineNumbering(source: CharSequence) {
             }
             i++
         }
+        lineIndex.add(Int.MAX_VALUE)
     }
 
     fun index(position: Position): Int {
@@ -31,10 +33,26 @@ class LineNumbering(source: CharSequence) {
     }
 
     fun position(index: Int): Position {
-        var i = lineIndex.size - 1
-        while (lineIndex[i] > index) {
-            i--
+
+        fun between(start: Int, end: Int): Boolean {
+            return lineIndex[start] <= index && lineIndex[end] > index
         }
-        return Position(line = i + 1, col = index - lineIndex[i])
+
+        tailrec fun bisect(start: Int, end: Int): Position {
+            if(end - start == 1) {
+                return Position(line = start + 1, col = index - lineIndex[start])
+            }
+
+            val mid = (start + end) / 2
+
+            if(between(start, mid))
+                return bisect(start, mid)
+            else
+                return bisect(mid, end)
+        }
+
+        return bisect(0, lineIndex.size - 1)
     }
+
+
 }
