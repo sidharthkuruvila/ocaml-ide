@@ -10,4 +10,4 @@ Installing the plugin
 
 ###Generating the parser and lexer code
 	./gradlew generateOcamlLexer
-	./gradlew generateOcamlParser
+	./gradlew generateOcamlPsiAndParser
