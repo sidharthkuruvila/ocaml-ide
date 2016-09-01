@@ -3,10 +3,16 @@ package org.ocaml.util
 import org.ocaml.merlin.Position
 
 /**
- * Created by sidharthkuruvila on 25/05/16.
+ * Map line, column number of a character in a string
+ * to it's index.
+ *
+ * The line number starts at one for the first line and the
+ * column number starts at 0.
+ *
+ * For example the Position(line=3, col=2) refers to the
+ * the third character in the 3rd line in a string.
+ *
  */
-
-
 class LineNumbering(source: CharSequence) {
     var lineIndex: MutableList<Int> = mutableListOf(0)
 
@@ -18,7 +24,6 @@ class LineNumbering(source: CharSequence) {
             }
             i++
         }
-        lineIndex.add(i)
     }
 
     fun index(position: Position): Int {
@@ -26,11 +31,10 @@ class LineNumbering(source: CharSequence) {
     }
 
     fun position(index: Int): Position {
-        var i = 0
-        while (lineIndex[i] <= index) {
-            i++
+        var i = lineIndex.size - 1
+        while (lineIndex[i] > index) {
+            i--
         }
-        i--
         return Position(line = i + 1, col = index - lineIndex[i])
     }
 }

@@ -1,14 +1,8 @@
 package org.ocaml.util
 
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.ocaml.merlin.Position
-
-/**
- * Created by sidharthkuruvila on 25/05/16.
- */
-
 
 class LineNumberingTest {
     val src = """
@@ -34,5 +28,13 @@ def
         val resp = positions.map { ln.index(it)}
         val expected = indexes
         assertEquals(expected, resp)
+    }
+
+    @Test
+    fun testGetLastIndex() {
+        val src = "let a = b"
+        val ln = LineNumbering(src)
+        val resp = ln.position(9)
+        println(resp)
     }
 }
