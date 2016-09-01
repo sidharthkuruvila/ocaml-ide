@@ -1,6 +1,5 @@
 package org.ocaml.util
 
-import com.intellij.openapi.util.io.endsWithName
 import org.ocaml.merlin.Position
 
 /**
