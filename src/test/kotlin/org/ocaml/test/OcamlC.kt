@@ -8,7 +8,14 @@ import java.io.File
  */
 object OcamlC {
 
-    val ocamlc = "/usr/local/bin/ocamlc"
+
+
+    fun selectOcamlC (): String {
+        val l = listOf("/usr/local/bin/ocamlc")
+        return l.find {fn -> File(fn).exists()} ?: "ocaml"
+    }
+
+    val ocamlc = selectOcamlC()
     /**
      * Check if file parses with ocamlc
      */

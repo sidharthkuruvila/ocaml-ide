@@ -43,7 +43,6 @@ class LineNumbering(source: CharSequence) {
             }
 
             val mid = (start + end) / 2
-
             if(between(start, mid))
                 return bisect(start, mid)
             else
