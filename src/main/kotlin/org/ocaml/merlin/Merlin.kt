@@ -58,6 +58,24 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
         return makeRequest(filename, request, object : TypeReference<Completions>() {})
     }
 
+    fun locate(filename: String, position: Position): LocateResponse {
+        val request = """["locate", null, "ml", "at", ${objectMapper.writeValueAsString(position)}]"""
+        val node = makeRequest(filename, request, object : TypeReference<JsonNode>() {})
+        if(node.isTextual) {
+            if(node.textValue() == "Already at definition point") {
+                return LocatedAtPosition
+            } else {
+                return LocateFailed(node.textValue())
+            }
+        } else {
+            if(node.get("file") == null) {
+                return objectMapper.treeToValue(node, LocatedInCurrentFile::class.java)
+            } else {
+                return objectMapper.treeToValue(node, Located::class.java)
+            }
+        }
+    }
+
     fun dumpTokens(filename: String): List<Token> {
         val request = """["dump", "tokens"]"""
         return makeRequest(filename, request, object : TypeReference<List<Token>>() {})
@@ -119,3 +137,10 @@ data class CompletionEntry(val name: String, val kind: String, val desc: String,
 
 
 object CompletionContext
+
+interface LocateResponse
+
+object LocatedAtPosition : LocateResponse
+data class LocateFailed(val msg: String) : LocateResponse
+data class LocatedInCurrentFile(val pos: Position) : LocateResponse
+data class Located(val file: String, val pos: Position): LocateResponse

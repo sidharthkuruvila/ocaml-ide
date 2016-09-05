@@ -10,7 +10,7 @@ import org.junit.Test
 
 class TestMerlin {
 
-    val fn = "abc"
+    val fn = "abc.ml"
     @Test
     fun testTellSource() {
         val m = merlinInstance()
@@ -150,12 +150,35 @@ class TestMerlin {
         assertEquals(exp, resp)
     }
 
+
+    @Test
+    fun testLocate(){
+        val src = """
+        let l1 = [1;2;3]
+        let sq x = x*x
+        let l2 = List.map sq l
+        let _ = print_string "hello"
+        """
+
+        val m = merlinInstance()
+
+        m.tellSource(fn, src)
+
+        fun testPos(pos: Position, expected: LocateResponse){
+            val res = m.locate(fn, pos)
+            assertEquals(expected, res)
+        }
+
+        testPos(Position(line=5, col = 20), Located(file="/home/sidharth/.opam/4.03.0/lib/ocaml/pervasives.ml", pos=Position(line=448, col=4)))
+        testPos(Position(line=4, col = 14), LocatedAtPosition)
+        testPos(Position(line=4, col = 30), LocateFailed(msg="Not in environment 'l'"))
+        testPos(Position(line=4, col = 31), LocateFailed(msg="Not a valid identifier"))
+        testPos(Position(line=4, col = 28), LocateFailed(msg="'sq' seems to originate from 'Abc' whose ML file could not be found"))
+    }
+
     private fun merlinInstance(): Merlin {
         return Merlin.newInstance()
     }
 
-    private fun merlinProcess(): Process {
-        val pb = ProcessBuilder("ocamlmerlin")
-        return pb.start()
-    }
+
 }
