@@ -1,4 +1,5 @@
 language: java
+
 before_install:
   - add-apt-repository --yes ppa:avsm/ppa
   - apt-get update -qq
