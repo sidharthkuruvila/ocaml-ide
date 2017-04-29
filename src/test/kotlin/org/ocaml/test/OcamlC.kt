@@ -11,6 +11,7 @@ object OcamlC {
 
 
     fun selectOcamlC (): String {
+
         val l = listOf("/usr/local/bin/ocamlc")
         return l.find {fn -> File(fn).exists()} ?: "ocaml"
     }
@@ -26,7 +27,12 @@ object OcamlC {
         val fo = createTempFile()
 
         try {
-            val pb = ProcessBuilder(ocamlc, "-dparsetree", src.absolutePath)
+            val userHome = System.getProperty("user.home")
+            val cmd = """
+            . $userHome/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+            ocamlc -dparsetree ${src.absolutePath}
+            """
+            val pb = ProcessBuilder("bash", "-c", cmd)
             pb.redirectError(fo)
             val p = pb.start()
             p.waitFor()

@@ -3,12 +3,14 @@ language: java
 cache:
   directories:
   - $HOME/.opam
+  - $HOME/.m2
 
 before_install:
   - sudo add-apt-repository --yes ppa:avsm/ppa
   - sudo apt-get update -qq
   - sudo apt-get install -y opam
   - opam init -y
+  - opam switch 4.04.0
   - opam install -y merlin
   - ./gradlew generateOcamlLexer
   - ./gradlew generateOcamlPsiAndParser
