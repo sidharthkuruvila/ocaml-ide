@@ -1314,7 +1314,9 @@ constr_ident ::=
 
 val_longident ::=
     val_ident
-  | mod_longident DOT val_ident
+  | mod_longident DOT val_ident {
+    mixin = "org.ocaml.lang.parser.psi.ValueIdentifierMixin"
+}
 
 constr_longident ::=
     mod_longident       ////%prec below_DOT

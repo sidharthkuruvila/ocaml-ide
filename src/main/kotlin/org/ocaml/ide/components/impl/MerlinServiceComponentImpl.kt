@@ -5,10 +5,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import org.ocaml.ide.components.MerlinServiceComponent
 import org.ocaml.ide.components.MerlinServiceDocumentListener
-import org.ocaml.merlin.CompletionEntry
-import org.ocaml.merlin.Merlin
-import org.ocaml.merlin.MerlinError
-import org.ocaml.merlin.Position
+import org.ocaml.merlin.*
 
 /**
  * Created by sidharthkuruvila on 24/05/16.
@@ -39,6 +36,11 @@ class MerlinServiceComponentImpl : MerlinServiceComponent {
     override fun completions(file: PsiFile, prefix: String, position: Position): List<CompletionEntry> {
         reloadFileIfModified(file)
         return merlin.complete(file.virtualFile.canonicalPath!!, prefix, position).entries
+    }
+
+    override fun locate(file: PsiFile, position: Position): LocateResponse {
+        reloadFileIfModified(file)
+        return merlin.locate(file.virtualFile.canonicalPath!!, position)
     }
 
     private fun reloadFileIfModified(file: PsiFile) {
