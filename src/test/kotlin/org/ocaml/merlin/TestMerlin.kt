@@ -2,6 +2,7 @@ package org.ocaml.merlin
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.io.File
 
 /**
  * Created by sidharthkuruvila on 01/05/16.
@@ -30,7 +31,7 @@ class TestMerlin {
         val m = merlinInstance()
         m.tellSource(fn, src)
         val expected = listOf(MerlinError(start=Position(line=3, col=20), end=Position(line=3, col=21), valid=true,
-                message="Error: This expression has type int but an expression was expected of type\n         string",
+                message="This expression has type int but an expression was expected of type\n         string",
                 type="type", sub = emptyList()))
         val resp = m.errors(fn)
         assertEquals(expected, resp)
@@ -169,11 +170,22 @@ class TestMerlin {
             assertEquals(expected, res)
         }
 
-        testPos(Position(line=5, col = 20), Located(file="/home/sidharth/.opam/4.03.0/lib/ocaml/pervasives.ml", pos=Position(line=448, col=4)))
+        val version = ocamlVersion()
+
+        val s = "${System.getProperty("user.home")}/.opam/$version/lib/ocaml/pervasives.ml"
+        testPos(Position(line=5, col = 20), Located(file=s, pos=Position(line=448, col=4)))
         testPos(Position(line=4, col = 14), LocatedAtPosition)
         testPos(Position(line=4, col = 30), LocateFailed(msg="Not in environment 'l'"))
         testPos(Position(line=4, col = 31), LocateFailed(msg="Not a valid identifier"))
         testPos(Position(line=4, col = 28), LocateFailed(msg="'sq' seems to originate from 'Abc' whose ML file could not be found"))
+    }
+
+    private fun ocamlVersion(): String {
+        val opamConfig = File("${System.getProperty("user.home")}/.opam/config").readText()
+        val match = Regex("switch: \"([^\"]*)\"").find(opamConfig)
+        match!!.next()
+        val version = match.groupValues[1]
+        return version
     }
 
     private fun merlinInstance(): Merlin {
