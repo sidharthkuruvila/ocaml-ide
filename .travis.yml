@@ -9,7 +9,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -y opam
   - opam init -y
-  - opam install merlin
+  - opam install -y merlin
 
 before_script:
   - ./gradlew generateOcamlLexer
