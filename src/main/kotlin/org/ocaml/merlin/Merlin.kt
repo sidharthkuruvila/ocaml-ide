@@ -26,8 +26,9 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
         }
 
         private fun merlinProcess(): Process {
+            val userHome = System.getProperty("user.home")
             val cmd = """
-            . /Users/sidharthkuruvila/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+            . $userHome/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
             ocamlmerlin
             """
             val pb = ProcessBuilder("bash", "-c", cmd)
