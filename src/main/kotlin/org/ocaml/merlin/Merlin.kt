@@ -13,9 +13,11 @@ import java.io.OutputStreamWriter
  * Created by sidharthkuruvila on 30/04/16.
  */
 class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: Process) {
+
     companion object {
         private val LOG = Logger.getInstance(Merlin::class.java)
 
+        val opamCommand = OpamCommand()
 
         private fun merlinInstance(): Merlin {
             val p = merlinProcess()
@@ -26,12 +28,7 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
         }
 
         private fun merlinProcess(): Process {
-            val userHome = System.getProperty("user.home")
-            val cmd = """
-            . $userHome/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
-            ocamlmerlin
-            """
-            val pb = ProcessBuilder("bash", "-c", cmd)
+            val pb = opamCommand.processBuilder("ocamlmerlin")
             return pb.start()
         }
 
