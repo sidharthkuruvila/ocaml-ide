@@ -1,0 +1,9 @@
+language: java
+before_install:
+  - add-apt-repository --yes ppa:avsm/ppa
+  - apt-get update -qq
+  - apt-get install -y opam
+
+before_script:
+  - ./gradlew generateOcamlLexer
+  - ./gradlew generateOcamlPsiAndParser
