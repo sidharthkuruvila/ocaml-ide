@@ -7,10 +7,8 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.util.ProcessingContext
 import org.ocaml.ide.components.MerlinServiceComponent
 import org.ocaml.util.LineNumbering
+import org.ocaml.util.ReversedSubstringCharSequence
 
-/**
- * Created by sidharthkuruvila on 04/05/16.
- */
 class OcamlCompletionContributor : CompletionContributor() {
 
     val merlinService = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)
@@ -33,6 +31,17 @@ class OcamlCompletionContributor : CompletionContributor() {
     }
 
     fun findSuitablePrefix(parameters: CompletionParameters): String {
-        return ""
+        return findEmacsOcamlAtom(parameters.originalFile.text, parameters.originalPosition!!.textOffset)?:""
+    }
+
+    fun findEmacsOcamlAtom(text:String, offset: Int): String? {
+        val re = Regex("[a-zA-Z0-9.']*[~?]?")
+        val endIndex = re.find(ReversedSubstringCharSequence(text, offset, 0))?.next()?.range?.last
+
+        if (endIndex != null) {
+            return text.substring(offset - endIndex, offset + 1)
+        }else{
+            return null
+        }
     }
 }
