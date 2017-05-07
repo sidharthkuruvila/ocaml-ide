@@ -808,8 +808,13 @@ label_ident ::=
 lident_list ::=
     LIDENT +
 
+val_decl ::=
+    val_ident {
+    mixin = "org.ocaml.lang.parser.psi.ValDeclMixin"
+    }
+
 let_binding_body ::=
-    val_ident fun_binding
+    val_decl fun_binding
   | val_ident COLON typevar_list DOT core_type EQUAL seq_expr
   | val_ident COLON TYPE lident_list DOT core_type EQUAL seq_expr
   | pattern_no_exn EQUAL seq_expr
@@ -954,7 +959,7 @@ pattern_gen ::=
   | LAZY ext_attributes ? simple_pattern
 
 simple_pattern ::=
-    val_ident //%prec below_EQUAL
+    val_decl //%prec below_EQUAL
   | simple_pattern_not_ident
 
 simple_pattern_not_ident ::=

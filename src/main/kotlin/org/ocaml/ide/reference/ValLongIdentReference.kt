@@ -3,10 +3,7 @@ package org.ocaml.ide.reference
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.*
 import org.ocaml.ide.components.MerlinServiceComponent
 import org.ocaml.lang.parser.psi.ValLongident
 import org.ocaml.merlin.*
@@ -48,7 +45,17 @@ class ValLongIdentReference(element: ValLongident) : PsiReferenceBase<ValLongide
         val project = element.project
         val vfile = LocalFileSystem.getInstance().findFileByIoFile(File(file)) ?: return null
         val psiFile = PsiManager.getInstance(project).findFile(vfile) ?: return null
-        return elementLocatedInPsiFile(psiFile, pos)
+        val el = elementLocatedInPsiFile(psiFile, pos) ?: return null
+        return findNamedParent(el)
+    }
+
+    tailrec fun findNamedParent(el: PsiElement): PsiElement? {
+        val nel =  el.parent
+        if(nel == null || nel is PsiNamedElement) {
+            return nel
+        } else {
+            return findNamedParent(nel)
+        }
     }
 
     private fun elementLocatedInPsiFile(psiFile: PsiFile, pos: Position): PsiElement? {

@@ -55,6 +55,8 @@
     <configurationType implementation="org.ocaml.ide.runconfig.OcamlRunConfigurationType" />
     <programRunner id="ocamlRunner" implementation="org.ocaml.ide.runconfig.OcamlRunner" />
 
+    <lang.findUsagesProvider language="Ocaml"
+                             implementationClass="org.ocaml.ide.usages.OcamlFindUsagesProvider"/>
   </extensions>
 
   <actions>
