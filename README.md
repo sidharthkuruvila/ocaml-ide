@@ -29,3 +29,11 @@ Install the plugin
 ### Run the plugin from gradle
 
     ./gradlew runIdea
+
+### Build the plugin
+
+    ./gradlew buildPlugin
+    
+The plugin will be located at build/distributions/ocaml-idea-0.0.1-SNAPSHOT.zip
+
+It should be possible to install the plugin on IntelliJ IDEA versions 2016.1 and later.
