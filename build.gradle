@@ -33,7 +33,7 @@ intellij {
 
 
 group 'kuruvila'
-version $packageVersion
+version packageVersion
 
 sourceSets {
     main.java.srcDirs += "gen"
