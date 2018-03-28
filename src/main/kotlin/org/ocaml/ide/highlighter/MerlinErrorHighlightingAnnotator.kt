@@ -4,10 +4,12 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import org.jetbrains.annotations.NotNull
 import org.ocaml.ide.components.MerlinServiceComponent
+import org.ocaml.ide.runconfig.OcamlRunner
 import org.ocaml.merlin.MerlinError
 import org.ocaml.util.LineNumbering
 
@@ -17,10 +19,11 @@ import org.ocaml.util.LineNumbering
 class MerlinErrorHighlightingAnnotator(var component: MerlinServiceComponent) : ExternalAnnotator<MerlinInfo, Results>() {
 
     companion object {
+        private val LOG = Logger.getInstance(OcamlRunner::class.java)
         val merlinErrors = mapOf(
                 Pair("type", HighlightSeverity.ERROR),
                 Pair("parser", HighlightSeverity.ERROR),
-                Pair("env",  HighlightSeverity.ERROR),
+                Pair("env", HighlightSeverity.ERROR),
                 Pair("warning", HighlightSeverity.WARNING),
                 Pair("unkown", HighlightSeverity.INFORMATION))
     }
@@ -39,9 +42,12 @@ class MerlinErrorHighlightingAnnotator(var component: MerlinServiceComponent) : 
     override fun apply(file: PsiFile, results: Results, holder: AnnotationHolder) {
         val ln = results.lineNumbering
         val (t, f) = results.errors.partition { it.start == null || it.end == null }
-        for(error in f){
+        for (error in f) {
             val range = TextRange(ln.index(error.start!!), ln.index(error.end!!))
-            val severity = merlinErrors[error.type]!!
+            if (!merlinErrors.containsKey(error.type)) {
+                LOG.error("Unmapped error %s".format(f))
+            }
+            val severity = merlinErrors[error.type]?:HighlightSeverity.ERROR
             val message = error.message
             holder.createAnnotation(severity, range, message)
         }

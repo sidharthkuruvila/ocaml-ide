@@ -73,11 +73,11 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
             }
         }
     }
-
-    fun dumpTokens(filename: String): List<Token> {
-        val request = """["dump", "tokens"]"""
-        return makeRequest(filename, request, object : TypeReference<List<Token>>() {})
-    }
+//    TODO Not working on merlin, find an alternative.
+//    fun dumpTokens(filename: String): List<Token> {
+//        val request = """["dump", "tokens"]"""
+//        return makeRequest(filename, request, object : TypeReference<List<Token>>() {})
+//    }
 
     fun dumpBrowse(filename: String): List<BrowseNode> {
         val request = """["dump", "browse"]"""

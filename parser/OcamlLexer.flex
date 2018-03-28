@@ -173,7 +173,7 @@ KEY_CHARACTER=[^:=\ \n\r\t\f\\] | "\\ "
         "'\\" . "'" { return BAD_CHARACTER; }
         "(*" { yybegin(IN_COMMENT); commentDepth = 1; tokenStart(); }
 
-        "#" [ \t]* [0-9]+ [ \t]* ("\"" [^\r\n\"]* "\"")? [^\r\n] * { NEWLINE } { }
+        "#" [ \t]* [0-9]+ [ \t]* ("\"" [^\r\n\"]* "\"")? [^\r\n] * { NEWLINE } { return COMMENT; }
 
         "#" { return SHARP; }
         "&" { return AMPERSAND; }
