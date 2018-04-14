@@ -1,0 +1,34 @@
+{
+    parserClass='org.ocaml.sexp.parser.SexpParser'
+    parserUtilClass="org.ocaml.sexp.parser.SexpParserUtil"
+    psiPackage='org.ocaml.sexp.parser.psi'
+    psiImplPackage='org.ocaml.sexp.parser.psi.impl'
+
+
+    elementTypeHolderClass='org.ocaml.sexp.parser.psi.SexpCompositeElementTypes'
+
+    elementTypeClass='org.ocaml.sexp.parser.psi.SexpCompositeElementType'
+    tokenTypeClass='org.ocaml.sexp.lexer.SexpTokenElementType'
+
+    parserImports='static org.ocaml.sexp.lexer.SexpTypes.*'
+
+
+    tokens = [
+        LPAREN = "("
+        RPAREN = ")"
+    ]
+
+    generateTokens=false
+
+
+}
+
+expression ::= sexp_list
+
+sexp_list ::= sexp*
+
+sexp ::=
+   "(" sexp_list ")"
+  | sexp_atom
+
+sexp_atom ::= ATOM

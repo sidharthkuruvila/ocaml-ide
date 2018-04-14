@@ -5,15 +5,15 @@ import org.ocaml.lang.lexer.OcamlTokenElementType
 object SexpTypes {
 
     @JvmField
-    val ATOM = OcamlTokenElementType("ATOM")
+    val ATOM = SexpTokenElementType("ATOM")
     @JvmField
-    val COMMENT = OcamlTokenElementType("COMMENT")
+    val COMMENT = SexpTokenElementType("COMMENT")
 
     @JvmField
-    val LPAREN = OcamlTokenElementType("LPAREN")
+    val LPAREN = SexpTokenElementType("LPAREN")
 
     @JvmField
-    val RPAREN = OcamlTokenElementType("RPAREN")
+    val RPAREN = SexpTokenElementType("RPAREN")
 
 
 }

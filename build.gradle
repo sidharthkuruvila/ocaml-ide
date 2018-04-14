@@ -110,3 +110,17 @@ task generateOcamlPsiAndParser(type: JavaExec) {
 
     classpath configurations.gen
 }
+
+task generateSexpPsiAndParser(type: JavaExec) {
+    ext.src     = "parser/sexp/sexp.bnf"
+    ext.dstRoot = "gen"
+
+    main = "org.intellij.grammar.Main"
+
+    args = [ dstRoot, file(src) ]
+
+    inputs  .file   file(src)
+    outputs .dir    fileTree(dir: dstRoot + '/org/ocaml/sexp/parser/', include: '**/*.java')
+
+    classpath configurations.gen
+}
