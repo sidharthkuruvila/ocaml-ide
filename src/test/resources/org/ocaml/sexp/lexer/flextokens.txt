@@ -1,0 +1,26 @@
+(
+)
+"abc123"
+#|abc|#
+; def
+#; (ghi)
+abc'def
+;Example copied from https://github.com/janestreet/sexplib
+this_is_an_atom_123'&^%!  ; this is a comment
+"another atom in an OCaml-string \"string in a string\" \123"
+
+; empty list follows below
+()
+
+; a more complex example
+(
+  (
+    list in a list  ; comment within a list
+    (list in a list in a list)
+    42 is the answer to all questions
+    #; (this S-expression
+         (has been commented out)
+       )
+    #| Block comments #| can be "nested" |# |#
+  )
+)

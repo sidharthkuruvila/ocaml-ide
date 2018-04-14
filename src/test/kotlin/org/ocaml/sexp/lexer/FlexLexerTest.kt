@@ -1,8 +1,9 @@
-package org.ocaml.lang.lexer
+package org.ocaml.sexp.lexer
 
 import com.intellij.openapi.util.io.FileUtil
 import org.junit.Assert
 import org.junit.Test
+import org.ocaml.sexp.lexer._SexpLexer
 import java.io.File
 
 /**
@@ -11,9 +12,9 @@ import java.io.File
 class FlexLexerTest {
     @Test
     fun testTokens(){
-        val src = FileUtil.loadFile(File("src/test/resources/org/ocaml/lang/lexer/flextokens.txt"))
+        val src = FileUtil.loadFile(File("src/test/resources/org/ocaml/sexp/lexer/flextokens.txt"))
         println(src)
-        val lexer = _OcamlLexer(null)
+        val lexer = _SexpLexer(null)
         lexer.reset(src, 0, src.length, 0)
         val sb = StringBuffer()
         var index = 0;
@@ -32,7 +33,7 @@ class FlexLexerTest {
             sb.append("\n")
         }
         //Check if all tokens are generated with the correct type
-        val exp = FileUtil.loadFile(File("src/test/resources/org/ocaml/lang/lexer/expected_token_types.txt"))
+        val exp = FileUtil.loadFile(File("src/test/resources/org/ocaml/sexp/lexer/expected_token_types.txt"))
         Assert.assertEquals(exp, sb.toString())
     }
 

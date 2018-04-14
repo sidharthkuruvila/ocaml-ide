@@ -83,7 +83,19 @@ task generateOcamlLexer(type: JavaExec) {
     classpath configurations.gen
 }
 
+task generateSexpLexer(type: JavaExec) {
+    ext.src = "parser/sexp/SexpLexer.flex"
+    ext.dst = "gen/org/ocaml/sexp/lexer/"
 
+    main = "jflex.Main"
+
+    args = jflexArgs(src, dst)
+
+    inputs  .file   file(src)
+    outputs .dir    file(dst + "_SexpLexer.java")
+
+    classpath configurations.gen
+}
 
 task generateOcamlPsiAndParser(type: JavaExec) {
     ext.src     = "parser/ocaml.bnf"
