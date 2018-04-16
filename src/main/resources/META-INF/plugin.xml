@@ -57,6 +57,17 @@
 
     <lang.findUsagesProvider language="Ocaml"
                              implementationClass="org.ocaml.ide.usages.OcamlFindUsagesProvider"/>
+
+    <!-- sexp -->
+    <fileTypeFactory implementation="org.ocaml.jbuild.JbuilderFileTypeFactory"/>
+    <lang.parserDefinition language="Sexp" implementationClass="org.ocaml.sexp.parser.SexpParserDefinition"/>
+    <!--<lang.syntaxHighlighterFactory language="Sexp" implementationClass="org.ocaml.sexp.highlighter.JbuilderSyntaxHighlighterFactory" />-->
+
+    <!-- Jbuilder -->
+    <fileTypeFactory implementation="org.ocaml.jbuild.JbuilderFileTypeFactory"/>
+    <lang.parserDefinition language="OcamlJbuilder" implementationClass="org.ocaml.jbuild.parser.JbuilderParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="OcamlJbuilder" implementationClass="org.ocaml.jbuild.highlighter.JbuilderSyntaxHighlighterFactory" />
+    <annotator language="OcamlJbuilder" implementationClass="org.ocaml.jbuild.highlighter.JbuilderHighlightingAnnotator" />
   </extensions>
 
   <actions>

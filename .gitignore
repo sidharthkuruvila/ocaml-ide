@@ -9,4 +9,4 @@ diff.diff
 *.cmi
 *.cmo
 a.out
-	
+/out/

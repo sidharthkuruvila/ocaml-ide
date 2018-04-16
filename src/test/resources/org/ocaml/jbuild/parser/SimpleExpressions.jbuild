@@ -1,0 +1,9 @@
+(jbuild_version 1)
+
+(library
+  ((name lib)
+   (public_name lib)
+   (synopsis "syn")
+   ()))
+
+(executable ())

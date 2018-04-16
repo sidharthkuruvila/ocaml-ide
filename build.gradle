@@ -124,3 +124,17 @@ task generateSexpPsiAndParser(type: JavaExec) {
 
     classpath configurations.gen
 }
+
+task generateJbuildPsiAndParser(type: JavaExec) {
+    ext.src     = "parser/jbuild/jbuild.bnf"
+    ext.dstRoot = "gen"
+
+    main = "org.intellij.grammar.Main"
+
+    args = [ dstRoot, file(src) ]
+
+    inputs  .file   file(src)
+    outputs .dir    fileTree(dir: dstRoot + '/org/ocaml/jbuild/parser/', include: '**/*.java')
+
+    classpath configurations.gen
+}

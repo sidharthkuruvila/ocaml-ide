@@ -1,0 +1,188 @@
+{
+    parserClass='org.ocaml.jbuild.parser.JbuildParser'
+    parserUtilClass="org.ocaml.sexp.parser.SexpParserUtil"
+    psiPackage='org.ocaml.jbuild.parser.psi'
+    psiImplPackage='org.ocaml.jbuild.parser.psi.impl'
+
+
+    elementTypeHolderClass='org.ocaml.jbuild.parser.psi.JbuildCompositeElementTypes'
+
+    elementTypeClass='org.ocaml.jbuild.parser.psi.JbuildCompositeElementType'
+    tokenTypeClass='org.ocaml.sexp.lexer.SexpTokenElementType'
+
+    parserImports='static org.ocaml.sexp.lexer.SexpTypes.*'
+
+
+    tokens = [
+        LPAREN = "("
+        RPAREN = ")"
+    ]
+
+    generateTokens=false
+
+
+}
+
+expression ::= stanzas
+
+stanzas ::=
+    stanza *
+
+stanza ::=
+    version_stanza
+  | library_stanza
+  | executable_stanza
+  | executables_stanza
+  | rule_stanza
+  | ocamllex_stanza
+  | ocamlyacc_stanza
+  | menhir_stanza
+  | alias_stanza
+  | include_stanza
+  | copy_files_stanza
+  | install_stanza
+
+library_stanza ::=
+  "(" "library" "(" name_option library_stanza_options* ")" ")"
+
+library_stanza_options ::=
+    public_name_option
+  | synopsis_option
+  | modules_option
+  | libraries_option
+  | wrapped_option
+  | preprocess_option
+  | preprocessor_deps_option
+  | optional_option
+  | c_names_option
+  | cxx_names_option
+  | install_c_headers_option
+  | modes_option
+  | no_dynlink_option
+  | kind_option
+  | ppx_runtime_libraries_option
+  | virtual_deps_option
+  | js_of_ocaml_option
+  | flags | ocamlc_flags | ocamlopt_flags
+  | library_flags
+  | c_flags | cxx_flags | c_library_flags
+  | self_build_stubs_archive_option
+  | modules_without_implementation_option
+  | allow_overlapping_dependencies_option
+  | sexp
+
+
+executable_stanza ::= "(" "executable" "(" name_option public_name_option? executable_stanza_options * ")" ")"
+
+executable_stanza_options ::=
+    package_option
+  | libraries_option
+  | link_flags
+  | modules_option
+  | modes_option
+  | preprocess_option
+  | preprocessor_deps_option
+  | js_of_ocaml_option
+  | flags | ocamlc_flags | ocamlopt_flags
+  | modules_without_implementation_option
+  | allow_overlapping_dependencies_option
+
+
+executables_stanza ::= "(" "executables_stanza" "(" names_option public_names_option? executable_stanza_options * ")" ")"
+
+version_stanza ::= "(" "jbuild_version" "1" ")"
+
+rule_stanza ::= "(" "rule" sexp ")"
+
+ocamllex_stanza ::= "(" "ocamllex" sexp ")"
+
+ocamlyacc_stanza ::= "(" "ocamlyacc" sexp ")"
+
+menhir_stanza ::= "(" "menhir" sexp ")"
+
+alias_stanza ::= "(" "alias" sexp ")"
+
+install_stanza ::= "(" "install" sexp ")"
+
+copy_files_stanza ::= "(" "copy_files" sexp ")"
+
+include_stanza ::= "(" "include" sexp_atom ")"
+
+name_option ::= "(" "name" sexp_atom ")"
+
+names_option ::= "(" "names" sexp_atom * ")"
+
+public_name_option ::= "(" "public_name" sexp_atom ")"
+
+public_names_option ::= "(" "public_names" sexp_atom * ")"
+
+synopsis_option ::= "(" "synopsis" sexp_atom ")"
+
+modules_option ::= "(" "modules" sexp * ")"
+
+libraries_option ::=  "(" "libraries" sexp ")"
+
+wrapped_option ::= "(" "wrapped" boolean_atom ")"
+
+preprocess_option ::= "(" "preprocess" sexp* ")"
+
+preprocessor_deps_option ::= "(" "preprocessor_deps" sexp ")"
+
+optional_option ::= "(" "optional" ")"
+
+c_names_option ::= "(" "c_names" sexp ")"
+
+cxx_names_option ::= "(" "cxx_names" sexp ")"
+
+install_c_headers_option ::= "(" "install_c_headers" sexp ")"
+
+modes_option ::= "(" "modes" sexp ")"
+
+no_dynlink_option ::= "(" "no_dynlink" ")"
+
+kind_option ::= "(" "kind" kind_atom ")"
+
+ppx_runtime_libraries_option ::= "(" "ppx_runtime_libraries" sexp ")"
+
+virtual_deps_option ::= "(" "virtual_deps" sexp ")"
+
+js_of_ocaml_option ::= "(" "js_of_ocaml" sexp ")"
+
+flags ::= "(" "flags" sexp * ")"
+
+ocamlc_flags ::= "(" "ocamlc_flags" sexp * ")"
+
+ocamlopt_flags ::= "(" "ocamlopt_flags" sexp * ")"
+
+library_flags ::= "(" "library_flags" sexp ")"
+
+c_flags ::= "(" "c_flags" sexp * ")"
+
+cxx_flags ::= "(" "cxx_flags" sexp * ")"
+
+c_library_flags ::= "(" "c_library_flags" sexp * ")"
+
+self_build_stubs_archive_option ::= "(" "self_build_stubs_archive" sexp * ")"
+
+modules_without_implementation_option ::= "(" "modules_without_implementation" sexp * ")"
+
+allow_overlapping_dependencies_option ::= "(" "allow_overlapping_dependencies" ")"
+
+package_option ::= "(" "package" sexp_atom ")"
+
+link_flags ::= "(" "link_flags" sexp * ")"
+
+sexp_list ::= sexp*
+
+sexp ::=
+   "(" sexp_list ")"
+  | sexp_atom
+
+
+boolean_atom ::= "true" | "false"
+
+sexp_atom ::= ATOM
+
+//mode_atom ::= "byte" | "native" | "best"
+
+kind_atom ::= "normal" | "ppx_rewriter" | "ppx_deriving"
