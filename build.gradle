@@ -138,3 +138,13 @@ task generateJbuildPsiAndParser(type: JavaExec) {
 
     classpath configurations.gen
 }
+
+compileKotlin {
+    dependsOn generateOcamlLexer
+    dependsOn generateOcamlPsiAndParser
+
+    dependsOn generateSexpLexer
+    dependsOn generateSexpPsiAndParser
+
+    dependsOn generateJbuildPsiAndParser
+}
