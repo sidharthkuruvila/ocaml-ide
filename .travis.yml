@@ -13,5 +13,3 @@ before_install:
   - opam init -y
   - opam switch 4.04.0
   - opam install -y merlin.3.0.3
-  - ./gradlew generateOcamlLexer
-  - ./gradlew generateOcamlPsiAndParser
