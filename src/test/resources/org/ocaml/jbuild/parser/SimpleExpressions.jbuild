@@ -3,7 +3,6 @@
 (library
   ((name lib)
    (public_name lib)
-   (synopsis "syn")
-   ()))
+   (synopsis "syn")))
 
-(executable ())
+(executable ((name exe)))
