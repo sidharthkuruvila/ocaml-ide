@@ -148,3 +148,9 @@ compileKotlin {
 
     dependsOn generateJbuildPsiAndParser
 }
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
