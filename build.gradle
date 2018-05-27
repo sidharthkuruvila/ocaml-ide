@@ -50,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.7.3'
+    compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.7.9.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
     testCompile 'junit:junit:4.12'
