@@ -155,5 +155,7 @@ type t = [
   | `B of string
   ]
 
+type t = Record of {a: int; b: string}
+
 
 

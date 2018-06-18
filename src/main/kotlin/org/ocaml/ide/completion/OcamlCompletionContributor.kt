@@ -11,7 +11,7 @@ import org.ocaml.util.ReversedSubstringCharSequence
 
 class OcamlCompletionContributor : CompletionContributor() {
 
-    val merlinService = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)
+    val merlinService = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)!!
 
     init {
 
@@ -24,17 +24,17 @@ class OcamlCompletionContributor : CompletionContributor() {
                         val completions = merlinService.completions(parameters.originalFile,
                                 findSuitablePrefix(parameters), ln.position(parameters.offset))
                         for(completion in completions) {
-                            resultSet.addElement(LookupElementBuilder.create(completion.name).withTypeText(completion.desc));
+                            resultSet.addElement(LookupElementBuilder.create(completion.name).withTypeText(completion.desc))
                         }
                     }
                 })
     }
 
-    fun findSuitablePrefix(parameters: CompletionParameters): String {
+    private fun findSuitablePrefix(parameters: CompletionParameters): String {
         return findEmacsOcamlAtom(parameters.originalFile.text, parameters.originalPosition!!.textOffset)?:""
     }
 
-    fun findEmacsOcamlAtom(text:String, offset: Int): String? {
+    private fun findEmacsOcamlAtom(text:String, offset: Int): String? {
         val re = Regex("[a-zA-Z0-9.']*[~?]?")
         val endIndex = re.find(ReversedSubstringCharSequence(text, offset, 0))?.next()?.range?.last
 

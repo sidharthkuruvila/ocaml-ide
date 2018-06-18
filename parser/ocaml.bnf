@@ -1094,7 +1094,7 @@ generalized_constructor_arguments ::=
 
 constructor_arguments ::=
     core_type_list
-//  | LBRACE label_declarations RBRACE
+  | LBRACE label_declarations RBRACE
 //
 label_declarations ::=
     label_declaration (SEMI attributes ? label_declaration) * (SEMI attributes ?)?
