@@ -13,4 +13,11 @@ class OcamlModuleBuilder : ModuleBuilder() {
     override fun getModuleType(): ModuleType<*>? {
         return OcamlModuleType.getInstance()
     }
+
+    override fun setupRootModel(modifiableRootModel: ModifiableRootModel) {
+        val path = contentEntryPath!!
+        val sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(FileUtil.toSystemIndependentName(path))!!;
+        val ce = doAddContentEntry(modifiableRootModel)!!
+        ce.addSourceFolder(sourceRoot, false)
+    }
 }
