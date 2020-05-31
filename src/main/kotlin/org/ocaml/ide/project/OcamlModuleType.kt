@@ -29,7 +29,7 @@ class OcamlModuleType : ModuleType<OcamlModuleBuilder>(ID) {
         return OcamlModuleBuilder()
     }
 
-    override fun getNodeIcon(isOpened: Boolean): Icon? {
+    override fun getNodeIcon(isOpened: Boolean): Icon {
         return OcamlIcons.CAMEL_ICON_FILE
     }
 }

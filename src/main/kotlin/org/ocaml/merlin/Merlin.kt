@@ -131,7 +131,7 @@ data class BrowseNode(val start: Position, val end: Position, val ghost: Boolean
 
 data class Completions(val entries: List<CompletionEntry>, val context: CompletionContext?)
 
-data class CompletionEntry(val name: String, val kind: String, val desc: String, val info: String)
+data class CompletionEntry(val name: String, val kind: String, val desc: String, val info: String, val deprecated: Boolean)
 
 
 object CompletionContext

@@ -20,7 +20,7 @@ import org.ocaml.ide.runconfig.form.OcamlRunConfigurationForm
 class OcamlFileRunConfiguration(name: String,
                                 project: Project,
                                 ocamlRunConfigurationType: OcamlRunConfigurationType) :
-        ModuleBasedConfiguration<RunConfigurationModule>(name,
+        ModuleBasedConfiguration<RunConfigurationModule, Void>(name,
                 RunConfigurationModule(project),
                 ocamlRunConfigurationType.configurationFactories[0]), RunConfigurationWithSuppressedDefaultRunAction {
 

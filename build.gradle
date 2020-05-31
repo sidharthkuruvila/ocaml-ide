@@ -1,23 +1,18 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-    }
-
-
-}
+import org.jetbrains.grammarkit.tasks.*
 
 plugins {
-    id "org.jetbrains.intellij" version "0.0.42"
+    id "org.jetbrains.intellij" version "0.4.21"
+    id "org.jetbrains.grammarkit" version "2020.2"
+    id "org.jetbrains.kotlin.jvm" version '1.3.72'
 }
 
+apply plugin: 'org.jetbrains.grammarkit'
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 apply plugin: "kotlin"
+
+
 
 compileJava {
     sourceCompatibility = 1.8
@@ -51,92 +46,50 @@ repositories {
 
 dependencies {
     compile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.7.9.1'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    compile "org.jetbrains.kotlin:kotlin-runtime:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     testCompile 'junit:junit:4.12'
 
     gen 'de.jflex:jflex:1.6.0'
     gen files('lib/gk/grammar-kit-patched.jar')
 }
 
-
-//Copied from the rust plugin
-
-def jflexArgs(srcFlex, targetDir) {
-    return [    "--skel",   "parser/OcamlLexer.skeleton",
-                "-d",       targetDir,
-                srcFlex
-    ]
+task generateOcamlLexer(type: GenerateLexer) {
+    source = "parser/OcamlLexer.flex"
+    targetDir = "gen/org/ocaml/lang/lexer/"
+    targetClass = "_OcamlLexer"
+    purgeOldFiles = true
 }
 
-task generateOcamlLexer(type: JavaExec) {
-    ext.src = "parser/OcamlLexer.flex"
-    ext.dst = "gen/org/ocaml/lang/lexer/"
-
-    main = "jflex.Main"
-
-    args = jflexArgs(src, dst)
-
-    inputs  .file   file(src)
-    outputs .dir    file(dst + "_OcamlLexer.java")
-
-    classpath configurations.gen
+task generateSexpLexer(type: GenerateLexer) {
+    source = "parser/sexp/SexpLexer.flex"
+    targetDir = "gen/org/ocaml/sexp/lexer/"
+    targetClass = "_SexpLexer"
+    purgeOldFiles = true
 }
 
-task generateSexpLexer(type: JavaExec) {
-    ext.src = "parser/sexp/SexpLexer.flex"
-    ext.dst = "gen/org/ocaml/sexp/lexer/"
 
-    main = "jflex.Main"
-
-    args = jflexArgs(src, dst)
-
-    inputs  .file   file(src)
-    outputs .dir    file(dst + "_SexpLexer.java")
-
-    classpath configurations.gen
+task generateOcamlPsiAndParser(type: GenerateParser) {
+    source = "parser/ocaml.bnf"
+    targetRoot = 'gen'
+    pathToParser = '/org/ocaml/lang/parser/OcamlParser.java'
+    pathToPsiRoot = '/org/ocaml/lang/parser/psi'
+    purgeOldFiles = true
 }
 
-task generateOcamlPsiAndParser(type: JavaExec) {
-    ext.src     = "parser/ocaml.bnf"
-    ext.dstRoot = "gen"
-
-    main = "org.intellij.grammar.Main"
-
-    args = [ dstRoot, file(src) ]
-
-    inputs  .file   file(src)
-    outputs .dir    fileTree(dir: dstRoot + '/org/ocaml/lang/parser/', include: '**/*.java')
-
-    classpath configurations.gen
+task generateSexpPsiAndParser(type: GenerateParser) {
+    source = "parser/sexp/sexp.bnf"
+    targetRoot = 'gen'
+    pathToParser = '/org/ocaml/sexp/parser/SexpParser.java'
+    pathToPsiRoot = '/org/ocaml/sexp/parser/psi'
+    purgeOldFiles = true
 }
 
-task generateSexpPsiAndParser(type: JavaExec) {
-    ext.src     = "parser/sexp/sexp.bnf"
-    ext.dstRoot = "gen"
-
-    main = "org.intellij.grammar.Main"
-
-    args = [ dstRoot, file(src) ]
-
-    inputs  .file   file(src)
-    outputs .dir    fileTree(dir: dstRoot + '/org/ocaml/sexp/parser/', include: '**/*.java')
-
-    classpath configurations.gen
-}
-
-task generateJbuildPsiAndParser(type: JavaExec) {
-    ext.src     = "parser/jbuild/jbuild.bnf"
-    ext.dstRoot = "gen"
-
-    main = "org.intellij.grammar.Main"
-
-    args = [ dstRoot, file(src) ]
-
-    inputs  .file   file(src)
-    outputs .dir    fileTree(dir: dstRoot + '/org/ocaml/jbuild/parser/', include: '**/*.java')
-
-    classpath configurations.gen
+task generateJbuildPsiAndParser(type: GenerateParser) {
+    source = "parser/jbuild/jbuild.bnf"
+    targetRoot = 'gen'
+    pathToParser = '/org/ocaml/jbuild/parser/SexpParser.java'
+    pathToPsiRoot = '/org/ocaml/jbuild/parser/psi'
+    purgeOldFiles = true
 }
 
 compileKotlin {
