@@ -157,5 +157,6 @@ type t = [
 
 type t = Record of {a: int; b: string}
 
-
+module Functor(M: Mod.C) = struct
+end
 

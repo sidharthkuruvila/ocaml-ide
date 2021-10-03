@@ -1345,8 +1345,8 @@ mod_ext_longident ::=
     UIDENT (LPAREN mod_ext_longident RPAREN | DOT UIDENT)?
 
 mty_longident ::=
-    ident
-  | mod_ext_longident DOT ident
+  ident (DOT ident) *
+
 
 clty_longident ::=
     LIDENT
