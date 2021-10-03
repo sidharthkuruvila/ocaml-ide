@@ -1,9 +1,6 @@
 package org.ocaml.merlin
 
 import org.junit.Test
-import com.intellij.lang.java.lexer.JavaLexer
-import com.intellij.pom.java.LanguageLevel
-
 class Fun {
     @Test
     fun first(){

@@ -31,8 +31,8 @@ class TestMerlin {
         val m = merlinInstance()
         m.tellSource(fn, src)
         val expected = listOf(MerlinError(start=Position(line=3, col=20), end=Position(line=3, col=21), valid=true,
-                message="This expression has type int but an expression was expected of type\n         string",
-                type="error", sub = emptyList()))
+                message="This expression has type int but an expression was expected of type string",
+                type="typer", sub = emptyList()))
         val resp = m.errors(fn)
         assertEquals(expected, resp)
 
@@ -50,12 +50,12 @@ class TestMerlin {
         m.tellSource(fn, src)
         val expected = Completions(
                 entries=listOf(
-                        CompletionEntry(name="List.mapi", kind="Value", desc="(int -> 'a -> 'b) -> 'a list -> 'b list", info=""),
-                        CompletionEntry(name="List.map2", kind="Value", desc="('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info=""),
-                        CompletionEntry(name="List.map", kind="Value", desc="('a -> 'b) -> 'a list -> 'b list", info=""),
-                        CompletionEntry(name="ListLabels.mapi", kind="Value", desc="f:(int -> 'a -> 'b) -> 'a list -> 'b list", info=""),
-                        CompletionEntry(name="ListLabels.map2", kind="Value", desc="f:('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info=""),
-                        CompletionEntry(name="ListLabels.map", kind="Value", desc="f:('a -> 'b) -> 'a list -> 'b list", info="")).reversed(),
+                        CompletionEntry(name="List.mapi", kind="Value", desc="(int -> 'a -> 'b) -> 'a list -> 'b list", info="", deprecated = false),
+                        CompletionEntry(name="List.map2", kind="Value", desc="('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info="", deprecated = false),
+                        CompletionEntry(name="List.map", kind="Value", desc="('a -> 'b) -> 'a list -> 'b list", info="", deprecated = false),
+                        CompletionEntry(name="ListLabels.mapi", kind="Value", desc="f:(int -> 'a -> 'b) -> 'a list -> 'b list", info="", deprecated = false),
+                        CompletionEntry(name="ListLabels.map2", kind="Value", desc="f:('a -> 'b -> 'c) -> 'a list -> 'b list -> 'c list", info="", deprecated = false),
+                        CompletionEntry(name="ListLabels.map", kind="Value", desc="f:('a -> 'b) -> 'a list -> 'b list", info="", deprecated = false)).reversed(),
                 context=null)
         val resp = m.complete(fn, "List.ma", Position(4, 21))
         assertEquals(expected.entries.toSet(), resp.entries.toSet())
@@ -176,7 +176,7 @@ class TestMerlin {
 
         val version = ocamlVersion()
 
-        val s = "${System.getProperty("user.home")}/.opam/$version/lib/ocaml/pervasives.ml"
+        val s = "${System.getProperty("user.home")}/.opam/$version/lib/ocaml/stdlib.ml"
         testPos(Position(line=5, col = 20), Located(file=s, pos=Position(line=448, col=4)))
         testPos(Position(line=4, col = 14), LocatedAtPosition)
         testPos(Position(line=4, col = 30), LocateFailed(msg="Not in environment 'l'"))

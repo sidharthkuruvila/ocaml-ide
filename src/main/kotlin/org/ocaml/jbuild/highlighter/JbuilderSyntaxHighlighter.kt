@@ -14,7 +14,7 @@ class JbuilderSyntaxHighlighter : SyntaxHighlighterBase() {
         val ATOM = TextAttributesKey.createTextAttributesKey("OCAML_JBUILDER_ATOM", DefaultLanguageHighlighterColors.STRING)
         val COMMENT = TextAttributesKey.createTextAttributesKey("OCAML_JBUILDER_COMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT)
         val PAREN = TextAttributesKey.createTextAttributesKey("OCAML_JBUILDER_PAREN", DefaultLanguageHighlighterColors.PARENTHESES)
-        val STANZA = TextAttributesKey.createTextAttributesKey("OCAML_JBUILDER_PAREN", DefaultLanguageHighlighterColors.KEYWORD)
+        val STANZA = TextAttributesKey.createTextAttributesKey("OCAML_JBUILDER_STANZA", DefaultLanguageHighlighterColors.KEYWORD)
 
 
         val ATOM_KEYS = arrayOf(ATOM)
