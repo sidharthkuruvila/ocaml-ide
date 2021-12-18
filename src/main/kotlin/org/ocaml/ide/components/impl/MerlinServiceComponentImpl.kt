@@ -13,20 +13,21 @@ import org.ocaml.merlin.*
 
 class MerlinServiceComponentImpl : MerlinServiceComponent {
 
+    var lastModifiedTimeStamp = -1L
     val merlin = Merlin.newInstance()
-    val msdl = MerlinServiceDocumentListener(merlin)
+//    val msdl = MerlinServiceDocumentListener(merlin)
 
-    override fun getComponentName(): String {
-        return "ocaml.merlinservice"
-    }
+//    override fun getComponentName(): String {
+//        return "ocaml.merlinservice"
+//    }
 
-    override fun disposeComponent() {
-        EditorFactory.getInstance().eventMulticaster.removeDocumentListener(msdl)
-    }
-
-    override fun initComponent() {
-        EditorFactory.getInstance().eventMulticaster.addDocumentListener(msdl)
-    }
+//    override fun dispose() {
+//        EditorFactory.getInstance().eventMulticaster.removeDocumentListener(msdl)
+//    }
+//
+//    init {
+//        EditorFactory.getInstance().eventMulticaster.addDocumentListener(msdl)
+//    }
 
     override fun errors(file: PsiFile): List<MerlinError> {
         reloadFileIfModified(file)
@@ -44,13 +45,18 @@ class MerlinServiceComponentImpl : MerlinServiceComponent {
     }
 
     private fun reloadFileIfModified(file: PsiFile) {
-        val doc = PsiDocumentManager.getInstance(file.project).getCachedDocument(file)
-        val filename = file.virtualFile.canonicalPath!!
-        if(doc == null || doc.getUserData(MerlinServiceDocumentListener.DOCUMENT_CHANGED)?: true) {
+        if (file.modificationStamp > lastModifiedTimeStamp) {
+            println("modification time stamp in file${file.modificationStamp}")
+            println("modification time stamp in service$lastModifiedTimeStamp")
+            lastModifiedTimeStamp = file.modificationStamp
+            val doc = PsiDocumentManager.getInstance(file.project).getCachedDocument(file)
+            val filename = file.virtualFile.canonicalPath!!
+            println("file name:$filename")
             //merlin.seekExact(filename, Position(1, 0))
             //merlin.drop(filename)
             merlin.tellSource(filename, file.text)
             doc?.putUserData(MerlinServiceDocumentListener.DOCUMENT_CHANGED, false)
         }
+
     }
 }

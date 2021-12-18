@@ -16,7 +16,7 @@ import org.ocaml.util.LineNumbering
 /**
  * Created by sidharthkuruvila on 26/05/16.
  */
-class MerlinErrorHighlightingAnnotator(var component: MerlinServiceComponent) : ExternalAnnotator<MerlinInfo, Results>() {
+class MerlinErrorHighlightingAnnotator : ExternalAnnotator<MerlinInfo, Results>() {
 
     companion object {
         private val LOG = Logger.getInstance(OcamlRunner::class.java)
@@ -30,6 +30,7 @@ class MerlinErrorHighlightingAnnotator(var component: MerlinServiceComponent) : 
 
     //TODO Add some intelligence here to help decide whether the annotator should run
     override fun collectInformation(@NotNull file: PsiFile): MerlinInfo? {
+        val component = file.project.getService(MerlinServiceComponent::class.java)
         return MerlinInfo(file, file.text, component)
     }
 

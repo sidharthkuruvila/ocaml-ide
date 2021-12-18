@@ -59,6 +59,7 @@ class Merlin(private val objectMapper: ObjectMapper, private val merlinProcess: 
     fun locate(filename: String, position: Position): LocateResponse {
         val request = """["locate", null, "ml", "at", ${objectMapper.writeValueAsString(position)}]"""
         val node = makeRequest(filename, request, object : TypeReference<JsonNode>() {})
+        println("Locate response: $node")
         if(node.isTextual) {
             if(node.textValue() == "Already at definition point") {
                 return LocatedAtPosition

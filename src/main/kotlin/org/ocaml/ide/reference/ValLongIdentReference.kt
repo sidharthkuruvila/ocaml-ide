@@ -11,12 +11,14 @@ import org.ocaml.util.LineNumbering
 import java.io.File
 
 class ValLongIdentReference(element: ValLongident) : PsiReferenceBase<ValLongident>(element) {
-    val merlinService = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)
+//    val merlinService = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)
 
     init {
         val tr = TextRange(0, element.textRange.endOffset - element.textRange.startOffset)
         rangeInElement = tr
     }
+
+    private val merlinService = this.element.containingFile.project.getService(MerlinServiceComponent::class.java)
 
     override fun getVariants(): Array<Any> {
         return emptyArray()

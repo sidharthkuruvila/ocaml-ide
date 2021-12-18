@@ -22,13 +22,12 @@
   <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
   -->
-
-  <application-components>
-    <component>
-      <interface-class>org.ocaml.ide.components.MerlinServiceComponent</interface-class>
-      <implementation-class>org.ocaml.ide.components.impl.MerlinServiceComponentImpl</implementation-class>
-    </component>
-  </application-components>
+<!--  <application-components>-->
+<!--    <component>-->
+<!--      <interface-class>org.ocaml.ide.components.MerlinServiceComponent</interface-class>-->
+<!--      <implementation-class>org.ocaml.ide.components.impl.MerlinServiceComponentImpl</implementation-class>-->
+<!--    </component>-->
+<!--  </application-components>-->
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
@@ -68,6 +67,9 @@
     <lang.parserDefinition language="OcamlJbuilder" implementationClass="org.ocaml.jbuild.parser.JbuilderParserDefinition"/>
     <lang.syntaxHighlighterFactory language="OcamlJbuilder" implementationClass="org.ocaml.jbuild.highlighter.JbuilderSyntaxHighlighterFactory" />
     <annotator language="OcamlJbuilder" implementationClass="org.ocaml.jbuild.highlighter.JbuilderHighlightingAnnotator" />
+
+    <projectService serviceInterface="org.ocaml.ide.components.MerlinServiceComponent"
+                    serviceImplementation="org.ocaml.ide.components.impl.MerlinServiceComponentImpl" />
   </extensions>
 
   <actions>

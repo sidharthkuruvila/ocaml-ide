@@ -11,7 +11,8 @@ import org.ocaml.util.ReversedSubstringCharSequence
 
 class OcamlCompletionContributor : CompletionContributor() {
 
-    val merlinService = ApplicationManager.getApplication().getComponent(MerlinServiceComponent::class.java)!!
+//    val merlinService = ApplicationManager.getApplication().getService(MerlinServiceComponent::class.java)!!
+
 
     init {
 
@@ -20,6 +21,7 @@ class OcamlCompletionContributor : CompletionContributor() {
                     override fun addCompletions(parameters: CompletionParameters,
                                        context: ProcessingContext,
                                        resultSet: CompletionResultSet) {
+                        val merlinService = parameters.originalFile.project.getService(MerlinServiceComponent::class.java)
                         val ln = LineNumbering(parameters.originalFile.text)
                         val completions = merlinService.completions(parameters.originalFile,
                                 findSuitablePrefix(parameters), ln.position(parameters.offset))
