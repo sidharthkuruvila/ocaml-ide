@@ -27,15 +27,15 @@ class JbuilderParserDefinition : ParserDefinition {
         val FILE = IFileElementType(JbuilderLanguage)
     }
 
-    override fun createParser(project: Project?): PsiParser? {
+    override fun createParser(project: Project?): PsiParser {
         return JbuildParser()
     }
 
-    override fun createFile(viewProvider: FileViewProvider): PsiFile? {
+    override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return JbuilderPsiFileRoot(viewProvider)
     }
 
-    override fun spaceExistanceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements? {
+    override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode): ParserDefinition.SpaceRequirements {
         return LanguageUtil.canStickTokensTogetherByLexer(left, right, SexpLexer())
         //return ParserDefinition.SpaceRequirements.MAY;
     }
@@ -44,7 +44,7 @@ class JbuilderParserDefinition : ParserDefinition {
         return TokenSet.create(SexpTypes.ATOM)
     }
 
-    override fun getFileNodeType(): IFileElementType? {
+    override fun getFileNodeType(): IFileElementType {
         return FILE
     }
 

@@ -27,15 +27,15 @@ class OcamlParserDefinition : ParserDefinition {
         val FILE = IFileElementType(OcamlLanguage.INSTANCE);
     }
 
-    override fun createParser(project: Project?): PsiParser? {
+    override fun createParser(project: Project?): PsiParser {
         return OcamlParser()
     }
 
-    override fun createFile(viewProvider: FileViewProvider): PsiFile? {
+    override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return OcamlPsiFileRoot(viewProvider)
     }
 
-    override fun spaceExistanceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements? {
+    override fun spaceExistanceTypeBetweenTokens(left: ASTNode, right: ASTNode): ParserDefinition.SpaceRequirements {
         return LanguageUtil.canStickTokensTogetherByLexer(left, right, OcamlLexer())
         //return ParserDefinition.SpaceRequirements.MAY;
     }
@@ -44,7 +44,7 @@ class OcamlParserDefinition : ParserDefinition {
         return TokenSet.create(OcamlTypes.STRING)
     }
 
-    override fun getFileNodeType(): IFileElementType? {
+    override fun getFileNodeType(): IFileElementType {
         return FILE
     }
 
